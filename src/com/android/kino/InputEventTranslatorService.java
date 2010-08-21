@@ -1,0 +1,141 @@
+package com.android.kino;
+
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Binder;
+import android.os.IBinder;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.android.kino.logic.InputEventTranslator;
+import com.android.kino.logic.KinoMediaPlayer;
+import com.android.kino.logic.KinoServiceConnection;
+import com.android.kino.logic.ServiceUser;
+
+/**
+ * This service is only used to contain the InputEventTranslator running in the
+ * background.
+ * To use it, you need to bind to this service and get it from the binder.
+ */
+public class InputEventTranslatorService extends Service implements ServiceUser {
+    
+    // This is the object that receives interactions from clients
+    private final IBinder mBinder = new IETBinder();
+    private InputEventTranslator mInputTranslator = null;
+    private KinoServiceConnection mMediaPlayerConn = new KinoServiceConnection(this);
+
+    
+    /* (non-Javadoc)
+     * @see android.app.Service#onCreate()
+     */
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Toast.makeText(this, "InputEventTranslatorService.onCreate", Toast.LENGTH_SHORT).show();
+
+        // Bind to media player service and get media player
+        boolean success = bindService(
+                new Intent(this, MediaPlayerService.class),
+                mMediaPlayerConn,
+                Context.BIND_AUTO_CREATE);
+        if (!success) {
+            // TODO: Do something about this... failed to bind to media player
+            return;
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see com.android.kino.logic.ServiceUser#onConnected(android.os.IBinder)
+     */
+    @Override
+    public void onConnected(IBinder binder) {
+        if (binder == null) {
+            Toast.makeText(this, "Failed to get media player binder", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (mInputTranslator == null) {
+            KinoMediaPlayer player =
+                ((MediaPlayerService.MPBinder) binder).getPlayer();
+            mInputTranslator = new InputEventTranslator(player);
+        }
+        Toast.makeText(this, "InputEventTranslatorService bound to media player", Toast.LENGTH_SHORT).show();
+    }
+
+    /* (non-Javadoc)
+     * @see android.app.Service#onDestroy()
+     */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        doUnbindMediaPlayerService();
+        Toast.makeText(this, "InputEventTranslatorService.onDestroy", Toast.LENGTH_SHORT).show();
+    }
+
+    /* (non-Javadoc)
+     * @see android.app.Service#onStartCommand(android.content.Intent, int, int)
+     */
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Toast.makeText(this, "InputEventTranslatorService.onStartCommand", Toast.LENGTH_SHORT).show();
+        Log.i("InputEventTranslatorService", "Received start id " + startId + ": " + intent);
+        // We want this service to continue running until it is explicitly
+        // stopped, so return sticky.
+        return START_STICKY;
+    }
+    
+    /* (non-Javadoc)
+     * @see android.app.Service#onBind(android.content.Intent)
+     */
+    @Override
+    public IBinder onBind(Intent arg0) {
+        Toast.makeText(this, "InputEventTranslatorService.onBind", Toast.LENGTH_SHORT).show();
+        return mBinder;
+    }
+
+    /* (non-Javadoc)
+     * @see android.app.Service#onRebind(android.content.Intent)
+     */
+    @Override
+    public void onRebind(Intent intent) {
+        super.onRebind(intent);
+        Toast.makeText(this, "InputEventTranslatorService.onRebind", Toast.LENGTH_SHORT).show();
+    }
+
+    /* (non-Javadoc)
+     * @see android.app.Service#onUnbind(android.content.Intent)
+     */
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Toast.makeText(this, "InputEventTranslatorService.onUnbind", Toast.LENGTH_SHORT).show();
+        return super.onUnbind(intent);
+    }
+
+    /**
+     * Disconnects from the media player service.
+     */
+    private void doUnbindMediaPlayerService() {
+        if (isBoundToMediaPlayer()) {
+            // Detach our existing connection.
+            unbindService(mMediaPlayerConn);
+            mInputTranslator = null;
+        }
+    }
+    
+    private boolean isBoundToMediaPlayer() {
+        return mInputTranslator != null;
+    }
+    
+    
+    /**
+     * Class for clients to access.  Because we know this service always
+     * runs in the same process as its clients, we don't need to deal with
+     * IPC.
+     */
+    public class IETBinder extends Binder {
+        public InputEventTranslator getInputTranslator() {
+            return mInputTranslator;
+        }
+    }
+
+}

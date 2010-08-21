@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mp_service_started">Kino started</string>
+    <string name="mp_service_label">Kino</string>
+    <string name="mp_service_notification">Kino Media Player</string>
+    <string name="some_service_connected">Service connected</string>
+    <string name="app_name">Kino</string>
+</resources>
