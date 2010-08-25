@@ -3,6 +3,7 @@ package com.android.kino;
 import com.android.kino.logic.KinoMediaPlayer;
 import com.android.kino.logic.KinoServiceConnection;
 import com.android.kino.logic.ServiceUser;
+import com.android.kino.ui.MenuMain;
 
 import android.app.Activity;
 import android.content.Context;
@@ -25,9 +26,7 @@ public class Kino extends Activity implements ServiceUser {
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        
+        super.onCreate(savedInstanceState);                       
         // Ignores the 'savedInstanceState' - the state will be restored by
         // onRestoreInstanceState.
         
@@ -62,7 +61,11 @@ public class Kino extends Activity implements ServiceUser {
             return;
         }
         
-        // TODO: Show default screen
+        
+        //start the UI thread
+        startActivity(new Intent(this, MenuMain.class));
+        
+        
     }
 
     /* (non-Javadoc)
