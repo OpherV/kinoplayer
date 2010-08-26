@@ -8,6 +8,7 @@ import com.android.kino.utils.ConvertUtils;
 
 public class MediaProperties implements Comparable<MediaProperties> {
 
+    public String Filename = null;
     public AlbumProperties Album = new AlbumProperties();
     public String Title = null;
     public int TrackNumber = 0;
@@ -21,9 +22,11 @@ public class MediaProperties implements Comparable<MediaProperties> {
     
     public MediaProperties(String filename) {
         // TODO Untested
+        Filename = filename;
+        
         // Read ID3 tags and fill parameters
         try {
-            MP3File mp3file = new MP3File(filename);
+            MP3File mp3file = new MP3File(Filename);
             AbstractID3v2 idv2 = mp3file.getID3v2Tag();
             Album.Year = ConvertUtils.tryParse(idv2.getYearReleased());
             Album.Title = idv2.getAlbumTitle();
@@ -43,7 +46,7 @@ public class MediaProperties implements Comparable<MediaProperties> {
         catch (Exception e) {
             // Can't read file tags, try to take the artist name and track
             //  title out of the filename
-            String[] parts = filename.split("-");
+            String[] parts = Filename.split("-");
             if (parts.length == 1) {
                 Title = parts[0];
             }
