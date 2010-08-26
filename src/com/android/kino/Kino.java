@@ -3,6 +3,8 @@ package com.android.kino;
 import com.android.kino.logic.KinoMediaPlayer;
 import com.android.kino.logic.KinoServiceConnection;
 import com.android.kino.logic.ServiceUser;
+import com.android.kino.musiclibrary.Library;
+import com.android.kino.musiclibrary.LibraryConnector;
 import com.android.kino.ui.MenuMain;
 
 import android.app.Activity;
@@ -10,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -19,6 +22,7 @@ public class Kino extends Activity implements ServiceUser {
 
     private KinoServiceConnection mMediaPlayerConn = new KinoServiceConnection(this);
     private KinoMediaPlayer mPlayer = null;
+    private Library library = null;
 
     /**
      * Entry point of the application.
@@ -28,8 +32,7 @@ public class Kino extends Activity implements ServiceUser {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);                       
         // Ignores the 'savedInstanceState' - the state will be restored by
-        // onRestoreInstanceState.
-        
+        // onRestoreInstanceState.        
         Toast.makeText(this, "Kino.onCreate", Toast.LENGTH_SHORT).show();
 
         // Create media player service and get media player
@@ -61,10 +64,14 @@ public class Kino extends Activity implements ServiceUser {
             return;
         }
         
+        //bind the library service
+        boolean libraryBound = bindService(new Intent(this, Library.class), new LibraryConnector(this) , Context.BIND_AUTO_CREATE);
+        Log.d(this.getClass().toString(), "libraryBound: "+libraryBound);
+        
         
         //start the UI thread
         startActivity(new Intent(this, MenuMain.class));
-        
+               
         
     }
 
@@ -74,10 +81,20 @@ public class Kino extends Activity implements ServiceUser {
     @Override
     public void onConnected(IBinder binder) {
         if (binder == null) {
+        	
+        	//TODO now that we have several services this is not accurate
             Toast.makeText(this, "Failed to get media player binder", Toast.LENGTH_LONG).show();
             return;
         }
-        mPlayer = ((MediaPlayerService.MPBinder) binder).getPlayer();
+        
+        //switch between the different services
+        if (binder.getClass()==MediaPlayerService.class)
+        {
+        	mPlayer = ((MediaPlayerService.MPBinder) binder).getPlayer();
+        }
+        else if (binder.getClass()==Library.class){
+        	library = (Library) binder;
+        }
     }
     
     /* (non-Javadoc)
@@ -137,6 +154,7 @@ public class Kino extends Activity implements ServiceUser {
      */
     private void shutDown() {
         stopService(new Intent(this, InputEventTranslatorService.class));
+        stopService(new Intent(this, Library.class));
         stopService(new Intent(this, MediaPlayerService.class));
     }
 

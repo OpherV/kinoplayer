@@ -1,11 +1,15 @@
 package com.android.kino;
 
 import com.android.kino.logic.KinoMediaPlayer;
+import com.android.kino.logic.ServiceUser;
+import com.android.kino.musiclibrary.Library;
+import com.android.kino.musiclibrary.LibraryConnector;
 
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
@@ -17,14 +21,13 @@ import android.widget.Toast;
  * background.
  * To use it, you need to bind to this service and get it from the binder.
  */
-public class MediaPlayerService extends Service {
+public class MediaPlayerService extends Service{
     
     // This is the object that receives interactions from clients
     private final IBinder mBinder = new MPBinder();
     
     private NotificationManager mNotificationMngr;
     private KinoMediaPlayer mMediaPlayer = null;
-
     
     /* (non-Javadoc)
      * @see android.app.Service#onCreate()
@@ -40,7 +43,7 @@ public class MediaPlayerService extends Service {
         mNotificationMngr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
         // Display a notification about us starting. We put an icon in the status bar.
-        showNotification();
+        showNotification();               
     }
 
     /* (non-Javadoc)

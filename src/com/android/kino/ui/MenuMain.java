@@ -1,7 +1,10 @@
 package com.android.kino.ui;
 
+import com.android.kino.Kino;
+
 import android.R;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -35,9 +38,8 @@ public class MenuMain extends ListActivity {
 				
 				//this is ugly, but for the moment...
 				CharSequence menuText=((TextView) view).getText();
-				if  (menuText=="Play"){
-			    		startActivity(new Intent(this,player_main.class));
-			    		break;
+				if  (menuText=="Play"){					
+			    		startActivity(new Intent(parent.getContext(),PlayerMain.class));			    		
 			    }
 				
 			}
