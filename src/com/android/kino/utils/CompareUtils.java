@@ -22,4 +22,11 @@ public abstract class CompareUtils {
         return rhs.compareTo(lhs);
     }
     
+    public static boolean isNullOrEmpty(String str) {
+        if (str == null) {
+            return true;
+        }
+        return str.trim().equals("");
+    }
+    
 }
