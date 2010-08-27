@@ -10,11 +10,12 @@ public interface SettingsContainer {
 
     public KinoAction getConfiguredAction(int eventId);
 
+    /**
+     * @param event TODO An event object because some events may require parameters
+     * @param actionId TODO An action ID because an action is predefined - might be changed in the future
+     */
     public void setConfiguredAction(int eventId, int actionId);
 
-    /**
-     * TODO(remember) To be used to populate settings window.
-     */
     public Collection<Integer> getConfiguredEvents();
     
     public boolean isConfigured(int eventId);
