@@ -1,20 +1,15 @@
 package com.android.kino;
 
-import com.android.kino.logic.KinoMediaPlayer;
-import com.android.kino.logic.ServiceUser;
-import com.android.kino.musiclibrary.Library;
-import com.android.kino.musiclibrary.LibraryConnector;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.android.kino.logic.KinoMediaPlayer;
 
 /**
  * This service is only used to contain the KinoMediaPlayer running in the
@@ -35,7 +30,7 @@ public class MediaPlayerService extends Service{
     @Override
     public void onCreate() {
         super.onCreate();
-        Toast.makeText(this, "MediaPlayerService.onCreate", Toast.LENGTH_SHORT).show();
+        Log.d(getClass().getName(), "MediaPlayerService.onCreate");
         if (mMediaPlayer == null) {
             mMediaPlayer = new KinoMediaPlayer();
         }
@@ -52,7 +47,7 @@ public class MediaPlayerService extends Service{
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Toast.makeText(this, "MediaPlayerService.onDestroy", Toast.LENGTH_SHORT).show();
+        Log.d(getClass().getName(), "MediaPlayerService.onDestroy");
     }
 
     /* (non-Javadoc)
@@ -60,7 +55,7 @@ public class MediaPlayerService extends Service{
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "MediaPlayerService.onStartCommand", Toast.LENGTH_SHORT).show();
+        Log.d(getClass().getName(), "MediaPlayerService.onStartCommand");
         Log.i("MediaPlayerService", "Received start id " + startId + ": " + intent);
         // We want this service to continue running until it is explicitly
         // stopped, so return sticky.
@@ -72,7 +67,7 @@ public class MediaPlayerService extends Service{
      */
     @Override
     public IBinder onBind(Intent arg0) {
-        Toast.makeText(this, "MediaPlayerService.onBind", Toast.LENGTH_SHORT).show();
+        Log.d(getClass().getName(), "MediaPlayerService.onBind");
         return mBinder;
     }
 
@@ -82,7 +77,7 @@ public class MediaPlayerService extends Service{
     @Override
     public void onRebind(Intent intent) {
         super.onRebind(intent);
-        Toast.makeText(this, "MediaPlayerService.onRebind", Toast.LENGTH_SHORT).show();
+        Log.d(getClass().getName(), "MediaPlayerService.onRebind");
     }
 
     /* (non-Javadoc)
@@ -90,7 +85,7 @@ public class MediaPlayerService extends Service{
      */
     @Override
     public boolean onUnbind(Intent intent) {
-        Toast.makeText(this, "MediaPlayerService.onUnbind", Toast.LENGTH_SHORT).show();
+        Log.d(getClass().getName(), "MediaPlayerService.onUnbind");
         return super.onUnbind(intent);
     }
 

@@ -3,20 +3,17 @@ package com.android.kino.musiclibrary;
 import java.io.File;
 import java.io.IOException;
 
-import com.android.kino.Kino;
+import org.cmc.music.metadata.IMusicMetadata;
+import org.cmc.music.metadata.MusicMetadataSet;
+import org.cmc.music.myid3.MyID3;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
-import org.cmc.music.metadata.IMusicMetadata;
-import org.cmc.music.metadata.MusicMetadata;
-import org.cmc.music.metadata.MusicMetadataSet;
-import org.cmc.music.myid3.*;
+import com.android.kino.Kino;
 
 public class Library extends Service{
 	Kino kino = null;

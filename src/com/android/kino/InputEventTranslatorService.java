@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.kino.logic.InputEventTranslator;
 import com.android.kino.logic.KinoMediaPlayer;
@@ -32,7 +31,7 @@ public class InputEventTranslatorService extends Service implements ServiceUser 
     @Override
     public void onCreate() {
         super.onCreate();
-        Toast.makeText(this, "InputEventTranslatorService.onCreate", Toast.LENGTH_SHORT).show();
+        Log.d(getClass().getName(), "InputEventTranslatorService.onCreate");
 
         // Bind to media player service and get media player
         boolean success = bindService(
@@ -51,7 +50,7 @@ public class InputEventTranslatorService extends Service implements ServiceUser 
     @Override
     public void onConnected(IBinder binder) {
         if (binder == null) {
-            Toast.makeText(this, "Failed to get media player binder", Toast.LENGTH_LONG).show();
+            Log.d(getClass().getName(), "Failed to get media player binder");
             return;
         }
         if (mInputTranslator == null) {
@@ -59,7 +58,7 @@ public class InputEventTranslatorService extends Service implements ServiceUser 
                 ((MediaPlayerService.MPBinder) binder).getPlayer();
             mInputTranslator = new InputEventTranslator(player);
         }
-        Toast.makeText(this, "InputEventTranslatorService bound to media player", Toast.LENGTH_SHORT).show();
+        Log.d(getClass().getName(), "InputEventTranslatorService bound to media player");
     }
 
     /* (non-Javadoc)
@@ -69,7 +68,7 @@ public class InputEventTranslatorService extends Service implements ServiceUser 
     public void onDestroy() {
         super.onDestroy();
         doUnbindMediaPlayerService();
-        Toast.makeText(this, "InputEventTranslatorService.onDestroy", Toast.LENGTH_SHORT).show();
+        Log.d(getClass().getName(), "InputEventTranslatorService.onDestroy");
     }
 
     /* (non-Javadoc)
@@ -77,7 +76,7 @@ public class InputEventTranslatorService extends Service implements ServiceUser 
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "InputEventTranslatorService.onStartCommand", Toast.LENGTH_SHORT).show();
+        Log.d(getClass().getName(), "InputEventTranslatorService.onStartCommand");
         Log.i("InputEventTranslatorService", "Received start id " + startId + ": " + intent);
         // We want this service to continue running until it is explicitly
         // stopped, so return sticky.
@@ -89,7 +88,7 @@ public class InputEventTranslatorService extends Service implements ServiceUser 
      */
     @Override
     public IBinder onBind(Intent arg0) {
-        Toast.makeText(this, "InputEventTranslatorService.onBind", Toast.LENGTH_SHORT).show();
+        Log.d(getClass().getName(), "InputEventTranslatorService.onBind");
         return mBinder;
     }
 
@@ -99,7 +98,7 @@ public class InputEventTranslatorService extends Service implements ServiceUser 
     @Override
     public void onRebind(Intent intent) {
         super.onRebind(intent);
-        Toast.makeText(this, "InputEventTranslatorService.onRebind", Toast.LENGTH_SHORT).show();
+        Log.d(getClass().getName(), "InputEventTranslatorService.onRebind");
     }
 
     /* (non-Javadoc)
@@ -107,7 +106,7 @@ public class InputEventTranslatorService extends Service implements ServiceUser 
      */
     @Override
     public boolean onUnbind(Intent intent) {
-        Toast.makeText(this, "InputEventTranslatorService.onUnbind", Toast.LENGTH_SHORT).show();
+        Log.d(getClass().getName(), "InputEventTranslatorService.onUnbind");
         return super.onUnbind(intent);
     }
 

@@ -1,19 +1,18 @@
 package com.android.kino;
 
-import com.android.kino.logic.KinoMediaPlayer;
-import com.android.kino.logic.KinoServiceConnection;
-import com.android.kino.logic.ServiceUser;
-import com.android.kino.musiclibrary.Library;
-import com.android.kino.musiclibrary.LibraryConnector;
-import com.android.kino.ui.MenuMain;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.android.kino.logic.KinoMediaPlayer;
+import com.android.kino.logic.KinoServiceConnection;
+import com.android.kino.logic.ServiceUser;
+import com.android.kino.musiclibrary.Library;
+import com.android.kino.musiclibrary.LibraryConnector;
+import com.android.kino.ui.MenuMain;
 
 /**
  * The starting activity (that's why it's not in the UI package).
@@ -33,12 +32,12 @@ public class Kino extends Activity implements ServiceUser {
         super.onCreate(savedInstanceState);                       
         // Ignores the 'savedInstanceState' - the state will be restored by
         // onRestoreInstanceState.        
-        Toast.makeText(this, "Kino.onCreate", Toast.LENGTH_SHORT).show();
+        Log.d(getClass().getName(), "Kino.onCreate");
 
         // Create media player service and get media player
         Object result = startService(new Intent(this, MediaPlayerService.class));
         if (result == null) {
-            Toast.makeText(this, "Failed to start media player service", Toast.LENGTH_SHORT).show();
+            Log.e(getClass().getName(), "Failed to start media player service");
             return;
         }
         
@@ -47,7 +46,7 @@ public class Kino extends Activity implements ServiceUser {
                 mMediaPlayerConn,
                 Context.BIND_AUTO_CREATE);
         if (!success) {
-            Toast.makeText(this, "Failed to bind to media player service", Toast.LENGTH_SHORT).show();
+            Log.e(getClass().getName(), "Failed to bind to media player service");
             // TODO: Do something about this... failed to bind to media player
             return;
         }
@@ -55,10 +54,10 @@ public class Kino extends Activity implements ServiceUser {
         // Create input event translator service
         result = startService(new Intent(this, InputEventTranslatorService.class));
         if (result == null) {
-            Toast.makeText(this, "Failed to start input event translator service", Toast.LENGTH_SHORT).show();
+            Log.e(getClass().getName(), "Failed to start input event translator service");
             return;
         }
-        Toast.makeText(this, "Kino started OK", Toast.LENGTH_SHORT).show();
+        Log.d(getClass().getName(), "Kino started OK");
         
         if (savedInstanceState != null) {
             return;
@@ -83,7 +82,7 @@ public class Kino extends Activity implements ServiceUser {
         if (binder == null) {
         	
         	//TODO now that we have several services this is not accurate
-            Toast.makeText(this, "Failed to get media player binder", Toast.LENGTH_LONG).show();
+            Log.e(getClass().getName(), "Failed to get media player binder");
             return;
         }
         
@@ -102,7 +101,7 @@ public class Kino extends Activity implements ServiceUser {
      */
     @Override
     protected void onDestroy() {
-        Toast.makeText(this, "Kino.onDestroy", Toast.LENGTH_SHORT).show();
+        Log.d(getClass().getName(), "Kino.onDestroy");
         super.onDestroy();
         doUnbindMediaPlayerService();
     }

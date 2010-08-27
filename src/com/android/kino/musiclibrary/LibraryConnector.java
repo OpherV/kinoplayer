@@ -1,14 +1,11 @@
 package com.android.kino.musiclibrary;
 
-import com.android.kino.Kino;
-import com.android.kino.MediaPlayerService;
-
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.android.kino.Kino;
 
 public class LibraryConnector implements ServiceConnection{
 	
