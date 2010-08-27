@@ -8,7 +8,7 @@ import com.android.kino.logic.event.DoubleTapEvent;
 
 public class TapInterceptor extends InterceptorBase {
     public TapInterceptor(InputEventTranslator inputTranslator) {
-        super(inputTranslator, new DoubleTapEvent());
+        super(inputTranslator, DoubleTapEvent.ID);
     }
 
     @Override

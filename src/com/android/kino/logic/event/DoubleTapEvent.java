@@ -3,7 +3,7 @@ package com.android.kino.logic.event;
 /**
  * A double tap event.
  */
-public class DoubleTapEvent implements InputEvent {
+public class DoubleTapEvent extends BaseInputEvent {
     public static final int ID = 1;
     public static final CharSequence NAME = "Double Tap";
     public static final CharSequence DESCRIPTION =
@@ -30,7 +30,6 @@ public class DoubleTapEvent implements InputEvent {
      */
     @Override
     public CharSequence getEventDescription() {
-        // TODO Auto-generated method stub
         return DESCRIPTION;
     }
 

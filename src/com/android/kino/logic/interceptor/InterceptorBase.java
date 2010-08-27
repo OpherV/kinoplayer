@@ -3,28 +3,27 @@ package com.android.kino.logic.interceptor;
 import android.content.BroadcastReceiver;
 
 import com.android.kino.logic.InputEventTranslator;
-import com.android.kino.logic.event.InputEvent;
 
 public abstract class InterceptorBase extends BroadcastReceiver {
     private InputEventTranslator mInputTranslator;
-    private InputEvent mInputEvent;
+    private int mEventId;
     
-    public InterceptorBase(InputEventTranslator inputTranslator, InputEvent inputEvent) {
+    public InterceptorBase(InputEventTranslator inputTranslator, int eventId) {
         mInputTranslator = inputTranslator;
-        mInputEvent = inputEvent;
+        mEventId = eventId;
     }
     
     /**
      * Uses the default event.
      */
     protected void eventTriggered() {
-        eventTriggered(mInputEvent);
+        eventTriggered(mEventId);
     }
     
     /**
      * Allows using several events.
      */
-    protected void eventTriggered(InputEvent inputEvent) {
-        mInputTranslator.handleInput(inputEvent);
+    protected void eventTriggered(int eventId) {
+        mInputTranslator.handleInput(eventId);
     }
 }

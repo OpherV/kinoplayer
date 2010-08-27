@@ -3,7 +3,7 @@ package com.android.kino.logic.event;
 /**
  * An interface to represent different types of input.
  */
-public interface InputEvent {
+public interface InputEvent extends Comparable<InputEvent> {
     /**
      * A unique event ID.
      */
@@ -19,4 +19,6 @@ public interface InputEvent {
      * Description to use in a tooltip, for example.
      */
     public CharSequence getEventDescription();
+    
+    public boolean equals(InputEvent other);
 }

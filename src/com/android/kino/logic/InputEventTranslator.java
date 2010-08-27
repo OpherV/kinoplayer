@@ -1,9 +1,8 @@
 package com.android.kino.logic;
 
 import com.android.kino.logic.action.KinoAction;
-import com.android.kino.logic.action.PlayPauseToggle;
-import com.android.kino.logic.event.DoubleTapEvent;
-import com.android.kino.logic.event.InputEvent;
+import com.android.kino.logic.settings.SettingsContainer;
+import com.android.kino.logic.settings.SettingsLoader;
 
 /**
  * Receives input from the input interceptors and communicates it to the media
@@ -11,30 +10,28 @@ import com.android.kino.logic.event.InputEvent;
  */
 public class InputEventTranslator {
     private KinoMediaPlayer mPlayer;
+    private SettingsContainer mSettings;
     
     public InputEventTranslator(KinoMediaPlayer player) {
         mPlayer = player;
+        mSettings = SettingsLoader.loadDefaultSettings();
+    }
+    
+    public void setSettings(SettingsContainer settings) {
+        mSettings = settings;
     }
     
     /**
      * Call this method to pass input to the translator.
      * The translator will perform the appropriate action.
      * 
-     * @param event The event to handle.
+     * @param eventId The event to handle.
      */
-    public void handleInput(InputEvent event) {
-        KinoAction action = null;
-
-        // TODO: Use the configuration to get the KinoAction - for now it's
-        //       a static mapping
-        switch (event.getEventID()) {
-        case DoubleTapEvent.ID: {
-            action = new PlayPauseToggle(mPlayer);
-        }
-        }
+    public void handleInput(int eventId) {
+        KinoAction action = mSettings.getConfiguredAction(eventId);
         
         if (action != null) {
-            action.performAction();
+            action.performAction(mPlayer);
         }
     }
 }

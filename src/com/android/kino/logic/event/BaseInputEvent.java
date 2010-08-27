@@ -1,0 +1,18 @@
+package com.android.kino.logic.event;
+
+/**
+ * A base class for input events.
+ */
+public abstract class BaseInputEvent implements InputEvent {
+    
+    @Override
+    public boolean equals(InputEvent other) {
+        return compareTo(other) == 0;
+    }
+
+    @Override
+    public int compareTo(InputEvent another) {
+        return getEventID() - another.getEventID();
+    }
+
+}
