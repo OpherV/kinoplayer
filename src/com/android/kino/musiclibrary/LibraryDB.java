@@ -142,7 +142,8 @@ public class LibraryDB extends SQLiteOpenHelper {
     	Cursor cursor = MusicLibraryDB.query(SONG_TABLE,
                 null,
                 null,
-                null, null, null, null);
+                null, null, null,
+                "artist, title ASC");
     	cursor.moveToFirst();
     	
     	Playlist playlist = playlistFromCursor(cursor);

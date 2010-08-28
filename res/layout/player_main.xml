@@ -3,21 +3,74 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:id="@+id/player_container"
+    >
     
+    <ImageView 
+    android:id="@+id/playerBG"
+    android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:layout_centerHorizontal="true"
+	android:layout_centerVertical="true"
+    />
     
      <LinearLayout
-        android:orientation="horizontal"
+     	android:id="@+id/player_songDetails"
+     	android:layout_alignTop="@id/player_container"
+        android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:layout_margin="8dp"
+        android:padding="8dp"
+        android:background="@layout/ui_box"        
+         >
         
-	    <TextView android:id="@+id/song_details"
+	    <TextView android:id="@+id/player_title"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
-             android:text="song details" />
+             android:textStyle="bold"
+             android:textColor="#ffffff" 
+             />
+             
+	    <TextView android:id="@+id/player_artist"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:textColor="#ffffff"
+             />
+             
+	    <TextView android:id="@+id/player_album"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:textColor="#ffffff"
+             />
+	    
 
     </LinearLayout>
+    
+     <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:layout_margin="8dp"   
+      android:layout_below="@id/player_songDetails" 
+       >
+    
+		   	<SeekBar android:id="@+id/player_seek"
+						android:layout_width="fill_parent"
+						android:layout_height="40dp"
+						android:layout_marginTop="10dp"
+						android:layout_marginBottom="10dp"
+			 />
+		    
+		    <TextView android:id="@+id/player_timeElapsed"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		     />
+     
+     </LinearLayout>
     
     <!--  button row -->
      <LinearLayout

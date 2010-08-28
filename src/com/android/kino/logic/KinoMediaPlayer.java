@@ -135,6 +135,11 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
         }
     }
     
+    public int getCurrentTrackDurationInSeconds(){
+    	int duration=getCurrentTrackDuration().getDays()*24*60*60+getCurrentTrackDuration().getHours()*60*60+getCurrentTrackDuration().getMinutes()*60+getCurrentTrackDuration().getSeconds();
+    	return duration;
+    }
+    
     public MediaProperties getCurrentMedia() {
         return mCurrentMedia;
     }

@@ -39,7 +39,10 @@
             android:name=".ui.PlayerMain"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
     </application>
+	
+	<uses-permission android:name="android.permission.INTERNET" /> 
 
 
 
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 </manifest> 
