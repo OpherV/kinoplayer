@@ -11,7 +11,6 @@ import com.android.kino.Kino;
 import com.android.kino.R;
 import com.android.kino.logic.KinoMediaPlayer;
 import com.android.kino.logic.KinoUser;
-import com.android.kino.logic.MediaProperties;
 
 public class PlayerMain extends Activity implements KinoUser{
 	private Kino kino = null;

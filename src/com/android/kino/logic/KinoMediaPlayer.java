@@ -311,6 +311,12 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
         }
         else if (mPlayOrder.hasPrevious()) {
             next = mPlayOrder.previous();
+            // Note: The list iterator will return the last extracted item when 
+            //       the iteration direction changes (from forward to backwards
+            //       and vice versa) so we call the method again
+            if (next == mCurrentMedia) {
+                return previous();
+            }
         }
         else if (mRepeatMode == RepeatMode.ALL) {
             // We are at the first track - play the last track
@@ -355,6 +361,12 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
         }
         if (mPlayOrder.hasNext()) {
             MediaProperties next = mPlayOrder.next();
+            // Note: The list iterator will return the last extracted item when 
+            //       the iteration direction changes (from forward to backwards
+            //       and vice versa) so we call the method again
+            if (next == mCurrentMedia) {
+                return setNextMedia();
+            }
             if (!setCurrentMedia(next)) {
                 mPlayOrder = null;
                 return false;
