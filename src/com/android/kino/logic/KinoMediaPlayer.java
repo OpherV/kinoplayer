@@ -32,7 +32,7 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
     private MediaPlayer mMp;
     private Playlist mPlaylist = null;
     private ListIterator<MediaProperties> mPlayOrder = null;
-    private MediaProperties mCurrentTrack = null;
+    private MediaProperties mCurrentMedia = null;
     
     private RepeatMode mRepeatMode = RepeatMode.OFF;
     private boolean mIsShuffleOn = false;
@@ -52,7 +52,7 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
         mMp.release();
         mPlaylist = null;
         mPlayOrder = null;
-        mCurrentTrack = null;
+        mCurrentMedia = null;
     }
     
     public boolean isPlaying() {
@@ -134,6 +134,10 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
             return new TimeSpan(0);
         }
     }
+    
+    public MediaProperties getCurrentMedia() {
+        return mCurrentMedia;
+    }
 
     public Playlist getCurrentPlaylist() {
         return mPlaylist;
@@ -147,6 +151,28 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
         mPlaylist = playlist;
     }
     
+    public boolean setCurrentMedia(int position) {
+        // First stop whatever we're doing
+        mMp.reset();
+        if (mPlaylist == null) {
+            Log.d(getClass().getName(), "Can't find media - no playlist");
+            return false;
+        }
+        setPlayOrderIterator(position);
+        if (mPlayOrder.hasNext()) {
+            MediaProperties next = mPlayOrder.next();
+            if (!setCurrentMedia(next)) {
+                mPlayOrder = null;
+                return false;
+            }
+            return true;
+        }
+        else {
+            Log.d(getClass().getName(), "Can't find media - iterator is empty");
+            return false;
+        }
+    }
+
     /**
      * Sets the current media to play.
      * You should usually use setCurrentPlaylist.
@@ -173,7 +199,7 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
             resetMediaPlayer();
             return false;
         }
-        mCurrentTrack = media;
+        mCurrentMedia = media;
         return true;
     }
 
@@ -219,7 +245,7 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
      * If there is no media to play, does nothing.
      */
     public void togglePlayPause() {
-        if (mCurrentTrack == null) {
+        if (mCurrentMedia == null) {
             if (!playNextMedia()) {
                 // No media to play - do nothing
                 Log.d(getClass().getName(), "No media to play");
@@ -272,8 +298,6 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
      */
     public boolean previous() {
         Log.d(getClass().getName(), "Playing previous media");
-        // First stop whatever we're doing
-        mMp.reset();
         // TODO(test) Test playing an empty playlist
         if (mPlaylist == null) {
             Log.d(getClass().getName(), "Can't previous - no playlist");
@@ -297,8 +321,10 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
             return previous();
         }
         else {
-            // Repeat is off - don't do anything
+            // Repeat is off - seek to start
             Log.d(getClass().getName(), "Can't previous - repeat is off");
+            seek(0);
+            mMp.start();
             return true;
         }
         if (!setCurrentMedia(next)) {
@@ -402,7 +428,7 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
     private void resetMediaPlayer() {
         Log.d(getClass().getName(), "Reseting media player");
         mMp.reset();
-        mCurrentTrack = null;
+        mCurrentMedia = null;
     }
 
     /* (non-Javadoc)

@@ -1,14 +1,19 @@
 package com.android.kino;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.kino.logic.KinoMediaPlayer;
 import com.android.kino.logic.KinoServiceConnection;
+import com.android.kino.logic.KinoUser;
 import com.android.kino.logic.ServiceUser;
 import com.android.kino.musiclibrary.Library;
 
@@ -21,6 +26,8 @@ public class Kino extends Application implements ServiceUser {
     private KinoServiceConnection mLibraryConn = new KinoServiceConnection(this);
     private KinoMediaPlayer mPlayer = null;
     private Library mLibrary = null;
+    private List<KinoUser> mUsers = new LinkedList<KinoUser>();
+    private boolean mIsInitialized = false;
     
     public static Kino getKino(Activity activity) {
         return (Kino)activity.getApplication();
@@ -91,6 +98,13 @@ public class Kino extends Application implements ServiceUser {
         }
         else if (binder instanceof Library.LibraryBinder){
         	mLibrary = ((Library.LibraryBinder) binder).getLibrary();
+        	Toast.makeText(this, "library up!", Toast.LENGTH_SHORT).show();
+        }
+        mIsInitialized = mPlayer != null && mLibrary != null;
+        if (mIsInitialized) {
+            for (KinoUser user : mUsers) {
+                user.onKinoInit(this);
+            }
         }
     }
     
@@ -99,6 +113,18 @@ public class Kino extends Application implements ServiceUser {
         Log.d(getClass().getName(), "Kino.onDestroy");
         doUnbindMediaPlayerService();
         super.onTerminate();
+    }
+
+    public void showNotification() {
+        Toast.makeText(this, "Showing notificaiton", Toast.LENGTH_SHORT).show();
+        ((MediaPlayerService.MPBinder)mMediaPlayerConn.getBinder()).showNotification();
+    }
+
+    public void registerUser(KinoUser user) {
+        if (mIsInitialized) {
+            user.onKinoInit(this);
+        }
+        mUsers.add(user);
     }
 
     /**

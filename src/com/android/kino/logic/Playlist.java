@@ -18,9 +18,10 @@ public class Playlist extends LinkedList<MediaProperties> implements Parcelable 
     }
 
     public Playlist(Parcel in) {
-        Parcelable[] items = in.readParcelableArray(null);
-        for (Parcelable item : items) {
-            add((MediaProperties)item);
+        MediaProperties[] array = new MediaProperties[in.readInt()];
+        in.readTypedArray(array, MediaProperties.CREATOR);
+        for (MediaProperties item : array) {
+            add(item);
         }
     }
 
@@ -31,8 +32,9 @@ public class Playlist extends LinkedList<MediaProperties> implements Parcelable 
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(size());
         MediaProperties[] array = new MediaProperties[size()];
-        dest.writeParcelableArray(toArray(array), flags);
+        dest.writeTypedArray(toArray(array), flags);
     }
 
     /**

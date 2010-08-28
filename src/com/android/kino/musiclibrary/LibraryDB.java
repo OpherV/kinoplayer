@@ -24,7 +24,7 @@ public class LibraryDB extends SQLiteOpenHelper {
             "[artist] teXT  NULL,"+
             "[albumTitle] TEXT  NULL,"+
             "[albumYear] INTEGER  NULL,"+
-            "[tracknumber] INTEGER  NULL,"+
+            "[trackNumber] INTEGER  NULL,"+
             "[genre] TEXT  NULL,"+
             "[duration] INTEGER  NULL,"+
             "[bitrate] INTEGER  NULL"+
@@ -66,7 +66,9 @@ public class LibraryDB extends SQLiteOpenHelper {
                                             new String[]{"filename"},
                                             "filename=\""+song.getAbsolutePath()+"\"",
                                             null, null, null, null);
-        return (cursor.getCount()>0);        
+        boolean inDB=cursor.getCount()>0;
+        cursor.close();
+        return (inDB);        
     }
     
     
@@ -118,21 +120,21 @@ public class LibraryDB extends SQLiteOpenHelper {
     	Playlist playlist = new Playlist();
     	while (!cursor.isAfterLast()){
     		playlist.add(songFromCursor(cursor));
-    		cursor.moveToNext();    													
+    		cursor.moveToNext();
     	}
     	
     	return playlist;
     }
-    private MediaProperties songFromCursor(Cursor cursor){
+    private MediaProperties songFromCursor(Cursor cursor){        
 		MediaProperties song = new MediaProperties(cursor.getString(cursor.getColumnIndex("filename")),
-								cursor.getString(cursor.getColumnIndex("title")), 
+								cursor.getString(cursor.getColumnIndex("title")),
 								cursor.getString(cursor.getColumnIndex("artist")), 
 								cursor.getString(cursor.getColumnIndex("albumTitle")), 
 								cursor.getInt(cursor.getColumnIndex("albumYear")), 
 								cursor.getInt(cursor.getColumnIndex("trackNumber")), 
 								cursor.getString(cursor.getColumnIndex("genre")),
 								cursor.getInt(cursor.getColumnIndex("duration")), 
-								cursor.getInt(cursor.getColumnIndex("bitrate")) );
+								cursor.getInt(cursor.getColumnIndex("bitrate")) );		
 		return song;
     }
     
@@ -141,8 +143,12 @@ public class LibraryDB extends SQLiteOpenHelper {
                 null,
                 null,
                 null, null, null, null);
+    	cursor.moveToFirst();
     	
     	Playlist playlist = playlistFromCursor(cursor);
+    	
+    	cursor.close();
+    	
     	return playlist;
     }
 

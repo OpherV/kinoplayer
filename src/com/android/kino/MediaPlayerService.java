@@ -37,9 +37,6 @@ public class MediaPlayerService extends Service{
         }
         
         mNotificationMngr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-
-        // Display a notification about us starting. We put an icon in the status bar.
-        showNotification();               
     }
 
     /* (non-Javadoc)
@@ -89,32 +86,6 @@ public class MediaPlayerService extends Service{
         Log.d(getClass().getName(), "MediaPlayerService.onUnbind");
         return super.onUnbind(intent);
     }
-
-    
-    /**
-     * Show a notification while this service is running.
-     */
-    private void showNotification() {
-        CharSequence tickerText = getText(R.string.mp_service_started);
-
-        // Set the icon, scrolling text and timestamp
-        Notification notification = new Notification(R.drawable.icon, tickerText,
-                System.currentTimeMillis());
-
-        // The PendingIntent to launch our activity if the user selects this notification
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MenuMain.class), 0);
-        
-        CharSequence notificationText = getText(R.string.mp_service_notification);
-
-        // Set the info for the views that show in the notification panel.
-        notification.setLatestEventInfo(this, getText(R.string.mp_service_label),
-                notificationText, contentIntent);
-
-        // Send the notification.
-        // We use a layout id because it is a unique number.  We use it later to cancel.
-        mNotificationMngr.notify(R.string.mp_service_notification, notification);
-    }
     
     
     /**
@@ -125,6 +96,32 @@ public class MediaPlayerService extends Service{
     public class MPBinder extends Binder {
         public KinoMediaPlayer getPlayer() {
             return mMediaPlayer;
+        }
+
+        
+        /**
+         * Show a notification while this service is running.
+         */
+        public void showNotification() {
+            CharSequence tickerText = getText(R.string.mp_service_started);
+
+            // Set the icon, scrolling text and timestamp
+            Notification notification = new Notification(R.drawable.icon, tickerText,
+                    System.currentTimeMillis());
+
+            // The PendingIntent to launch our activity if the user selects this notification
+            PendingIntent contentIntent = PendingIntent.getActivity(MediaPlayerService.this, 0,
+                    new Intent(MediaPlayerService.this, MenuMain.class), 0);
+            
+            CharSequence notificationText = getText(R.string.mp_service_notification);
+
+            // Set the info for the views that show in the notification panel.
+            notification.setLatestEventInfo(MediaPlayerService.this, getText(R.string.mp_service_label),
+                    notificationText, contentIntent);
+
+            // Send the notification.
+            // We use a layout id because it is a unique number.  We use it later to cancel.
+            mNotificationMngr.notify(R.string.mp_service_notification, notification);
         }
     }
 

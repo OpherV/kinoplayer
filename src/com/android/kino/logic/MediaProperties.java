@@ -146,6 +146,11 @@ public class MediaProperties implements Comparable<MediaProperties>, Parcelable 
         return result;
     }
     
+    @Override
+    public String toString() {
+        return Artist + " - " + Title;
+    }
+    
     public class AlbumProperties implements Comparable<AlbumProperties> {
         public String Title = null;
         public int Year = 0;
