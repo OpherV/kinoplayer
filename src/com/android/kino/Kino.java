@@ -11,7 +11,7 @@ import com.android.kino.logic.KinoMediaPlayer;
 import com.android.kino.logic.KinoServiceConnection;
 import com.android.kino.logic.ServiceUser;
 import com.android.kino.musiclibrary.Library;
-import com.android.kino.musiclibrary.LibraryConnector;
+import com.android.kino.musiclibrary.Library.LibraryBinder;
 import com.android.kino.ui.MenuMain;
 
 /**
@@ -20,6 +20,7 @@ import com.android.kino.ui.MenuMain;
 public class Kino extends Activity implements ServiceUser {
 
     private KinoServiceConnection mMediaPlayerConn = new KinoServiceConnection(this);
+    private KinoServiceConnection mLibraryConn = new KinoServiceConnection(this);
     private KinoMediaPlayer mPlayer = null;
     private Library library = null;
 
@@ -64,8 +65,8 @@ public class Kino extends Activity implements ServiceUser {
         }
         
         //bind the library service
-        boolean libraryBound = bindService(new Intent(this, Library.class), new LibraryConnector(this) , Context.BIND_AUTO_CREATE);
-        Log.d(this.getClass().toString(), "libraryBound: "+libraryBound);
+        boolean libraryBound = bindService(new Intent(this, Library.class), mLibraryConn , Context.BIND_AUTO_CREATE);
+        Log.d(this.getClass().toString(), "libraryBound from Kino: "+libraryBound);
         
         
         //start the UI thread
@@ -87,12 +88,12 @@ public class Kino extends Activity implements ServiceUser {
         }
         
         //switch between the different services
-        if (binder.getClass()==MediaPlayerService.class)
+        if (binder instanceof MediaPlayerService.MPBinder)
         {
         	mPlayer = ((MediaPlayerService.MPBinder) binder).getPlayer();
         }
-        else if (binder.getClass()==Library.class){
-        	library = (Library) binder;
+        else if (binder instanceof Library.LibraryBinder){
+        	library = ((Library.LibraryBinder) binder).getLibrary();
         }
     }
     

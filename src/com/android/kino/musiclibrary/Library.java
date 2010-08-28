@@ -2,14 +2,17 @@ package com.android.kino.musiclibrary;
 
 import java.io.File;
 
+
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
 
 import com.android.kino.Kino;
 import com.android.kino.logic.MediaProperties;
+import com.android.kino.logic.Playlist;
 import com.android.kino.logic.settings.SettingsContainer;
 import com.android.kino.logic.settings.SettingsLoader;
 import com.android.kino.logic.settings.SettingsContainer.Setting;
@@ -17,12 +20,13 @@ import com.android.kino.logic.settings.SettingsContainer.Setting;
 public class Library extends Service{
 	Kino kino = null;
 	LibraryDB db = null;
+	IBinder libraryBinder=new LibraryBinder();
 	
 	final String DBNAME ="MusicLibrary";
 	
 	@Override
 	public IBinder onBind(Intent intent) {						
-		
+				
 		Log.d("Library","Please 2");
 		
 		//make sure sd card is mounted 
@@ -42,7 +46,7 @@ public class Library extends Service{
 			scanDir(mp3dir, true);			
 		}
 		
-		return null;
+		return libraryBinder;
 	}
 	
 	
@@ -106,5 +110,16 @@ public class Library extends Service{
 	private void updateLibray(){		
 		//TODO 	
 	}	
+	
+	public Playlist getAllSongs(){
+		Playlist playlist = db.fetchAllSongs();
+		return playlist;
+	}
+	
+	public class LibraryBinder extends Binder{
+		public Library getLibrary(){
+			return Library.this;
+		}
+	}
 
 }

@@ -2,6 +2,9 @@ package com.android.kino.musiclibrary;
 
 import java.io.File;
 
+import com.android.kino.logic.MediaProperties;
+import com.android.kino.logic.Playlist;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -63,9 +66,7 @@ public class LibraryDB extends SQLiteOpenHelper {
                                             new String[]{"filename"},
                                             "filename=\""+song.getAbsolutePath()+"\"",
                                             null, null, null, null);
-        boolean result = cursor.getCount() > 0;
-        cursor.close();
-        return result;
+        return (cursor.getCount()>0);        
     }
     
     
@@ -80,7 +81,7 @@ public class LibraryDB extends SQLiteOpenHelper {
                            int duration,
                            int bitrate) {
         
-        ContentValues songTableValues = createSongTableValues(
+        ContentValues songTableValues=createSongTableValues(
                 filename,                
                 title,
                 artist,
@@ -111,6 +112,38 @@ public class LibraryDB extends SQLiteOpenHelper {
         contentValues.put("bitrate",bitrate);        
         
         return contentValues;
+    }
+    
+    private Playlist playlistFromCursor(Cursor cursor){
+    	Playlist playlist = new Playlist();
+    	while (!cursor.isAfterLast()){
+    		playlist.add(songFromCursor(cursor));
+    		cursor.moveToNext();    													
+    	}
+    	
+    	return playlist;
+    }
+    private MediaProperties songFromCursor(Cursor cursor){
+		MediaProperties song = new MediaProperties(cursor.getString(cursor.getColumnIndex("filename")),
+								cursor.getString(cursor.getColumnIndex("title")), 
+								cursor.getString(cursor.getColumnIndex("artist")), 
+								cursor.getString(cursor.getColumnIndex("albumTitle")), 
+								cursor.getInt(cursor.getColumnIndex("albumYear")), 
+								cursor.getInt(cursor.getColumnIndex("trackNumber")), 
+								cursor.getString(cursor.getColumnIndex("genre")),
+								cursor.getInt(cursor.getColumnIndex("duration")), 
+								cursor.getInt(cursor.getColumnIndex("bitrate")) );
+		return song;
+    }
+    
+    public Playlist fetchAllSongs(){
+    	Cursor cursor = MusicLibraryDB.query(SONG_TABLE,
+                null,
+                null,
+                null, null, null, null);
+    	
+    	Playlist playlist = playlistFromCursor(cursor);
+    	return playlist;
     }
 
 }
