@@ -1,27 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.android.kino"
-      android:versionCode="1"
-      android:versionName="1.0">
-    <uses-sdk android:minSdkVersion="8" />
-    <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="true">
-        <activity android:name=".Kino"
-        		  android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-                  android:label="@string/app_name">
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.android.kino"
+    android:versionCode="1"
+    android:versionName="1.0">
+    <uses-sdk
+        android:minSdkVersion="8" />
+    <application
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:debuggable="true"
+        android:name="Kino">
+        <activity
+            android:name=".ui.MenuMain"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>            
+                <action
+                    android:name="android.intent.action.MAIN" />
+                <category
+                    android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-        
-        <service android:name=".MediaPlayerService"/>
-        <service android:name=".InputEventTranslatorService"/>
 
-    <activity android:name=".ui.MenuMain"
-    		  android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
-<activity android:name=".ui.PlayerMain" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
-<service android:name=".musiclibrary.Library"></service>
-</application>
+        <service
+            android:name=".MediaPlayerService" />
+        <service
+            android:name=".InputEventTranslatorService" />
+        <service
+            android:name=".musiclibrary.Library"></service>
+
+        <activity
+            android:name=".ui.PlayerMain"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
+    </application>
 
 
 

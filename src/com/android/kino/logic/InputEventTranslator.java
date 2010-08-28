@@ -1,7 +1,6 @@
 package com.android.kino.logic;
 
 import com.android.kino.logic.action.KinoAction;
-import com.android.kino.logic.settings.SettingsContainer;
 import com.android.kino.logic.settings.SettingsLoader;
 
 /**
@@ -10,15 +9,9 @@ import com.android.kino.logic.settings.SettingsLoader;
  */
 public class InputEventTranslator {
     private KinoMediaPlayer mPlayer;
-    private SettingsContainer mSettings;
     
     public InputEventTranslator(KinoMediaPlayer player) {
         mPlayer = player;
-        mSettings = SettingsLoader.loadDefaultSettings();
-    }
-    
-    public void setSettings(SettingsContainer settings) {
-        mSettings = settings;
     }
     
     /**
@@ -28,7 +21,7 @@ public class InputEventTranslator {
      * @param eventId The event to handle.
      */
     public void handleInput(int eventId) {
-        KinoAction action = mSettings.getConfiguredAction(eventId);
+        KinoAction action = SettingsLoader.loadCurrentSettings().getConfiguredAction(eventId);
         
         if (action != null) {
             action.performAction(mPlayer);

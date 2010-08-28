@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.android.kino.logic.KinoMediaPlayer;
+import com.android.kino.ui.MenuMain;
 
 /**
  * This service is only used to contain the KinoMediaPlayer running in the
@@ -102,7 +103,7 @@ public class MediaPlayerService extends Service{
 
         // The PendingIntent to launch our activity if the user selects this notification
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, Kino.class), 0);
+                new Intent(this, MenuMain.class), 0);
         
         CharSequence notificationText = getText(R.string.mp_service_notification);
 
