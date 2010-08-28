@@ -66,9 +66,20 @@ public class MediaProperties implements Comparable<MediaProperties> {
         Album.Title = mp3data.getAlbum();
         Artist = mp3data.getArtist();
         Title = mp3data.getSongTitle();
-        TrackNumber = mp3data.getTrackNumber().intValue();
+        Number trackNum = mp3data.getTrackNumber();
+        if (trackNum != null) {
+            TrackNumber = trackNum.intValue();
+        }
+        else {
+            TrackNumber = 0;
+        }
         Genre = mp3data.getGenre();
-        Duration = ConvertUtils.tryParse(mp3data.getDurationSeconds());
+        try {
+            Duration = ConvertUtils.tryParse(mp3data.getDurationSeconds());
+        }
+        catch (Exception e) {
+            Duration = 0;
+        }
         BitRate = 0;
     }
 

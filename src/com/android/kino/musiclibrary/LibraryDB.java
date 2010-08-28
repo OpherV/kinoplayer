@@ -63,7 +63,9 @@ public class LibraryDB extends SQLiteOpenHelper {
                                             new String[]{"filename"},
                                             "filename=\""+song.getAbsolutePath()+"\"",
                                             null, null, null, null);
-        return (cursor.getCount()>0);        
+        boolean result = cursor.getCount() > 0;
+        cursor.close();
+        return result;
     }
     
     
@@ -78,7 +80,7 @@ public class LibraryDB extends SQLiteOpenHelper {
                            int duration,
                            int bitrate) {
         
-        ContentValues songTableValues=createSongTableValues(
+        ContentValues songTableValues = createSongTableValues(
                 filename,                
                 title,
                 artist,
