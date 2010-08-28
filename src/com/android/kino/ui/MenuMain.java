@@ -1,5 +1,9 @@
 package com.android.kino.ui;
 
+import com.android.kino.Kino;
+import com.android.kino.logic.Playlist;
+import com.android.kino.musiclibrary.Library;
+
 import android.R;
 import android.app.ListActivity;
 import android.content.Intent;
@@ -15,10 +19,16 @@ public class MenuMain extends ListActivity {
 
 	static final String[] MENU_ITMES = new String[] { "All Songs", "Music Library",
 			"Settings" };
+	
+	private Kino kino;
+	private Library library;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		kino = Kino.getKino(MenuMain.this);
+		library = kino.getLibrary();
 
 		setListAdapter(new ArrayAdapter<String>(this,
 				R.layout.simple_list_item_1, MENU_ITMES));
@@ -36,8 +46,9 @@ public class MenuMain extends ListActivity {
 				CharSequence menuText=((TextView) view).getText();
 				if  (menuText=="All Songs"){			
 						Intent playlistIntent=new Intent(parent.getContext(),MenuPlaylist.class);
+						Playlist pAllsongs = library.getAllSongs();
 						//TODO fetch the allsongs playlist from the library and pass it
-						//playlistIntent.putExtra("playlist",
+						//playlistIntent.putExtra("playlist",						
 			    		startActivity(playlistIntent);			    		
 			    }
 				
