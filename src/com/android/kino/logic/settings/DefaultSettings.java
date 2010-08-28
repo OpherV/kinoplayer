@@ -17,6 +17,7 @@ import com.android.kino.logic.action.KinoAction;
 public class DefaultSettings implements SettingsContainer {
     
     private Map<Integer, Integer> mSettings;
+    private Map<Setting, String> mStringSettings;
     
     public DefaultSettings() {
         this(null);
@@ -31,11 +32,22 @@ public class DefaultSettings implements SettingsContainer {
                 setConfiguredAction(entry.getKey(), entry.getValue());
             }
         }
+        mStringSettings = new HashMap<Setting, String>();
     }
 
     @Override
     public String getName() {
         return "Default";
+    }
+
+    @Override
+    public String getConfiguredString(Setting setting) {
+        return mStringSettings.get(setting);
+    }
+
+    @Override
+    public void setConfiguredString(Setting setting, String value) {
+        mStringSettings.put(setting, value);
     }
 
     @Override
@@ -56,6 +68,11 @@ public class DefaultSettings implements SettingsContainer {
     @Override
     public boolean isConfigured(int eventId) {
         return mSettings.containsKey(eventId);
+    }
+
+    @Override
+    public boolean isConfigured(Setting setting) {
+        return mStringSettings.containsKey(setting);
     }
 
 }

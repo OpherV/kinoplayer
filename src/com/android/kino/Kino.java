@@ -102,8 +102,8 @@ public class Kino extends Activity implements ServiceUser {
     @Override
     protected void onDestroy() {
         Log.d(getClass().getName(), "Kino.onDestroy");
-        super.onDestroy();
         doUnbindMediaPlayerService();
+        super.onDestroy();
     }
 
     /*

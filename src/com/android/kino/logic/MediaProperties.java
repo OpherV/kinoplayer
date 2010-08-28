@@ -1,7 +1,13 @@
 package com.android.kino.logic;
 
-import org.farng.mp3.MP3File;
-import org.farng.mp3.id3.AbstractID3v2;
+import java.io.File;
+import java.io.IOException;
+
+import org.cmc.music.metadata.IMusicMetadata;
+import org.cmc.music.metadata.MusicMetadataSet;
+import org.cmc.music.myid3.MyID3;
+
+import android.util.Log;
 
 import com.android.kino.utils.CompareUtils;
 import com.android.kino.utils.ConvertUtils;
@@ -10,6 +16,7 @@ public class MediaProperties implements Comparable<MediaProperties> {
 
     public String Filename = null;
     public AlbumProperties Album = new AlbumProperties();
+    public String Artist = null;
     public String Title = null;
     public int TrackNumber = 0;
     public String Genre = null;
@@ -21,7 +28,7 @@ public class MediaProperties implements Comparable<MediaProperties> {
     }
     
     public MediaProperties(String filename,
-							String title,
+						   String title,
 						   String artist,    					   
 						   String albumTitle,
 						   int albumYear,
@@ -32,7 +39,7 @@ public class MediaProperties implements Comparable<MediaProperties> {
     	Filename = filename;        
         Album.Year = albumYear;
         Album.Title = albumTitle;
-        Album.Artist = artist;       
+        Artist = artist;       
         Title = title;
         TrackNumber = trackNumber;
         Genre = genre;
@@ -46,45 +53,32 @@ public class MediaProperties implements Comparable<MediaProperties> {
         Filename = filename;
         
         // Read ID3 tags and fill parameters
+        MusicMetadataSet mp3set;
         try {
-            MP3File mp3file = new MP3File(Filename);
-            AbstractID3v2 idv2 = mp3file.getID3v2Tag();
-            Album.Year = ConvertUtils.tryParse(idv2.getYearReleased());
-            Album.Title = idv2.getAlbumTitle();
-            Album.Artist = idv2.getLeadArtist();
-            if (CompareUtils.isNullOrEmpty(Album.Title)) {
-                Album.Artist = idv2.getAuthorComposer();
-            }
-            Title = idv2.getSongTitle();
-            TrackNumber = ConvertUtils.tryParse(idv2.getTrackNumberOnAlbum());
-            Genre = idv2.getSongGenre();
-            Duration = idv2.getSize();
-            BitRate = mp3file.getBitRate();
-            // TODO: Read missing tags from ID3v1
-            // TODO: If artist and title not found in tags, take it from the
-            //       mp3file object (it has methods for it)
+            mp3set = new MyID3().read(new File(Filename));
         }
-        catch (Exception e) {
-            // Can't read file tags, try to take the artist name and track
-            //  title out of the filename
-            String[] parts = Filename.split("-");
-            if (parts.length == 1) {
-                Title = parts[0];
-            }
-            else {
-                Album.Artist = parts[0].trim();
-                Title = parts[1];
-                for (int i = 2; i < parts.length; ++i) {
-                    Title += parts[i];
-                }
-                Title = Title.trim();
-            }
+        catch (IOException e) {
+            Log.e(getClass().getName(), "Failed to read file " + Filename, e);
+            return;
         }
+        IMusicMetadata mp3data = mp3set.getSimplified();
+        Album.Year = ConvertUtils.tryParse(mp3data.getYear());
+        Album.Title = mp3data.getAlbum();
+        Artist = mp3data.getArtist();
+        Title = mp3data.getSongTitle();
+        TrackNumber = mp3data.getTrackNumber().intValue();
+        Genre = mp3data.getGenre();
+        Duration = ConvertUtils.tryParse(mp3data.getDurationSeconds());
+        BitRate = 0;
     }
 
     @Override
     public int compareTo(MediaProperties another) {
         int result = Album.compareTo(another.Album);
+        if (result != 0) {
+            return result;
+        }
+        result = CompareUtils.compareWithNulls(Artist, another.Artist);
         if (result != 0) {
             return result;
         }
@@ -112,17 +106,12 @@ public class MediaProperties implements Comparable<MediaProperties> {
     }
     
     public class AlbumProperties implements Comparable<AlbumProperties> {
-        public String Artist = null;
         public String Title = null;
         public int Year = 0;
         
         @Override
         public int compareTo(AlbumProperties another) {
-            int result = CompareUtils.compareWithNulls(Artist, another.Artist);
-            if (result != 0) {
-                return result;
-            }
-            result = CompareUtils.compareWithNulls(Title, another.Title);
+            int result = CompareUtils.compareWithNulls(Title, another.Title);
             if (result != 0) {
                 return result;
             }

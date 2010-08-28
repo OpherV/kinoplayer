@@ -31,6 +31,14 @@ public class SettingsProfile extends DefaultSettings {
     }
 
     @Override
+    public String getConfiguredString(Setting setting) {
+        if (super.isConfigured(setting)) {
+            return super.getConfiguredString(setting);
+        }
+        return mDefaults.getConfiguredString(setting);
+    }
+
+    @Override
     public KinoAction getConfiguredAction(int eventId) {
         if (super.isConfigured(eventId)) {
             return super.getConfiguredAction(eventId);

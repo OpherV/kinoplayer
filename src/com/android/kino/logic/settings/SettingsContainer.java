@@ -5,8 +5,24 @@ import java.util.Collection;
 import com.android.kino.logic.action.KinoAction;
 
 public interface SettingsContainer {
+    
+    public enum Setting {
+        MEDIA_DIRECTORY
+    };
 
     public String getName();
+    
+    /**
+     * Get a string assigned to a setting. For example, the path of the media
+     * directory.
+     */
+    public String getConfiguredString(Setting setting);
+    
+    /**
+     * Assign a string to a setting. For example, the path of the media
+     * directory.
+     */
+    public void setConfiguredString(Setting setting, String value);
 
     public KinoAction getConfiguredAction(int eventId);
 
@@ -19,5 +35,7 @@ public interface SettingsContainer {
     public Collection<Integer> getConfiguredEvents();
     
     public boolean isConfigured(int eventId);
+    
+    public boolean isConfigured(Setting setting);
     
 }

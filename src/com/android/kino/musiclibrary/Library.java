@@ -1,12 +1,6 @@
 package com.android.kino.musiclibrary;
 
 import java.io.File;
-import java.io.IOException;
-
-import org.cmc.music.metadata.IMusicMetadata;
-import org.cmc.music.metadata.MusicMetadataSet;
-import org.cmc.music.myid3.MyID3;
-import com.android.kino.logic.MediaProperties;
 
 import android.app.Service;
 import android.content.Intent;
@@ -15,6 +9,10 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.android.kino.Kino;
+import com.android.kino.logic.MediaProperties;
+import com.android.kino.logic.settings.SettingsContainer;
+import com.android.kino.logic.settings.SettingsLoader;
+import com.android.kino.logic.settings.SettingsContainer.Setting;
 
 public class Library extends Service{
 	Kino kino = null;
@@ -38,7 +36,9 @@ public class Library extends Service{
 			
 			//TODO use kino preferences defined mp3 dir
 			File rootDir = Environment.getExternalStorageDirectory();
-			File mp3dir = new File(rootDir.getAbsoluteFile()+"/mp3");
+			SettingsContainer settings = SettingsLoader.loadCurrentSettings();
+			String mediaPath = settings.getConfiguredString(Setting.MEDIA_DIRECTORY);
+			File mp3dir = new File(rootDir, mediaPath);
 			scanDir(mp3dir, true);			
 		}
 		
@@ -81,7 +81,7 @@ public class Library extends Service{
 		
 		db.addSong(mp3file.Filename,				
 				mp3file.Title,
-				mp3file.Album.Artist,
+				mp3file.Artist,
 				mp3file.Album.Title,
 				mp3file.Album.Year,
 				mp3file.TrackNumber,
