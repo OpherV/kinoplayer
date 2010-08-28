@@ -6,9 +6,34 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
-public class Playlist extends LinkedList<MediaProperties> {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Playlist extends LinkedList<MediaProperties> implements Parcelable {
 
     private static final long serialVersionUID = 1L;
+    
+    public Playlist() {
+        // Empty on purpose
+    }
+
+    public Playlist(Parcel in) {
+        Parcelable[] items = in.readParcelableArray(null);
+        for (Parcelable item : items) {
+            add((MediaProperties)item);
+        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        MediaProperties[] array = new MediaProperties[size()];
+        dest.writeParcelableArray(toArray(array), flags);
+    }
 
     /**
      * Shuffle the list in place.
@@ -131,5 +156,15 @@ public class Playlist extends LinkedList<MediaProperties> {
             throw new UnsupportedOperationException();
         }
     }
+
+    public static final Parcelable.Creator<Playlist> CREATOR = new Parcelable.Creator<Playlist>() {
+        public Playlist createFromParcel(Parcel in) {
+            return new Playlist(in);
+        }
+
+        public Playlist[] newArray(int size) {
+            return new Playlist[size];
+        }
+    };
 
 }

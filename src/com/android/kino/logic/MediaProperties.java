@@ -7,17 +7,19 @@ import org.cmc.music.metadata.IMusicMetadata;
 import org.cmc.music.metadata.MusicMetadataSet;
 import org.cmc.music.myid3.MyID3;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import com.android.kino.utils.CompareUtils;
 import com.android.kino.utils.ConvertUtils;
 
-public class MediaProperties implements Comparable<MediaProperties> {
+public class MediaProperties implements Comparable<MediaProperties>, Parcelable {
 
     public String Filename = null;
-    public AlbumProperties Album = new AlbumProperties();
-    public String Artist = null;
     public String Title = null;
+    public String Artist = null;
+    public AlbumProperties Album = new AlbumProperties();
     public int TrackNumber = 0;
     public String Genre = null;
     public int Duration = 0;
@@ -27,29 +29,7 @@ public class MediaProperties implements Comparable<MediaProperties> {
         // Empty on purpose
     }
     
-    public MediaProperties(String filename,
-						   String title,
-						   String artist,    					   
-						   String albumTitle,
-						   int albumYear,
-						   int trackNumber,
-						   String genre,
-						   int duration,
-						   int bitrate) {
-    	Filename = filename;        
-        Album.Year = albumYear;
-        Album.Title = albumTitle;
-        Artist = artist;       
-        Title = title;
-        TrackNumber = trackNumber;
-        Genre = genre;
-        Duration = duration;
-        BitRate = bitrate;
-
-    }
-    
     public MediaProperties(String filename) {
-        // TODO Untested
         Filename = filename;
         
         // Read ID3 tags and fill parameters
@@ -62,10 +42,10 @@ public class MediaProperties implements Comparable<MediaProperties> {
             return;
         }
         IMusicMetadata mp3data = mp3set.getSimplified();
-        Album.Year = ConvertUtils.tryParse(mp3data.getYear());
-        Album.Title = mp3data.getAlbum();
-        Artist = mp3data.getArtist();
         Title = mp3data.getSongTitle();
+        Artist = mp3data.getArtist();
+        Album.Title = mp3data.getAlbum();
+        Album.Year = ConvertUtils.tryParse(mp3data.getYear());
         Number trackNum = mp3data.getTrackNumber();
         if (trackNum != null) {
             TrackNumber = trackNum.intValue();
@@ -83,6 +63,56 @@ public class MediaProperties implements Comparable<MediaProperties> {
         BitRate = 0;
     }
 
+    public MediaProperties(String filename,
+                           String title,
+                           String artist,                           
+                           String albumTitle,
+                           int albumYear,
+                           int trackNumber,
+                           String genre,
+                           int duration,
+                           int bitrate) {
+        Filename = filename;
+        Title = title;        
+        Artist = artist;
+        Album.Title = albumTitle;
+        Album.Year = albumYear;
+        TrackNumber = trackNumber;
+        Genre = genre;
+        Duration = duration;
+        BitRate = bitrate;
+    }
+
+    public MediaProperties(Parcel in) {
+        Filename = in.readString();
+        Title = in.readString();        
+        Artist = in.readString();
+        Album.Title = in.readString();
+        Album.Year = in.readInt();
+        TrackNumber = in.readInt();
+        Genre = in.readString();
+        Duration = in.readInt();
+        BitRate = in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(Filename);
+        dest.writeString(Title);
+        dest.writeString(Artist);
+        dest.writeString(Album.Title);
+        dest.writeInt(Album.Year);
+        dest.writeInt(TrackNumber);
+        dest.writeString(Genre);
+        dest.writeInt(Duration);
+        dest.writeInt(BitRate);
+    }
+    
     @Override
     public int compareTo(MediaProperties another) {
         int result = Album.compareTo(another.Album);
@@ -129,4 +159,14 @@ public class MediaProperties implements Comparable<MediaProperties> {
             return Year - another.Year;
         }
     }
+    
+    public static final Parcelable.Creator<MediaProperties> CREATOR = new Parcelable.Creator<MediaProperties>() {
+        public MediaProperties createFromParcel(Parcel in) {
+            return new MediaProperties(in);
+        }
+
+        public MediaProperties[] newArray(int size) {
+            return new MediaProperties[size];
+        }
+    };
 }
