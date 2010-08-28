@@ -20,6 +20,27 @@ public class MediaProperties implements Comparable<MediaProperties> {
         // Empty on purpose
     }
     
+    public MediaProperties(String filename,
+							String title,
+						   String artist,    					   
+						   String albumTitle,
+						   int albumYear,
+						   int trackNumber,
+						   String genre,
+						   int duration,
+						   int bitrate) {
+    	Filename = filename;        
+        Album.Year = albumYear;
+        Album.Title = albumTitle;
+        Album.Artist = artist;       
+        Title = title;
+        TrackNumber = trackNumber;
+        Genre = genre;
+        Duration = duration;
+        BitRate = bitrate;
+
+    }
+    
     public MediaProperties(String filename) {
         // TODO Untested
         Filename = filename;
