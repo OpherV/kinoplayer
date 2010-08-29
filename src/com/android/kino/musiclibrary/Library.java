@@ -39,12 +39,13 @@ public class Library extends Service{
 			
 			
 			//TODO use kino preferences defined mp3 dir
+			/*
 			File rootDir = Environment.getExternalStorageDirectory();
 			SettingsContainer settings = SettingsLoader.loadCurrentSettings();
 			String mediaPath = settings.getConfiguredString(Setting.MEDIA_DIRECTORY);
 			File mp3dir = new File(rootDir, mediaPath);
-						
-			scanDir(mp3dir, true);			
+			scanDir(mp3dir, true);
+			*/			
 		}
 		
 		return libraryBinder;

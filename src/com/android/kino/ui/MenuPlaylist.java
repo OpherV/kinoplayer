@@ -1,36 +1,24 @@
 package com.android.kino.ui;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.android.kino.Kino;
 import com.android.kino.R;
-import com.android.kino.logic.KinoMediaPlayer;
-import com.android.kino.logic.KinoUser;
 import com.android.kino.logic.MediaProperties;
 import com.android.kino.logic.Playlist;
 
-public class MenuPlaylist extends Activity implements KinoUser,OnItemClickListener{
+public class MenuPlaylist extends KinoUI implements OnItemClickListener{
     
-    private Kino kino=null;
-    private KinoMediaPlayer mPlayer = null;
     private ArrayAdapter<MediaProperties> playlistAdapter=null;
     Playlist playlist=null;
     
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
-		kino=Kino.getKino(this);
-		kino.registerUser(this);
-		
-		
+	protected void initUI() {
+
 		setContentView(R.layout.menu_playlist);		
 		playlist=getIntent().getExtras().getParcelable("playlist");
 		
@@ -42,11 +30,6 @@ public class MenuPlaylist extends Activity implements KinoUser,OnItemClickListen
 		playlistView.setOnItemClickListener(this);
 		
 	}
-
-    @Override
-    public void onKinoInit(Kino kino) {
-        mPlayer=kino.getPlayer();    
-    }      
     
     @Override
     public void onItemClick(AdapterView<?> parent, View view,

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/player_container"
+    >
+    
+     <LinearLayout
+     	android:id="@+id/miniplayer_songDetails"     	
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"        
+        android:padding="2dp"    
+         >
+        
+	    <TextView android:id="@+id/miniplayer_title"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:textStyle="bold"
+             android:textColor="#ffffff" 
+             android:text="Track Title"
+             android:textSize="12dp"
+             />
+             
+	    <TextView android:id="@+id/miniplayer_artist"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:textColor="#ffffff"
+			 android:text="Artist"
+             android:textSize="12dp"
+             />
+             
+	    <TextView android:id="@+id/miniplayer_album"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:textColor="#ffffff"
+			 android:text="Album"
+             android:textSize="12dp"
+             />
+	    
+
+    </LinearLayout>
+    
+     
+    
+   	<ProgressBar android:id="@+id/miniplayer_progress"
+				android:layout_width="fill_parent"
+				android:layout_height="5dp"	
+				style="?android:attr/progressBarStyleHorizontal"						
+				android:layout_gravity="center_vertical"	
+				android:layout_below="@id/miniplayer_songDetails"					
+	 />		    
+	 
+	 
+    <TextView android:id="@+id/miniplayer_timeElapsed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="11dp"        
+        android:layout_weight="1"
+        android:layout_above="@id/miniplayer_progress"        
+        android:layout_centerHorizontal="true"
+        android:text="00:00"		
+                
+     />
+     
+ 
+    
+    
+    
+    
+</RelativeLayout>

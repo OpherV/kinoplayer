@@ -1,8 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:orientation="vertical"
+>
+
+	<com.android.kino.ui.PlayerMini 
+    android:id="@+id/player_mini"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:visibility="gone"   
+     />	
+
+
+
+
+	<ListView
+	   android:id="@+id/mainmenu_list"
+	   android:layout_width="fill_parent"
+	   android:layout_height="wrap_content"	   
+	   android:layout_weight="1"
+	   />
+
+
+    <LinearLayout    	    
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="0"
     >
+	   			<Button android:id="@+id/mainmenu_btn_allsongs" 
+	   			android:text="All Songs"
+	   			android:layout_height="wrap_content"
+	   			android:layout_width="wrap_content"
+	   			 />
+	   			 <Button android:id="@+id/mainmenu_btn_artists" 
+	   			android:text="Artists"
+	   			android:layout_height="wrap_content"
+	   			android:layout_width="wrap_content"
+	   			 />    	
+				<Button android:id="@+id/mainmenu_btn_albums" 
+	   			android:text="Albums"
+	   			android:layout_height="wrap_content"
+	   			android:layout_width="wrap_content"
+	   			 />    	
+    
+    </LinearLayout>
 
 </LinearLayout>

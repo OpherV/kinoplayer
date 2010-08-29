@@ -38,6 +38,9 @@ public class Kino extends Application implements ServiceUser {
     }
     
     public Library getLibrary() {
+    	if (mLibrary==null){
+    		Log.e("KINO","WARNING! Trying to fetch library when Kino is not up!");
+    	}
         return mLibrary;
     }
 

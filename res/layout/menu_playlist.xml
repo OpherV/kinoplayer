@@ -4,6 +4,14 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
+    
+    <com.android.kino.ui.PlayerMini 
+    android:id="@+id/player_mini"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:visibility="gone"
+     
+     />	
 
 	<ListView
     android:id="@+id/playlist"
