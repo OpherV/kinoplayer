@@ -11,12 +11,11 @@
     android:layout_height="wrap_content"
     android:visibility="gone"
      
-     />
-     
-	 <RelativeLayout  		
-	 		android:id="@+id/menu_playlist_albumDetails"
+     />	
+
+	<RelativeLayout 	 		
 			android:layout_width="fill_parent"
-			 android:layout_height="?android:attr/listPreferredItemHeight" 			 
+			 android:layout_height="?android:attr/listPreferredItemHeight" 
 			 >
 		
 		<LinearLayout	android:id="@+id/albumItem_imageContainer" 
@@ -66,7 +65,7 @@
 	</RelativeLayout>
 
 	<ListView
-    android:id="@+id/playlist"
+    android:id="@+id/albumlist"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     />

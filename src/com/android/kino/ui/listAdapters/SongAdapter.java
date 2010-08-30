@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.android.kino.R;
 import com.android.kino.logic.MediaProperties;
+import com.android.kino.logic.Playlist;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,32 +16,39 @@ import android.widget.TextView;
 public class SongAdapter extends ArrayAdapter<MediaProperties> {
 
 	Context mContext=null;
-	List<MediaProperties> songs=null;
+	Playlist playlist=null;
 	
 	public SongAdapter(Context context, int textViewResourceId,
-			List<MediaProperties> objects) {
-		super(context, textViewResourceId, objects);
+			Playlist objects) {
+		super(context, textViewResourceId, (List<MediaProperties>) objects);
 		mContext=context;
-		songs=objects;
+		playlist=objects;
 	}	
 	
 	 @Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		  
-		MediaProperties songObj = songs.get(position);
+		MediaProperties songObj = playlist.get(position);
 		 
         View v=null;  
   		LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);              
         v = inflater.inflate(R.layout.item_song, null);
         
         TextView songTitle = (TextView)  v.findViewById(R.id.songItem_songTitle);
-        songTitle.setText(songObj.Title);
-        
-        TextView artist = (TextView)  v.findViewById(R.id.songItem_artistTitle);
-        artist.setText(songObj.Artist);
-        
+        songTitle.setText((position+1)+". "+songObj.Title);
+               
+        TextView artist = (TextView)  v.findViewById(R.id.songItem_artistTitle);                
         TextView albumTitle = (TextView)  v.findViewById(R.id.songItem_albumTitle);
-        albumTitle.setText(songObj.Album.Title);
+        
+        //differntiate between an album based list and a nonalbum based list
+        if (playlist.getAlbumTitle()==null){
+	        artist.setText(songObj.Artist);
+	        albumTitle.setText(songObj.Album.Title);
+        }
+        else{
+	        artist.setVisibility(View.GONE);
+	        albumTitle.setVisibility(View.GONE);
+        }
         
 		 
 		return v;

@@ -3,7 +3,9 @@ package com.android.kino.musiclibrary;
 import java.io.File;
 import java.util.LinkedList;
 
+import com.android.kino.logic.AlbumList;
 import com.android.kino.logic.AlbumProperties;
+import com.android.kino.logic.ArtistList;
 import com.android.kino.logic.ArtistProperties;
 import com.android.kino.logic.MediaProperties;
 import com.android.kino.logic.Playlist;
@@ -161,19 +163,23 @@ public class LibraryDB extends SQLiteOpenHelper {
                 null,
                 "artist=\""+artistTitle+"\" AND "+"albumTitle=\""+albumTitle+"\"",//where
                 null, null, null,
-                "trackNumber ASC");
+                "trackNumber DESC");
     	cursor.moveToFirst();
     	
-    	Playlist playlist = playlistFromCursor(cursor);
-    	
+    	Playlist playlist = playlistFromCursor(cursor);    	    
     	cursor.close();
+    	
+    	playlist.setAlbumTitle(albumTitle);
+    	playlist.setArtistTitle(artistTitle);
+    	//TODO ugly... find a better solution
+    	playlist.setAlbumYear(playlist.getFirst().Album.Year);
     	
     	return playlist;
     }
      
     
-    public LinkedList<ArtistProperties> fetchAllArtists(){
-    	LinkedList<ArtistProperties> artists=new LinkedList<ArtistProperties>();
+    public ArtistList fetchAllArtists(){
+    	ArtistList artists=new ArtistList();
     	String[] queryColumns = {"artist","COUNT(*) as totalSongs"};
     	
     	Cursor cursor = MusicLibraryDB.query(SONG_TABLE, //select
@@ -200,8 +206,8 @@ public class LibraryDB extends SQLiteOpenHelper {
     	return artists;
     }
     
-    public LinkedList<AlbumProperties> fetchAllAlbums(){
-    	LinkedList<AlbumProperties> albums=new LinkedList<AlbumProperties>();
+    public AlbumList fetchAllAlbums(){
+    	AlbumList albums=new AlbumList();
     	String[] queryColumns = {"albumTitle","artist","albumYear"};
     	
     	Cursor cursor = MusicLibraryDB.query(SONG_TABLE, //select
@@ -229,13 +235,13 @@ public class LibraryDB extends SQLiteOpenHelper {
     	return albums;
     }
     
-    public LinkedList<AlbumProperties> fetchArtistAlbums(String artistName){
-    	LinkedList<AlbumProperties> albums=new LinkedList<AlbumProperties>();
+    public AlbumList fetchArtistAlbums(String artistTitle){
+    	AlbumList albums=new AlbumList(artistTitle);
     	String[] queryColumns = {"albumTitle","artist","albumYear"};
     	
     	Cursor cursor = MusicLibraryDB.query(SONG_TABLE, //select
     			queryColumns, //from
-                "artist=\""+artistName+"\"", //where
+                "artist=\""+artistTitle+"\"", //where
                 null, //args?
                 "albumTitle", //groupby
                 null, //having

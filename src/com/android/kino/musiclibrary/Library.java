@@ -12,7 +12,9 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.android.kino.Kino;
+import com.android.kino.logic.AlbumList;
 import com.android.kino.logic.AlbumProperties;
+import com.android.kino.logic.ArtistList;
 import com.android.kino.logic.ArtistProperties;
 import com.android.kino.logic.MediaProperties;
 import com.android.kino.logic.Playlist;
@@ -121,23 +123,23 @@ public class Library extends Service{
 		return playlist;
 	}
 	
-	public Playlist getSongsByAlbum(String artistTitle, String albumTitle){
+	public Playlist getPlaylistByAlbum(String artistTitle, String albumTitle){
 		Playlist playlist = db.fetchSongsByAlbum(artistTitle, albumTitle);
 		return playlist;
 	}
 	
-	public LinkedList<ArtistProperties> getAllArtists(){
-		LinkedList<ArtistProperties> artists = db.fetchAllArtists();
+	public ArtistList getAllArtists(){
+		ArtistList artists = db.fetchAllArtists();
 		return artists;
 	}
 	
-	public LinkedList<AlbumProperties> getAllAlbums(){
-		LinkedList<AlbumProperties> albums = db.fetchAllAlbums();
+	public AlbumList getAllAlbums(){
+		AlbumList albums = db.fetchAllAlbums();
 		return albums;
 	}
 	
-	public LinkedList<AlbumProperties> getAlbumsByArtist(String artistTitle){
-		LinkedList<AlbumProperties> albums = db.fetchArtistAlbums(artistTitle);
+	public AlbumList getAlbumsByArtist(String artistTitle){
+		AlbumList albums = db.fetchArtistAlbums(artistTitle);
 		return albums;
 	}
 	

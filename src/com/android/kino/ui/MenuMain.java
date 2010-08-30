@@ -3,6 +3,7 @@ package com.android.kino.ui;
 import java.util.LinkedList;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -13,7 +14,9 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.android.kino.R;
+import com.android.kino.logic.AlbumList;
 import com.android.kino.logic.AlbumProperties;
+import com.android.kino.logic.ArtistList;
 import com.android.kino.logic.ArtistProperties;
 import com.android.kino.logic.MediaProperties;
 import com.android.kino.logic.Playlist;
@@ -23,9 +26,7 @@ import com.android.kino.ui.listAdapters.ArtistAdapter;
 import com.android.kino.ui.listAdapters.SongAdapter;
 
 public class MenuMain extends KinoUI {
-
-		
-	private Library library;    
+			 
     private ListView playlistView=null;
     Playlist playlist=null;
     
@@ -43,48 +44,14 @@ public class MenuMain extends KinoUI {
 	};
 	
 	
-    OnItemClickListener allartistsClickListener=new OnItemClickListener() {
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-			ArtistProperties artistClicked = (ArtistProperties) parent.getItemAtPosition(position);
-			
-			LinkedList<AlbumProperties> albums=library.getAlbumsByArtist(artistClicked.getName());
-			ArrayAdapter<AlbumProperties> playlistAdapter = new AlbumAdapter(MenuMain.this,android.R.layout.simple_list_item_1, albums);		
-			playlistView.setAdapter(playlistAdapter);					
-			playlistView.setOnItemClickListener(albumsClickListener);
-			
-		};
-	};
+    
 	
-    OnItemClickListener albumsClickListener=new OnItemClickListener() {
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-			AlbumProperties albumClicked = (AlbumProperties) parent.getItemAtPosition(position);
-			
-			Playlist albumPlaylst = library.getSongsByAlbum(albumClicked.getArtistName(), albumClicked.getAlbumName());
-			
-			ArrayAdapter<MediaProperties> playlistAdapter = new SongAdapter(MenuMain.this,android.R.layout.simple_list_item_1, albumPlaylst);		
-			playlistView.setAdapter(playlistAdapter);					
-			playlistView.setOnItemClickListener(songsClickListener);
-			
-			playlist=albumPlaylst;					
-		};
-	};
+
 	
 	@Override
 	protected void initUI() {	    				
-/*
-						Intent playlistIntent=new Intent(parent.getContext(),MenuPlaylist.class);
-						Playlist pAllsongs = library.getAllSongs();
-						//TODO fetch the allsongs playlist from the library and pass it
-						playlistIntent.putExtra("playlist",(Parcelable)pAllsongs);						
-			    		startActivity(playlistIntent);
-			    		
-			    		//fetch like this
-			    		 * playlist=getIntent().getExtras().getParcelable("playlist");
-			    		*/
-		
-		
+
+			
 			setContentView(R.layout.menu_main);
 			playlistView=(ListView)findViewById(R.id.mainmenu_list);			
 									
@@ -103,7 +70,13 @@ public class MenuMain extends KinoUI {
 				
 				@Override
 				public void onClick(View v) {
-					setAllArtists();					
+
+					Intent albumlistIntent=new Intent(MenuMain.this,MenuArtistBrowse.class);
+					ArtistList allArtists=library.getAllArtists();
+					//TODO fetch the allsongs playlist from the library and pass it
+					albumlistIntent.putExtra("artistlist",(Parcelable)allArtists);						
+		    		startActivity(albumlistIntent);
+					
 				}
 			});
 			
@@ -112,7 +85,15 @@ public class MenuMain extends KinoUI {
 				
 				@Override
 				public void onClick(View v) {
-					setAllAlbums();
+					
+					
+					Intent albumlistIntent=new Intent(MenuMain.this,MenuAlbumBrowse.class);
+					AlbumList allAlbums =library.getAllAlbums();
+					//TODO fetch the allsongs playlist from the library and pass it
+					albumlistIntent.putExtra("albumlist",(Parcelable)allAlbums);						
+		    		startActivity(albumlistIntent);
+					
+					
 					
 				}
 			});
@@ -135,19 +116,8 @@ public class MenuMain extends KinoUI {
 		playlistView.setOnItemClickListener(songsClickListener);
 	}
 	
-	private void setAllArtists(){
-		LinkedList<ArtistProperties> artists=library.getAllArtists();
-		ArrayAdapter<ArtistProperties> playlistAdapter = new ArtistAdapter(this,android.R.layout.simple_list_item_1, artists);		
-		playlistView.setAdapter(playlistAdapter);					
-		playlistView.setOnItemClickListener(allartistsClickListener);
-	}
+
 	
-	private void setAllAlbums(){
-		LinkedList<AlbumProperties> albums=library.getAllAlbums();
-		ArrayAdapter<AlbumProperties> playlistAdapter = new AlbumAdapter(this,android.R.layout.simple_list_item_1, albums);		
-		playlistView.setAdapter(playlistAdapter);					
-		playlistView.setOnItemClickListener(albumsClickListener);
-	}
 	
 	protected void kinoReady(){
 		library = kino.getLibrary();

@@ -10,18 +10,21 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.android.kino.R;
+import com.android.kino.logic.AlbumList;
 import com.android.kino.logic.AlbumProperties;
 
 public class AlbumAdapter extends ArrayAdapter<AlbumProperties> {
 
-	Context mContext=null;
-	List<AlbumProperties> albums=null;
+	private Context mContext=null;
+	private AlbumList albums=null;
+	private int itemResource;
 	
 	public AlbumAdapter(Context context, int textViewResourceId,
-			List<AlbumProperties> objects) {
-		super(context, textViewResourceId, objects);
+			AlbumList objects) {
+		super(context, textViewResourceId, (List<AlbumProperties>) objects);
 		mContext=context;
 		albums=objects;
+		itemResource=textViewResourceId;
 	}	
 	
 	 @Override
@@ -31,14 +34,21 @@ public class AlbumAdapter extends ArrayAdapter<AlbumProperties> {
 		 
         View v=null;  
   		LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);              
-        v = inflater.inflate(R.layout.item_album, null);
+        v = inflater.inflate(itemResource, null);
         
 
         TextView albumTitle = (TextView)  v.findViewById(R.id.albumItem_albumTitle);
         albumTitle.setText(albumObj.getAlbumName());
-        
+                
         TextView artistTitle = (TextView)  v.findViewById(R.id.albumItem_artistTitle);
-        artistTitle.setText(albumObj.getArtistName());
+        
+        //differntiate between displaying artist album or general albums
+        if (albums.getArtistTitle()==null){
+        	artistTitle.setText(albumObj.getArtistName());
+        }
+        else{
+        	artistTitle.setVisibility(View.GONE);
+        }
                 
         TextView albumYear = (TextView)  v.findViewById(R.id.albumItem_albumYear);
         

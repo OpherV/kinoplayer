@@ -18,6 +18,7 @@ import com.android.kino.R;
 import com.android.kino.logic.KinoMediaPlayer;
 import com.android.kino.logic.KinoUser;
 import com.android.kino.logic.MediaProperties;
+import com.android.kino.musiclibrary.Library;
 import com.android.kino.utils.ConvertUtils;
 
 public class KinoUI extends Activity implements KinoUser{
@@ -28,6 +29,7 @@ public class KinoUI extends Activity implements KinoUser{
 	protected TextView timeElapsed=null;
 	protected ProgressBar songProgress=null;
 	protected PlayerMini playermini;
+	protected Library library;  
 
 	protected Handler guiUpdater;	
 	final int GUI_UPDATE_INTERVAL = 1000;
@@ -56,12 +58,13 @@ public class KinoUI extends Activity implements KinoUser{
    	
     public void onKinoInit(Kino kino) {
         mPlayer= kino.getPlayer();        
+        library = kino.getLibrary();
         initSongDetails();                
         
         //start the gui update timer                           	
         guiUpdater = new Handler();
         guiUpdater.postAtTime(guiUpdateTask, GUI_UPDATE_INTERVAL);
-        
+                
         kinoReady();
     }      
     

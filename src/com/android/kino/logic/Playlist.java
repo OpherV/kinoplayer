@@ -12,12 +12,47 @@ import android.os.Parcelable;
 public class Playlist extends LinkedList<MediaProperties> implements Parcelable {
 
     private static final long serialVersionUID = 1L;
+    private String mAlbumTitle=null;
+    private String mArtistTitle=null;
+    private int mYear;
     
     public Playlist() {
         // Empty on purpose
     }
+    
+    public Playlist(String artistTitle, String albumTitle){
+    	mArtistTitle=artistTitle;
+    	mAlbumTitle=albumTitle;    	
+    }
+    
+    public void setArtistTitle(String artistTitle){
+    	mArtistTitle=artistTitle;
+    }
+    
+    public void setAlbumTitle(String albumTitle){
+    	mAlbumTitle=albumTitle;
+    }
+    
+    public void setAlbumYear(int year){
+    	mYear=year;
+    }
+    
+    public String getAlbumTitle(){
+    	return mAlbumTitle;
+    }
+    
+    public String getArtistTitle(){
+    	return mArtistTitle;
+    }        
+    
+    public int getAlbumYear(){
+    	return mYear;
+    }
 
     public Playlist(Parcel in) {
+    	mArtistTitle=in.readString();
+    	mAlbumTitle=in.readString();
+    	mYear=in.readInt();
         MediaProperties[] array = new MediaProperties[in.readInt()];
         in.readTypedArray(array, MediaProperties.CREATOR);
         for (MediaProperties item : array) {
@@ -32,6 +67,9 @@ public class Playlist extends LinkedList<MediaProperties> implements Parcelable 
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+    	dest.writeString(mArtistTitle);
+    	dest.writeString(mAlbumTitle);
+    	dest.writeInt(mYear);
         dest.writeInt(size());
         MediaProperties[] array = new MediaProperties[size()];
         dest.writeTypedArray(toArray(array), flags);
