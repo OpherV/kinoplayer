@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+ 		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent"
+		 android:layout_height="?android:attr/listPreferredItemHeight" 
+		 >
+	
+	<LinearLayout	android:id="@+id/albumItem_imageContainer" 
+					android:layout_height="?android:attr/listPreferredItemHeight"
+					android:layout_width="?android:attr/listPreferredItemHeight"
+					android:padding="8dp"	
+					android:layout_alignParentLeft="true"											
+				>
+				
+				<ImageView android:id="@+id/albumItem_albumImage" 
+							android:layout_height="fill_parent"
+							android:layout_width="fill_parent"
+				/>									
+				
+	</LinearLayout>
+	
+	<LinearLayout android:layout_height="wrap_content"
+				android:layout_width="wrap_content"
+				android:orientation="vertical"			
+				android:layout_toRightOf="@id/albumItem_imageContainer"
+				android:layout_centerVertical="true"
+				>
+				<TextView android:id="@+id/albumItem_albumTitle"
+							android:layout_height="wrap_content"
+							android:layout_width="wrap_content"
+							android:text="albumTitle"
+							android:textSize="14dp"
+							android:textStyle="bold"
+							 />		
+				
+				<TextView android:id="@+id/albumItem_artistTitle"
+							android:layout_height="wrap_content"
+							android:layout_width="wrap_content"
+							android:text="artistTitle"
+							android:textSize="13dp"
+							/>
+				<TextView android:id="@+id/albumItem_albumYear"
+							android:layout_height="wrap_content"
+							android:layout_width="wrap_content"
+							android:text="albumItem_albumYear"
+							android:textSize="12dp"
+							 />
+
+	</LinearLayout>
+	
+	
+</RelativeLayout>

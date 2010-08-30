@@ -1,6 +1,7 @@
 package com.android.kino.musiclibrary;
 
 import java.io.File;
+import java.util.LinkedList;
 
 
 import android.app.Service;
@@ -11,6 +12,8 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.android.kino.Kino;
+import com.android.kino.logic.AlbumProperties;
+import com.android.kino.logic.ArtistProperties;
 import com.android.kino.logic.MediaProperties;
 import com.android.kino.logic.Playlist;
 import com.android.kino.logic.settings.SettingsContainer;
@@ -118,10 +121,31 @@ public class Library extends Service{
 		return playlist;
 	}
 	
+	public Playlist getSongsByAlbum(String artistTitle, String albumTitle){
+		Playlist playlist = db.fetchSongsByAlbum(artistTitle, albumTitle);
+		return playlist;
+	}
+	
+	public LinkedList<ArtistProperties> getAllArtists(){
+		LinkedList<ArtistProperties> artists = db.fetchAllArtists();
+		return artists;
+	}
+	
+	public LinkedList<AlbumProperties> getAllAlbums(){
+		LinkedList<AlbumProperties> albums = db.fetchAllAlbums();
+		return albums;
+	}
+	
+	public LinkedList<AlbumProperties> getAlbumsByArtist(String artistTitle){
+		LinkedList<AlbumProperties> albums = db.fetchArtistAlbums(artistTitle);
+		return albums;
+	}
+	
+	
 	public class LibraryBinder extends Binder{
 		public Library getLibrary(){
 			return Library.this;
 		}
 	}
-
+		
 }

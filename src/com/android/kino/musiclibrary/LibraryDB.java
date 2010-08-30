@@ -1,7 +1,10 @@
 package com.android.kino.musiclibrary;
 
 import java.io.File;
+import java.util.LinkedList;
 
+import com.android.kino.logic.AlbumProperties;
+import com.android.kino.logic.ArtistProperties;
 import com.android.kino.logic.MediaProperties;
 import com.android.kino.logic.Playlist;
 
@@ -151,6 +154,108 @@ public class LibraryDB extends SQLiteOpenHelper {
     	cursor.close();
     	
     	return playlist;
+    }
+    
+    public Playlist fetchSongsByAlbum(String artistTitle,String albumTitle){
+    	Cursor cursor = MusicLibraryDB.query(SONG_TABLE,
+                null,
+                "artist=\""+artistTitle+"\" AND "+"albumTitle=\""+albumTitle+"\"",//where
+                null, null, null,
+                "trackNumber ASC");
+    	cursor.moveToFirst();
+    	
+    	Playlist playlist = playlistFromCursor(cursor);
+    	
+    	cursor.close();
+    	
+    	return playlist;
+    }
+     
+    
+    public LinkedList<ArtistProperties> fetchAllArtists(){
+    	LinkedList<ArtistProperties> artists=new LinkedList<ArtistProperties>();
+    	String[] queryColumns = {"artist","COUNT(*) as totalSongs"};
+    	
+    	Cursor cursor = MusicLibraryDB.query(SONG_TABLE, //select
+    			queryColumns, //from
+                null, //where
+                null, //args?
+                "artist", //groupby
+                null, //having
+                "artist ASC" //orderby
+                );
+    	cursor.moveToFirst();
+    	
+    	while (!cursor.isAfterLast()){
+    		ArtistProperties artist=new ArtistProperties(
+					    				cursor.getString(cursor.getColumnIndex("artist")),
+					    				Integer.parseInt(cursor.getString(cursor.getColumnIndex("totalSongs")))
+					    				);
+    		artists.add(artist);
+    		cursor.moveToNext();
+    	}
+    	
+    	cursor.close();
+    	
+    	return artists;
+    }
+    
+    public LinkedList<AlbumProperties> fetchAllAlbums(){
+    	LinkedList<AlbumProperties> albums=new LinkedList<AlbumProperties>();
+    	String[] queryColumns = {"albumTitle","artist","albumYear"};
+    	
+    	Cursor cursor = MusicLibraryDB.query(SONG_TABLE, //select
+    			queryColumns, //from
+                null, //where
+                null, //args?
+                "albumTitle", //groupby
+                null, //having
+                "albumTitle ASC" //orderby
+                );
+    	cursor.moveToFirst();
+    	
+    	while (!cursor.isAfterLast()){
+    		AlbumProperties album=new AlbumProperties(
+					    				cursor.getString(cursor.getColumnIndex("albumTitle")),
+					    				cursor.getString(cursor.getColumnIndex("artist")),
+					    				Integer.parseInt(cursor.getString(cursor.getColumnIndex("albumYear")))
+					    				);
+    		albums.add(album);
+    		cursor.moveToNext();
+    	}
+    	
+    	cursor.close();
+    	
+    	return albums;
+    }
+    
+    public LinkedList<AlbumProperties> fetchArtistAlbums(String artistName){
+    	LinkedList<AlbumProperties> albums=new LinkedList<AlbumProperties>();
+    	String[] queryColumns = {"albumTitle","artist","albumYear"};
+    	
+    	Cursor cursor = MusicLibraryDB.query(SONG_TABLE, //select
+    			queryColumns, //from
+                "artist=\""+artistName+"\"", //where
+                null, //args?
+                "albumTitle", //groupby
+                null, //having
+                "albumTitle ASC" //orderby
+                );
+    	cursor.moveToFirst();
+    	
+    	while (!cursor.isAfterLast()){
+    		AlbumProperties album=new AlbumProperties(
+					    				cursor.getString(cursor.getColumnIndex("albumTitle")),
+					    				cursor.getString(cursor.getColumnIndex("artist")),
+					    				Integer.parseInt(cursor.getString(cursor.getColumnIndex("albumYear")))
+					    				);
+    		albums.add(album);
+    		cursor.moveToNext();
+    	}
+    	
+    	cursor.close();
+    	
+    	return albums;
     }
 
 }
