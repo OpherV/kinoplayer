@@ -7,10 +7,16 @@ import org.cmc.music.metadata.IMusicMetadata;
 import org.cmc.music.metadata.MusicMetadataSet;
 import org.cmc.music.myid3.MyID3;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.android.kino.Kino;
+import com.android.kino.logic.tasks.FetchAlbumDetails;
+import com.android.kino.ui.KinoUI;
 import com.android.kino.utils.CompareUtils;
 import com.android.kino.utils.ConvertUtils;
 
@@ -24,6 +30,10 @@ public class MediaProperties implements Comparable<MediaProperties>, Parcelable 
     public String Genre = null;
     public int Duration = 0;
     public int BitRate = 0;
+    public Bitmap albumImage=null;
+    
+    
+    private boolean searchingForAlbumImage=false;
     
     public MediaProperties() {
         // Empty on purpose
@@ -145,6 +155,34 @@ public class MediaProperties implements Comparable<MediaProperties>, Parcelable 
         }
         return result;
     }
+    
+    public Bitmap getAlbumImage(KinoUI kinoui){
+		if (albumImage!=null){
+			return albumImage;
+		}
+
+		//TODO make sure that the SDcard is properly mounted    	
+		String albumImagePath=Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+Kino.ALBUM_DIR;
+		String albumFileName=ConvertUtils.safeFileName(Artist)+"-"+ConvertUtils.safeFileName(Album.Title)+".jpg";
+		File albumImageFile = new File(albumImagePath,albumFileName);
+		
+		//TODO obviously, change this
+		if (albumImageFile.exists()){
+			albumImage = BitmapFactory.decodeFile(albumImageFile.getAbsolutePath());
+		}
+		else{
+			if (!searchingForAlbumImage){				
+				Log.e(kinoui.getClass().getName(),"no artist image file: "+albumImagePath+"/"+albumFileName);
+				TaskMasterService taskmaster=kinoui.getTaskMaster();
+				taskmaster.addTask(new FetchAlbumDetails(Artist, Album.Title));
+				searchingForAlbumImage=true;
+			}
+			
+		}
+		
+		return albumImage;
+    }
+    
     
     @Override
     public String toString() {

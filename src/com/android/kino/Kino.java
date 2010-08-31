@@ -15,6 +15,7 @@ import com.android.kino.logic.KinoMediaPlayer;
 import com.android.kino.logic.KinoServiceConnection;
 import com.android.kino.logic.KinoUser;
 import com.android.kino.logic.ServiceUser;
+import com.android.kino.logic.TaskMasterService;
 import com.android.kino.musiclibrary.Library;
 
 /**
@@ -24,10 +25,16 @@ public class Kino extends Application implements ServiceUser {
 
     private KinoServiceConnection mMediaPlayerConn = new KinoServiceConnection(this);
     private KinoServiceConnection mLibraryConn = new KinoServiceConnection(this);
+    private KinoServiceConnection mTaskMasterConn = new KinoServiceConnection(this);
     private KinoMediaPlayer mPlayer = null;
     private Library mLibrary = null;
+    private TaskMasterService mTaskMaster = null;
+    
     private List<KinoUser> mUsers = new LinkedList<KinoUser>();
     private boolean mIsInitialized = false;
+    
+    public final static String ALBUM_DIR="kino/images/albums";
+    public final static String ARTIST_DIR="kino/images/artists";
     
     public static Kino getKino(Activity activity) {
         return (Kino)activity.getApplication();
@@ -42,6 +49,13 @@ public class Kino extends Application implements ServiceUser {
     		Log.e("KINO","WARNING! Trying to fetch library when Kino is not up!");
     	}
         return mLibrary;
+    }
+    
+    public TaskMasterService getTaskMaster() {
+    	if (mTaskMaster==null){
+    		Log.e("KINO","WARNING! Trying to fetch taskmaster when Kino is not up!");
+    	}
+        return mTaskMaster;
     }
 
     /**
@@ -83,6 +97,11 @@ public class Kino extends Application implements ServiceUser {
         //bind the library service
         boolean libraryBound = bindService(new Intent(this, Library.class), mLibraryConn , Context.BIND_AUTO_CREATE);
         Log.d(this.getClass().toString(), "libraryBound from Kino: "+libraryBound);
+             
+        
+        startService(new Intent(this, TaskMasterService.class));
+        boolean taskmasterBound =  bindService(new Intent(this, TaskMasterService.class), mTaskMasterConn , Context.BIND_AUTO_CREATE);
+        Log.d(this.getClass().toString(), "taskMaster bound from Kino: "+taskmasterBound);
     }
 
     /* (non-Javadoc)
@@ -103,7 +122,11 @@ public class Kino extends Application implements ServiceUser {
         	mLibrary = ((Library.LibraryBinder) binder).getLibrary();
         	Toast.makeText(this, "library up!", Toast.LENGTH_SHORT).show();
         }
-        mIsInitialized = mPlayer != null && mLibrary != null;
+        else if (binder instanceof TaskMasterService.TaskMasterBinder){
+        	mTaskMaster = ((TaskMasterService.TaskMasterBinder) binder).getTaskMaster();
+        	Toast.makeText(this, "taskmaster up!", Toast.LENGTH_SHORT).show();
+        }
+        mIsInitialized = mPlayer != null && mLibrary != null && mTaskMaster != null;
         if (mIsInitialized) {
             for (KinoUser user : mUsers) {
                 user.onKinoInit(this);
@@ -137,6 +160,8 @@ public class Kino extends Application implements ServiceUser {
     public void shutDown() {
         stopService(new Intent(this, InputEventTranslatorService.class));
         stopService(new Intent(this, MediaPlayerService.class));
+        stopService(new Intent(this, Library.class));
+        stopService(new Intent(this, TaskMasterService.class));
     }
 
     /**
@@ -151,6 +176,10 @@ public class Kino extends Application implements ServiceUser {
         if (isBoundToLibrary()) {
             unbindService(mLibraryConn);
             mLibrary = null;
+        }        
+        if (isBoundToTaskMaster()) {
+            unbindService(mTaskMasterConn);
+            mTaskMaster = null;
         }
     }
     
@@ -160,5 +189,9 @@ public class Kino extends Application implements ServiceUser {
     
     private boolean isBoundToLibrary() {
         return mLibrary != null;
+    }
+    
+    private boolean isBoundToTaskMaster() {
+        return mTaskMaster != null;
     }
 }

@@ -12,7 +12,7 @@
 					android:layout_alignParentLeft="true"											
 				>
 				
-				<ImageView android:id="@+id/songItem_albumImage" 
+				<ImageView android:id="@+id/songItem_image" 
 							android:layout_height="fill_parent"
 							android:layout_width="fill_parent"
 				/>									
@@ -23,7 +23,8 @@
 				android:layout_width="wrap_content"
 				android:orientation="vertical"			
 				android:layout_toRightOf="@id/songItem_imageContainer"
-				android:layout_centerVertical="true"
+				android:layout_centerVertical="true"				
+				android:layout_alignParentRight="true"				
 				>
 				<TextView android:id="@+id/songItem_songTitle"
 							android:layout_height="wrap_content"

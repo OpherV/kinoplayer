@@ -119,8 +119,7 @@ public class MenuMain extends KinoUI {
 
 	
 	
-	protected void kinoReady(){
-		library = kino.getLibrary();
+	protected void kinoReady(){		
 		setAllSongs();
 	};
 

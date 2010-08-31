@@ -31,7 +31,7 @@ public class MediaImageContainer {
 		}
 		else{
 			Log.e(getClass().getName(),"no artist image file: "+artistImagePath);
-			artistImage= scraper.getArtistImage(song.Artist);					
+		//	artistImage= scraper.getArtistImage(song.Artist);					
 		}
 	}
 	

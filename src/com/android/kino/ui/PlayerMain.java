@@ -76,6 +76,9 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
 	    TextView albumCaption = (TextView) this.findViewById(R.id.player_album);    
 	    albumCaption.setText(song.Album.Title);
 	    
+	    ImageView image = (ImageView) this.findViewById(R.id.player_albumImage); 
+	    image.setImageBitmap(song.getAlbumImage(this));
+	    
 	    
 	    //seekbar
 	    songSeek = (SeekBar) this.findViewById(R.id.player_seek);	    

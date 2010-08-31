@@ -6,56 +6,69 @@
     android:layout_height="fill_parent"
     android:id="@+id/player_container"
     >
-    
+        
     <ImageView 
     android:id="@+id/playerBG"
     android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:layout_centerHorizontal="true"
-	android:layout_centerVertical="true"
+	android:layout_centerVertical="true"	
+	android:scaleType="centerCrop"
     />
     
-     <LinearLayout
+     <RelativeLayout
      	android:id="@+id/player_songDetails"
-     	android:layout_alignTop="@id/player_container"
-        android:orientation="vertical"
+     	android:layout_alignParentTop="true"      
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"        
         android:layout_margin="8dp"
         android:padding="8dp"
         android:background="@layout/ui_box"        
          >
-        
-	    <TextView android:id="@+id/player_title"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:textStyle="bold"
-             android:textColor="#ffffff" 
-             />
-             
-	    <TextView android:id="@+id/player_artist"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:textColor="#ffffff"
-             />
-             
-	    <TextView android:id="@+id/player_album"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:textColor="#ffffff"
-             />
+         
+         <LinearLayout android:layout_alignParentLeft="true"
+         				android:layout_width="wrap_content"
+         				android:layout_height="wrap_content"
+         				android:orientation="vertical"
+         				>
+	        
+		    <TextView android:id="@+id/player_title"
+	             android:layout_width="wrap_content"
+	             android:layout_height="wrap_content"
+	             android:textStyle="bold"
+	             android:textColor="#ffffff" 
+	             />
+	             
+		    <TextView android:id="@+id/player_artist"
+	             android:layout_width="wrap_content"
+	             android:layout_height="wrap_content"
+	             android:textColor="#ffffff"
+	             />
+	             
+		    <TextView android:id="@+id/player_album"
+	             android:layout_width="wrap_content"
+	             android:layout_height="wrap_content"
+	             android:textColor="#ffffff"
+	             />
+      </LinearLayout>
 	    
+      <ImageView android:id="@+id/player_albumImage"
+           android:layout_width="60dp"
+        	android:layout_height="60dp"
+        	android:layout_alignParentRight="true"        	
+        	android:layout_alignParentTop="true"
+        	android:layout_margin="4dp"        	
+        	 />
 
-    </LinearLayout>
+    </RelativeLayout>
+    
+  
     
      <LinearLayout
       android:orientation="vertical"
       android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:layout_weight="1"
-      android:layout_margin="8dp"   
-      android:layout_below="@id/player_songDetails" 
+      android:layout_height="wrap_content"            
+      android:layout_below="@id/player_songDetails"      
        >
     
 		   	<SeekBar android:id="@+id/player_seek"
@@ -73,14 +86,14 @@
      </LinearLayout>
     
     <!--  button row -->
-     <LinearLayout
+     <LinearLayout     
         android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"        
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-        android:layout_marginBottom="5dp"        
+        android:layout_marginBottom="5dp"
+        android:id="@+id/player_btnrow"
         >
         
         <Button android:id="@+id/btn_back"
@@ -105,5 +118,11 @@
             
     </LinearLayout>
     
+	<com.android.kino.ui.StatusUpdater 
+    android:id="@+id/statusupdater"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"    
+    android:layout_above="@id/player_btnrow"
+     />	
     
 </RelativeLayout>

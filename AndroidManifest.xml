@@ -28,6 +28,8 @@
             android:name=".InputEventTranslatorService" />
         <service
             android:name=".musiclibrary.Library"></service>
+		<service
+            android:name=".logic.TaskMasterService"></service>
 
         <activity
             android:name=".ui.PlayerMain"
@@ -49,8 +51,5 @@
     </application>
 	
 	<uses-permission android:name="android.permission.INTERNET" /> 
-
-
-
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 </manifest> 

@@ -4,13 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.android.kino.Kino;
@@ -18,6 +14,7 @@ import com.android.kino.R;
 import com.android.kino.logic.KinoMediaPlayer;
 import com.android.kino.logic.KinoUser;
 import com.android.kino.logic.MediaProperties;
+import com.android.kino.logic.TaskMasterService;
 import com.android.kino.musiclibrary.Library;
 import com.android.kino.utils.ConvertUtils;
 
@@ -30,6 +27,8 @@ public class KinoUI extends Activity implements KinoUser{
 	protected ProgressBar songProgress=null;
 	protected PlayerMini playermini;
 	protected Library library;  
+	protected TaskMasterService mTaskMaster;
+	protected StatusUpdater updaterView;
 
 	protected Handler guiUpdater;	
 	final int GUI_UPDATE_INTERVAL = 1000;
@@ -59,14 +58,25 @@ public class KinoUI extends Activity implements KinoUser{
     public void onKinoInit(Kino kino) {
         mPlayer= kino.getPlayer();        
         library = kino.getLibrary();
+        mTaskMaster= kino.getTaskMaster();
         initSongDetails();                
         
         //start the gui update timer                           	
         guiUpdater = new Handler();
         guiUpdater.postAtTime(guiUpdateTask, GUI_UPDATE_INTERVAL);
-                
+        
+        // set the status updater object for the taskmaster
+
+        updaterView = (StatusUpdater) findViewById(R.id.statusupdater);
+        updaterView.initStatusUpdater();        
+		mTaskMaster.setDisplay(this);
+        
         kinoReady();
     }      
+    
+    public void updateUI(){
+    	updaterView.updateData();
+    }
     
     @Override
     protected void onDestroy() {    
@@ -94,6 +104,8 @@ public class KinoUI extends Activity implements KinoUser{
 		    TextView albumCaption = (TextView) this.findViewById(R.id.miniplayer_album);    
 		    albumCaption.setText(song.Album.Title);
 		    
+		    ImageView image = (ImageView) this.findViewById(R.id.miniplayer_image); 
+		    image.setImageBitmap(song.getAlbumImage(this));
 		    
 		    //seekbar
 		    songProgress = (ProgressBar) this.findViewById(R.id.miniplayer_progress);	    
@@ -131,6 +143,11 @@ public class KinoUI extends Activity implements KinoUser{
 		super.onResume();		
 		if (playermini!=null && song!=null){
 	    	   playermini.setVisibility(View.VISIBLE);		   	   
+		}		
+
+		StatusUpdater updaterView = (StatusUpdater) findViewById(R.id.statusupdater);
+		if (mTaskMaster!=null){
+			mTaskMaster.setDisplay(this);
 		}
 	}
 
@@ -138,6 +155,10 @@ public class KinoUI extends Activity implements KinoUser{
 	protected void initUI(){}
 	protected void kinoReady(){};
 	
+	
+	public TaskMasterService getTaskMaster(){
+		return mTaskMaster;
+	}
 	
 	
 }

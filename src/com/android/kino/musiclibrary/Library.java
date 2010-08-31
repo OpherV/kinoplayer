@@ -31,9 +31,7 @@ public class Library extends Service{
 	
 	@Override
 	public IBinder onBind(Intent intent) {						
-				
-		Log.d("Library","Please 2");
-		
+						
 		//make sure sd card is mounted 
 		if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
 			Log.e("Library","SD card not mounted! media state: "+Environment.getExternalStorageState());
