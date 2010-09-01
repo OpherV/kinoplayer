@@ -1,8 +1,7 @@
 package com.android.kino.musiclibrary;
 
 import java.io.File;
-import java.util.LinkedList;
-
+import java.util.HashMap;
 
 import android.app.Service;
 import android.content.Intent;
@@ -18,16 +17,38 @@ import com.android.kino.logic.ArtistList;
 import com.android.kino.logic.ArtistProperties;
 import com.android.kino.logic.MediaProperties;
 import com.android.kino.logic.Playlist;
-import com.android.kino.logic.settings.SettingsContainer;
-import com.android.kino.logic.settings.SettingsLoader;
-import com.android.kino.logic.settings.SettingsContainer.Setting;
 
 public class Library extends Service{
 	Kino kino = null;
 	LibraryDB db = null;
 	IBinder libraryBinder=new LibraryBinder();
 	
+	HashMap<String,ArtistProperties> artistCache = new HashMap<String,ArtistProperties>();
+	HashMap<String,AlbumProperties> albumCache = new HashMap<String,AlbumProperties>();
+			
 	final String DBNAME ="MusicLibrary";
+	
+	public ArtistProperties getArtistFromCache(String artistTitle){
+		ArtistProperties artist=null;
+		if (!artistCache.containsKey(artistTitle)){		
+			artistCache.put(artistTitle, new ArtistProperties(artistTitle) );
+		}
+		artist = artistCache.get(artistTitle);
+		return artist;
+	}
+	
+	public AlbumProperties getAlbumFromCache(String artistTitle, String albumTitle, int albumYear){
+		AlbumProperties album=null;
+		if (!albumCache.containsKey(getAlbumCacheKey(artistTitle,albumTitle) )){		
+			albumCache.put(getAlbumCacheKey(artistTitle,albumTitle), new AlbumProperties(albumTitle,artistTitle,albumYear) );
+		}
+		album = albumCache.get(getAlbumCacheKey(artistTitle,albumTitle));
+		return album;
+	}
+	
+	private String getAlbumCacheKey(String artistTitle, String albumTitle){
+		return artistTitle+"-"+albumTitle;
+	}
 	
 	@Override
 	public IBinder onBind(Intent intent) {						
@@ -85,14 +106,14 @@ public class Library extends Service{
 	private boolean addFileToLibrary(File file){
 		if (!db.songInDb(file)){
 		
-		MediaProperties mp3file = new MediaProperties(file.getAbsolutePath());
+		MediaProperties mp3file = new MediaProperties(file.getAbsolutePath(),(LibraryBinder) this.libraryBinder);
 
 		
 		db.addSong(mp3file.Filename,				
 				mp3file.Title,
 				mp3file.Artist,
-				mp3file.Album.Title,
-				mp3file.Album.Year,
+				mp3file.Album.getAlbumName(),
+				mp3file.Album.getAlbumYear(),
 				mp3file.TrackNumber,
 				mp3file.Genre,
 				mp3file.Duration,
@@ -108,14 +129,6 @@ public class Library extends Service{
 		
 	}
 			
-	private void purgeLibrary(){		
-		//TODO 	
-	}
-	
-	private void updateLibray(){		
-		//TODO 	
-	}	
-	
 	public Playlist getAllSongs(){
 		Playlist playlist = db.fetchAllSongs();
 		return playlist;

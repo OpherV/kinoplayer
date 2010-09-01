@@ -1,21 +1,14 @@
 package com.android.kino.ui;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import com.android.kino.R;
 import com.android.kino.logic.tasks.KinoTask;
-import com.android.kino.ui.listAdapters.SongAdapter;
 import com.android.kino.ui.listAdapters.StatusAdapter;
 
 public class StatusUpdater extends LinearLayout{

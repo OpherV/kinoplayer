@@ -58,7 +58,7 @@ public class Playlist extends LinkedList<MediaProperties> implements Parcelable 
         for (MediaProperties item : array) {
             add(item);
         }
-    }
+    }   
 
     @Override
     public int describeContents() {

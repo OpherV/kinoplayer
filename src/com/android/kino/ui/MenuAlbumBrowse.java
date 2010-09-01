@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -20,6 +21,8 @@ public class MenuAlbumBrowse extends KinoUI implements OnItemClickListener {
 
 	 private ArrayAdapter<AlbumProperties> albumListAdapter=null;
 	    AlbumList albumList=null;
+	    TextView artistTitleView;
+	    View artistTitleContainer;
 	    
 		@Override
 		protected void initUI() {
@@ -28,18 +31,24 @@ public class MenuAlbumBrowse extends KinoUI implements OnItemClickListener {
 			albumList=getIntent().getExtras().getParcelable("albumlist");
 			
 					
-			TextView artistTitleView = (TextView)findViewById(R.id.menu_albumbrowse_artistname);			
+			 artistTitleView = (TextView)findViewById(R.id.menu_albumbrowse_artistname);			
+			 artistTitleContainer = (View)findViewById(R.id.menu_albumbrowse_titleContainer);		
 			
 			albumListAdapter = new AlbumAdapter(this,R.layout.item_album, albumList);
 			
-			//differnetiate between "artist albums" and a general album list			
+			//Differentiate between "artist albums" and a general album list			
 			
 			if (albumList.getArtistTitle()!=null){				
-				artistTitleView.setText(albumList.getArtistTitle());												
+				artistTitleView.setText(albumList.getArtistTitle());		
+						        
+				ArtistProperties artist=new ArtistProperties(albumList.getArtistTitle());
+		        ImageView artistImageBG = (ImageView) findViewById(R.id.menu_albumbrowse_bgimage);
+		        artistImageBG.setImageBitmap(artist.getArtistImage(this));
+		        artistTitleContainer.setVisibility(View.VISIBLE);
 			}
 			
 			else{				
-				artistTitleView.setVisibility(View.GONE);
+				artistTitleContainer.setVisibility(View.GONE);
 			}
 			
 			ListView albumlistView = (ListView)findViewById(R.id.albumlist);
@@ -49,6 +58,8 @@ public class MenuAlbumBrowse extends KinoUI implements OnItemClickListener {
 			
 			
 		}
+		
+
 	    
 	    @Override
 	    public void onItemClick(AdapterView<?> parent, View view,
@@ -57,9 +68,15 @@ public class MenuAlbumBrowse extends KinoUI implements OnItemClickListener {
 	    	AlbumProperties albumClicked = (AlbumProperties) parent.getItemAtPosition(position);	    			
 			Playlist playlist=library.getPlaylistByAlbum(albumClicked.getArtistName(), albumClicked.getAlbumName());				    	
 			Intent playlistIntent=new Intent(parent.getContext(),MenuPlaylist.class);	
-			playlistIntent.putExtra("playlist",(Parcelable)playlist);						
+			playlistIntent.putExtra("playlist",(Parcelable)playlist);
+			playlistIntent.putExtra("albumPlaylist",true);
+			playlistIntent.putExtra("albumTitle",albumClicked.getAlbumName());
+			playlistIntent.putExtra("albumArtist",albumClicked.getArtistName());
+			playlistIntent.putExtra("albumYear",albumClicked.getAlbumYear());
+			
     		startActivity(playlistIntent);    		      
 	       
-	    }        
+	    }  
+	    
 	
 }

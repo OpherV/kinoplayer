@@ -1,7 +1,5 @@
 package com.android.kino.ui;
 
-import java.util.LinkedList;
-
 import android.content.Intent;
 import android.os.Parcelable;
 import android.view.View;
@@ -13,16 +11,12 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.android.kino.Kino;
 import com.android.kino.R;
 import com.android.kino.logic.AlbumList;
-import com.android.kino.logic.AlbumProperties;
 import com.android.kino.logic.ArtistList;
-import com.android.kino.logic.ArtistProperties;
 import com.android.kino.logic.MediaProperties;
 import com.android.kino.logic.Playlist;
-import com.android.kino.musiclibrary.Library;
-import com.android.kino.ui.listAdapters.AlbumAdapter;
-import com.android.kino.ui.listAdapters.ArtistAdapter;
 import com.android.kino.ui.listAdapters.SongAdapter;
 
 public class MenuMain extends KinoUI {
@@ -111,7 +105,7 @@ public class MenuMain extends KinoUI {
 	
 	private void setAllSongs(){
 		playlist=library.getAllSongs();
-		ArrayAdapter<MediaProperties> playlistAdapter = new SongAdapter(this,android.R.layout.simple_list_item_1, playlist);		
+		ArrayAdapter<MediaProperties> playlistAdapter = new SongAdapter(this,0, playlist,false);		
 		playlistView.setAdapter(playlistAdapter);					
 		playlistView.setOnItemClickListener(songsClickListener);
 	}
@@ -119,10 +113,11 @@ public class MenuMain extends KinoUI {
 
 	
 	
-	protected void kinoReady(){		
+	@Override
+	public void onKinoInit(Kino kino) {	
+		super.onKinoInit(kino);
 		setAllSongs();
-	};
-
+	}
 	
 
 }

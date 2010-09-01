@@ -2,20 +2,19 @@ package com.android.kino.logic;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.cmc.music.metadata.IMusicMetadata;
 import org.cmc.music.metadata.MusicMetadataSet;
 import org.cmc.music.myid3.MyID3;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Environment;
+import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-import com.android.kino.Kino;
-import com.android.kino.logic.tasks.FetchAlbumDetails;
+import com.android.kino.musiclibrary.Library.LibraryBinder;
 import com.android.kino.ui.KinoUI;
 import com.android.kino.utils.CompareUtils;
 import com.android.kino.utils.ConvertUtils;
@@ -25,22 +24,20 @@ public class MediaProperties implements Comparable<MediaProperties>, Parcelable 
     public String Filename = null;
     public String Title = null;
     public String Artist = null;
-    public AlbumProperties Album = new AlbumProperties();
+    public AlbumProperties Album =null;
     public int TrackNumber = 0;
     public String Genre = null;
     public int Duration = 0;
     public int BitRate = 0;
     public Bitmap albumImage=null;
+    public Bitmap artistImage=null;
+        
+    private LibraryBinder libraryBinder=null;   
+        
     
-    
-    private boolean searchingForAlbumImage=false;
-    
-    public MediaProperties() {
-        // Empty on purpose
-    }
-    
-    public MediaProperties(String filename) {
+    public MediaProperties(String filename,LibraryBinder libbinder) {
         Filename = filename;
+        libraryBinder=libbinder;
         
         // Read ID3 tags and fill parameters
         MusicMetadataSet mp3set;
@@ -54,8 +51,9 @@ public class MediaProperties implements Comparable<MediaProperties>, Parcelable 
         IMusicMetadata mp3data = mp3set.getSimplified();
         Title = mp3data.getSongTitle();
         Artist = mp3data.getArtist();
-        Album.Title = mp3data.getAlbum();
-        Album.Year = ConvertUtils.tryParse(mp3data.getYear());
+        
+        Album = libraryBinder.getLibrary().getAlbumFromCache(Artist,mp3data.getAlbum(),ConvertUtils.tryParse(mp3data.getYear()));
+        
         Number trackNum = mp3data.getTrackNumber();
         if (trackNum != null) {
             TrackNumber = trackNum.intValue();
@@ -73,7 +71,8 @@ public class MediaProperties implements Comparable<MediaProperties>, Parcelable 
         BitRate = 0;
     }
 
-    public MediaProperties(String filename,
+    public MediaProperties(LibraryBinder libbinder,
+    					   String filename,
                            String title,
                            String artist,                           
                            String albumTitle,
@@ -82,27 +81,38 @@ public class MediaProperties implements Comparable<MediaProperties>, Parcelable 
                            String genre,
                            int duration,
                            int bitrate) {
+        libraryBinder=libbinder;
         Filename = filename;
         Title = title;        
         Artist = artist;
-        Album.Title = albumTitle;
-        Album.Year = albumYear;
+        
+        Album = libraryBinder.getLibrary().getAlbumFromCache(Artist,albumTitle,albumYear);               
         TrackNumber = trackNumber;
         Genre = genre;
         Duration = duration;
         BitRate = bitrate;
     }
 
-    public MediaProperties(Parcel in) {
+    //if the mediproperties was parcelled it means that the album already exists in the album cache
+    public MediaProperties(Parcel in) {    	
+    	     	
         Filename = in.readString();
         Title = in.readString();        
-        Artist = in.readString();
-        Album.Title = in.readString();
-        Album.Year = in.readInt();
+        Artist = in.readString();   
+        
+        String interimAlbumTitle=in.readString();
+        int interimAlbumYear=in.readInt();
+        
         TrackNumber = in.readInt();
         Genre = in.readString();
         Duration = in.readInt();
         BitRate = in.readInt();
+        
+        ArrayList<IBinder> binderList = in.createBinderArrayList()   ;         
+        libraryBinder=(LibraryBinder) binderList.get(0);
+        
+        Album = libraryBinder.getLibrary().getAlbumFromCache(Artist,interimAlbumTitle,interimAlbumYear);       
+           
     }
 
     @Override
@@ -115,12 +125,16 @@ public class MediaProperties implements Comparable<MediaProperties>, Parcelable 
         dest.writeString(Filename);
         dest.writeString(Title);
         dest.writeString(Artist);
-        dest.writeString(Album.Title);
-        dest.writeInt(Album.Year);
+        dest.writeString(Album.getAlbumName());
+        dest.writeInt(Album.getAlbumYear());
         dest.writeInt(TrackNumber);
         dest.writeString(Genre);
         dest.writeInt(Duration);
         dest.writeInt(BitRate);
+        
+        ArrayList<IBinder> binderList = new ArrayList<IBinder>();
+        binderList.add(libraryBinder);
+        dest.writeBinderList(binderList);
     }
     
     @Override
@@ -156,29 +170,24 @@ public class MediaProperties implements Comparable<MediaProperties>, Parcelable 
         return result;
     }
     
+    
+    //these functions may return null and start an image fetching process, if the image does not yet exist
+    public Bitmap getArtistImage(KinoUI kinoui){
+		if (artistImage!=null){
+			return artistImage;
+		}
+		
+    	ArtistProperties artist=kinoui.library.getArtistFromCache(Artist);
+    	artistImage=artist.getArtistImage(kinoui);
+    	
+    	return artistImage;
+    }
+    
     public Bitmap getAlbumImage(KinoUI kinoui){
 		if (albumImage!=null){
 			return albumImage;
-		}
-
-		//TODO make sure that the SDcard is properly mounted    	
-		String albumImagePath=Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+Kino.ALBUM_DIR;
-		String albumFileName=ConvertUtils.safeFileName(Artist)+"-"+ConvertUtils.safeFileName(Album.Title)+".jpg";
-		File albumImageFile = new File(albumImagePath,albumFileName);
-		
-		//TODO obviously, change this
-		if (albumImageFile.exists()){
-			albumImage = BitmapFactory.decodeFile(albumImageFile.getAbsolutePath());
-		}
-		else{
-			if (!searchingForAlbumImage){				
-				Log.e(kinoui.getClass().getName(),"no artist image file: "+albumImagePath+"/"+albumFileName);
-				TaskMasterService taskmaster=kinoui.getTaskMaster();
-				taskmaster.addTask(new FetchAlbumDetails(Artist, Album.Title));
-				searchingForAlbumImage=true;
-			}
-			
-		}
+		}		    	
+    	albumImage=Album.getAlbumImage(kinoui);
 		
 		return albumImage;
     }
@@ -188,21 +197,7 @@ public class MediaProperties implements Comparable<MediaProperties>, Parcelable 
     public String toString() {
         return Artist + " - " + Title;
     }
-    
-    public class AlbumProperties implements Comparable<AlbumProperties> {
-        public String Title = null;
-        public int Year = 0;
-        
-        @Override
-        public int compareTo(AlbumProperties another) {
-            int result = CompareUtils.compareWithNulls(Title, another.Title);
-            if (result != 0) {
-                return result;
-            }
-            return Year - another.Year;
-        }
-    }
-    
+
     public static final Parcelable.Creator<MediaProperties> CREATOR = new Parcelable.Creator<MediaProperties>() {
         public MediaProperties createFromParcel(Parcel in) {
             return new MediaProperties(in);

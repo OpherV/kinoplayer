@@ -3,26 +3,29 @@ package com.android.kino.ui.listAdapters;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.kino.R;
 import com.android.kino.logic.AlbumList;
 import com.android.kino.logic.AlbumProperties;
+import com.android.kino.ui.KinoUI;
 
 public class AlbumAdapter extends ArrayAdapter<AlbumProperties> {
 
-	private Context mContext=null;
+	private KinoUI mContext=null;
 	private AlbumList albums=null;
 	private int itemResource;
 	
 	public AlbumAdapter(Context context, int textViewResourceId,
 			AlbumList objects) {
 		super(context, textViewResourceId, (List<AlbumProperties>) objects);
-		mContext=context;
+		mContext=(KinoUI) context;
 		albums=objects;
 		itemResource=textViewResourceId;
 	}	
@@ -58,6 +61,13 @@ public class AlbumAdapter extends ArrayAdapter<AlbumProperties> {
         else{
         	albumYear.setVisibility(View.GONE);
         }
+        
+        ImageView albumImage  = (ImageView) v.findViewById(R.id.albumItem_albumImage);
+        Bitmap albumBitmap=albumObj.getAlbumImage(mContext);
+        if (albumBitmap!=null){
+        	albumImage.setImageBitmap(albumBitmap);
+        }
+        
         
 		 
 		return v;

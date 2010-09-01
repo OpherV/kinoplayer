@@ -26,7 +26,7 @@ public class KinoUI extends Activity implements KinoUser{
 	protected TextView timeElapsed=null;
 	protected ProgressBar songProgress=null;
 	protected PlayerMini playermini;
-	protected Library library;  
+	public Library library;  
 	protected TaskMasterService mTaskMaster;
 	protected StatusUpdater updaterView;
 
@@ -70,8 +70,7 @@ public class KinoUI extends Activity implements KinoUser{
         updaterView = (StatusUpdater) findViewById(R.id.statusupdater);
         updaterView.initStatusUpdater();        
 		mTaskMaster.setDisplay(this);
-        
-        kinoReady();
+                
     }      
     
     public void updateUI(){
@@ -102,7 +101,7 @@ public class KinoUI extends Activity implements KinoUser{
 		    artistCaption.setText(song.Artist);
 		    
 		    TextView albumCaption = (TextView) this.findViewById(R.id.miniplayer_album);    
-		    albumCaption.setText(song.Album.Title);
+		    albumCaption.setText(song.Album.getAlbumName());
 		    
 		    ImageView image = (ImageView) this.findViewById(R.id.miniplayer_image); 
 		    image.setImageBitmap(song.getAlbumImage(this));
@@ -141,19 +140,22 @@ public class KinoUI extends Activity implements KinoUser{
 	@Override
 	protected void onResume() {
 		super.onResume();		
-		if (playermini!=null && song!=null){
-	    	   playermini.setVisibility(View.VISIBLE);		   	   
+		if (playermini!=null){
+			if (song!=null){
+	    	   playermini.setVisibility(View.VISIBLE);
+			}
+	   		else{
+				   playermini.setVisibility(View.GONE);
+			}
 		}		
-
-		StatusUpdater updaterView = (StatusUpdater) findViewById(R.id.statusupdater);
+		
 		if (mTaskMaster!=null){
 			mTaskMaster.setDisplay(this);
 		}
 	}
 
 	
-	protected void initUI(){}
-	protected void kinoReady(){};
+	protected void initUI(){}	
 	
 	
 	public TaskMasterService getTaskMaster(){

@@ -5,4 +5,10 @@
     <string name="mp_service_notification">Kino Media Player</string>
     <string name="some_service_connected">Service connected</string>
     <string name="app_name">Kino</string>
+    
+
+
+	<color name="itemBGcolor">#99000000</color>
+	<color name="titleBGcolor">#CC000000</color>
+
 </resources>

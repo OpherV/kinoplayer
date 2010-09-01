@@ -9,6 +9,7 @@ import com.android.kino.ui.KinoUI;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,12 +21,15 @@ public class SongAdapter extends ArrayAdapter<MediaProperties> {
 
 	KinoUI mContext=null;
 	Playlist playlist=null;
+	private boolean mIsAlbumPlaylist=false;
 	
 	public SongAdapter(Context context, int textViewResourceId,
-			Playlist objects) {
+			Playlist objects, boolean isAlbumPlaylist) {
 		super(context, textViewResourceId, (List<MediaProperties>) objects);
 		mContext=(KinoUI) context;
 		playlist=objects;
+		
+		mIsAlbumPlaylist=isAlbumPlaylist;
 	}	
 	
 	 @Override
@@ -45,19 +49,30 @@ public class SongAdapter extends ArrayAdapter<MediaProperties> {
                
         TextView artist = (TextView)  v.findViewById(R.id.songItem_artistTitle);                
         TextView albumTitle = (TextView)  v.findViewById(R.id.songItem_albumTitle);
-        
+                
         ImageView albumImage  = (ImageView) v.findViewById(R.id.songItem_image);
-        Bitmap albumBitmap=songObj.getAlbumImage(mContext);
-        if (albumBitmap!=null){
-        	albumImage.setImageBitmap(albumBitmap);
+        
+        View albumImageContainer = (View) v.findViewById(R.id.songItem_imageContainer);
+        
+        if (mIsAlbumPlaylist){
+        	albumImageContainer.setVisibility(View.GONE);        	
+        }
+        else{
+        	songTitle.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD),Typeface.BOLD);
+        	
+        	Bitmap albumBitmap=songObj.getAlbumImage(mContext);
+	        if (albumBitmap!=null){
+	        	albumImage.setImageBitmap(albumBitmap);
+	        }
         }
         
         //differntiate between an album based list and a nonalbum based list
         if (playlist.getAlbumTitle()==null){
 	        artist.setText(songObj.Artist);
-	        albumTitle.setText(songObj.Album.Title);
+	        albumTitle.setText(songObj.Album.getAlbumName());
         }
         else{
+        	albumImage.setVisibility(View.GONE);
 	        artist.setVisibility(View.GONE);
 	        albumTitle.setVisibility(View.GONE);
         }

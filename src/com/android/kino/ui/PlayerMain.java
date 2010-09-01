@@ -1,7 +1,5 @@
 package com.android.kino.ui;
 
-import android.os.SystemClock;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -60,11 +58,9 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
 		song = mPlayer.getCurrentMedia();
 		
 		
-		//TODO properly make image getting, as to not hinder performance
-		//bg image
-		MediaImageContainer songImages = new MediaImageContainer(mPlayer.getCurrentMedia());	        
+		//bg image			       
         ImageView playerBGview = (ImageView) findViewById(R.id.playerBG);        
-        playerBGview.setImageBitmap(songImages.getArtistImage());
+        playerBGview.setImageBitmap(song.getArtistImage(this));
 		
         //details
 		TextView titleCaption = (TextView) this.findViewById(R.id.player_title);    
@@ -74,7 +70,7 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
 	    artistCaption.setText(song.Artist);
 	    
 	    TextView albumCaption = (TextView) this.findViewById(R.id.player_album);    
-	    albumCaption.setText(song.Album.Title);
+	    albumCaption.setText(song.Album.getAlbumName());
 	    
 	    ImageView image = (ImageView) this.findViewById(R.id.player_albumImage); 
 	    image.setImageBitmap(song.getAlbumImage(this));

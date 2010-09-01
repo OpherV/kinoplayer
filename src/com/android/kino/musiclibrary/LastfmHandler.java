@@ -1,14 +1,10 @@
 package com.android.kino.musiclibrary;
 
-import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import android.util.Log;
  
  
 public class LastfmHandler extends DefaultHandler{

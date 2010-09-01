@@ -3,7 +3,6 @@ package com.android.kino.logic.tasks;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +21,6 @@ import org.xml.sax.XMLReader;
 
 import android.os.Environment;
 import android.os.Message;
-import android.provider.MediaStore.Audio.Artists;
 import android.util.Log;
 
 import com.android.kino.Kino;

@@ -1,14 +1,6 @@
 package com.android.kino.musiclibrary;
 
 import java.io.File;
-import java.util.LinkedList;
-
-import com.android.kino.logic.AlbumList;
-import com.android.kino.logic.AlbumProperties;
-import com.android.kino.logic.ArtistList;
-import com.android.kino.logic.ArtistProperties;
-import com.android.kino.logic.MediaProperties;
-import com.android.kino.logic.Playlist;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -18,6 +10,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.util.Log;
+
+import com.android.kino.logic.AlbumList;
+import com.android.kino.logic.AlbumProperties;
+import com.android.kino.logic.ArtistList;
+import com.android.kino.logic.ArtistProperties;
+import com.android.kino.logic.MediaProperties;
+import com.android.kino.logic.Playlist;
+import com.android.kino.musiclibrary.Library.LibraryBinder;
 
 public class LibraryDB extends SQLiteOpenHelper {
 
@@ -35,14 +35,15 @@ public class LibraryDB extends SQLiteOpenHelper {
             "[bitrate] INTEGER  NULL"+
             ")";    
     
-    
+    Library library=null;
     SQLiteDatabase MusicLibraryDB=null;
     
-    public LibraryDB(Context context, String name, CursorFactory factory,
+    public LibraryDB(Library lib, String name, CursorFactory factory,
             int version) {
-        super(context, name, factory, version);
+        super((Context) lib, name, factory, version);
         MusicLibraryDB=getWritableDatabase();
         Log.d(this.getClass().toString(),"musiclibrary DB fetched");
+        library=lib;
     }
 
     @Override
@@ -131,7 +132,8 @@ public class LibraryDB extends SQLiteOpenHelper {
     	return playlist;
     }
     private MediaProperties songFromCursor(Cursor cursor){        
-		MediaProperties song = new MediaProperties(cursor.getString(cursor.getColumnIndex("filename")),
+		MediaProperties song = new MediaProperties((LibraryBinder) library.libraryBinder,
+								cursor.getString(cursor.getColumnIndex("filename")),
 								cursor.getString(cursor.getColumnIndex("title")),
 								cursor.getString(cursor.getColumnIndex("artist")), 
 								cursor.getString(cursor.getColumnIndex("albumTitle")), 
@@ -163,7 +165,7 @@ public class LibraryDB extends SQLiteOpenHelper {
                 null,
                 "artist=\""+artistTitle+"\" AND "+"albumTitle=\""+albumTitle+"\"",//where
                 null, null, null,
-                "trackNumber DESC");
+                "trackNumber ASC");
     	cursor.moveToFirst();
     	
     	Playlist playlist = playlistFromCursor(cursor);    	    
@@ -172,7 +174,7 @@ public class LibraryDB extends SQLiteOpenHelper {
     	playlist.setAlbumTitle(albumTitle);
     	playlist.setArtistTitle(artistTitle);
     	//TODO ugly... find a better solution
-    	playlist.setAlbumYear(playlist.getFirst().Album.Year);
+    	playlist.setAlbumYear(playlist.getFirst().Album.getAlbumYear());
     	
     	return playlist;
     }

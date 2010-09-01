@@ -2,7 +2,8 @@
 <RelativeLayout 
  		xmlns:android="http://schemas.android.com/apk/res/android"
 		android:layout_width="fill_parent"
-		 android:layout_height="?android:attr/listPreferredItemHeight" 
+		 android:layout_height="?android:attr/listPreferredItemHeight"
+		 android:background="@color/itemBGcolor" 
 		 >
 	
 	<LinearLayout	android:id="@+id/songItem_imageContainer" 
@@ -19,19 +20,19 @@
 				
 	</LinearLayout>
 	
-	<LinearLayout android:layout_height="wrap_content"
+	<LinearLayout android:layout_height="?android:attr/listPreferredItemHeight"
 				android:layout_width="wrap_content"
 				android:orientation="vertical"			
 				android:layout_toRightOf="@id/songItem_imageContainer"
-				android:layout_centerVertical="true"				
-				android:layout_alignParentRight="true"				
+				android:layout_centerVertical="true"								
+				android:gravity="center_vertical"			
 				>
 				<TextView android:id="@+id/songItem_songTitle"
 							android:layout_height="wrap_content"
 							android:layout_width="wrap_content"
 							android:text="artistTitle"
-							android:textSize="14dp"
-							android:textStyle="bold"
+							android:textSize="14dp"							
+							android:textColor="#FFFFFF"
 							 />		
 				
 				<TextView android:id="@+id/songItem_artistTitle"
@@ -39,12 +40,14 @@
 							android:layout_width="wrap_content"
 							android:text="artistTitle"
 							android:textSize="13dp"
+							android:textColor="#EEEEEE"
 							/>
 				<TextView android:id="@+id/songItem_albumTitle"
 							android:layout_height="wrap_content"
 							android:layout_width="wrap_content"
 							android:text="albumTitle"
 							android:textSize="12dp"
+							android:textColor="#CCCCCC"
 							 />
 
 	</LinearLayout>

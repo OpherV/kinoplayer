@@ -1,43 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
     
-    <com.android.kino.ui.PlayerMini 
+<com.android.kino.ui.PlayerMini 
     android:id="@+id/player_mini"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:visibility="gone"
-     
-     />
+    android:visibility="gone"    
+    android:layout_alignParentTop="true"        
+     />	
      
 	 <RelativeLayout  		
 	 		android:id="@+id/menu_playlist_albumDetails"
 			android:layout_width="fill_parent"
-			 android:layout_height="?android:attr/listPreferredItemHeight" 			 
+			 android:layout_height="?android:attr/listPreferredItemHeight"
+			 android:layout_below="@id/player_mini"			 
 			 >
 		
-		<LinearLayout	android:id="@+id/albumItem_imageContainer" 
+		<LinearLayout	android:id="@+id/menu_playlist_imageContainer" 
 						android:layout_height="?android:attr/listPreferredItemHeight"
 						android:layout_width="?android:attr/listPreferredItemHeight"
 						android:padding="8dp"	
 						android:layout_alignParentLeft="true"											
 					>
 					
-					<ImageView android:id="@+id/albumItem_albumImage" 
-								android:layout_height="fill_parent"
-								android:layout_width="fill_parent"
-					/>									
+			<ImageView android:id="@+id/menu_playlist_albumImage" 
+						android:layout_height="fill_parent"
+						android:layout_width="fill_parent"						
+			/>	
+		</LinearLayout>								
 					
-		</LinearLayout>
-		
-		<LinearLayout android:layout_height="wrap_content"
+											
+		<LinearLayout 
+					android:layout_height="?android:attr/listPreferredItemHeight"
 					android:layout_width="wrap_content"
 					android:orientation="vertical"			
-					android:layout_toRightOf="@id/albumItem_imageContainer"
-					android:layout_centerVertical="true"
+					android:layout_toRightOf="@id/menu_playlist_imageContainer"
+					android:layout_centerVertical="true"						
+					android:gravity="center_vertical"	
 					>
 					<TextView android:id="@+id/albumItem_albumTitle"
 								android:layout_height="wrap_content"
@@ -45,6 +48,7 @@
 								android:text="albumTitle"
 								android:textSize="14dp"
 								android:textStyle="bold"
+								android:textColor="#FFFFFF"
 								 />		
 					
 					<TextView android:id="@+id/albumItem_artistTitle"
@@ -52,12 +56,14 @@
 								android:layout_width="wrap_content"
 								android:text="artistTitle"
 								android:textSize="13dp"
+								android:textColor="#BBBBBB"
 								/>
 					<TextView android:id="@+id/albumItem_albumYear"
 								android:layout_height="wrap_content"
 								android:layout_width="wrap_content"
 								android:text="albumItem_albumYear"
 								android:textSize="12dp"
+								android:textColor="#AAAAAA"
 								 />
 	
 		</LinearLayout>
@@ -69,6 +75,15 @@
     android:id="@+id/playlist"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:layout_below="@id/menu_playlist_albumDetails"
+	android:layout_alignParentBottom="true"
     />
+    
+	<com.android.kino.ui.StatusUpdater 
+    android:id="@+id/statusupdater"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"    
+    android:layout_alignParentBottom="true"
+     />	
 
-</LinearLayout>
+</RelativeLayout>

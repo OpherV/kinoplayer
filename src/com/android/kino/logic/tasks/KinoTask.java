@@ -1,11 +1,8 @@
 package com.android.kino.logic.tasks;
 
-import com.android.kino.logic.TaskMasterService;
-import com.android.kino.ui.StatusUpdater;
-
 import android.os.AsyncTask;
-import android.provider.ContactsContract.StatusUpdates;
-import android.view.View;
+
+import com.android.kino.logic.TaskMasterService;
 
 abstract public class KinoTask extends AsyncTask<Void,Void,Void>{
 	
