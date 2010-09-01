@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.LinkedList;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -24,32 +24,30 @@ import android.os.StatFs;
 import android.util.Log;
 
 import com.android.kino.Kino;
-import com.android.kino.logic.AlbumProperties;
+import com.android.kino.logic.ArtistProperties;
 import com.android.kino.logic.TaskMasterService;
-import com.android.kino.musiclibrary.LastFmHandlerAlbum;
-import com.android.kino.musiclibrary.LastFmHandlerAlbum.lastfmAlbumDetails;
+import com.android.kino.musiclibrary.LastFmHandlerArtistImages;
+import com.android.kino.musiclibrary.LastFmHandlerArtistImages.lastFMArtistImage;
 import com.android.kino.utils.ConvertUtils;
 
-public class FetchAlbumDetails extends KinoTask{		
-	private String mArtistTitle;
-	private String mAlbumTitle;			
-	private AlbumProperties mAlbum;
+public class FetchArtistImages extends KinoTask{		
+	private String mArtistTitle;			
+	private ArtistProperties mArtist;
 		
 	private final String LOGTAG="FetchAlbumDetails";
-	private LastFmHandlerAlbum queryHandler = new LastFmHandlerAlbum();
+	private LastFmHandlerArtistImages queryHandler = new LastFmHandlerArtistImages();
 	
-	public FetchAlbumDetails(AlbumProperties album){	
-		mAlbum=album;
-		mArtistTitle=album.getArtistName();
-		mAlbumTitle=album.getAlbumName();
-		mTaskTitle="Fetching \"" +mAlbumTitle + "\" from last.fm...";
+	public FetchArtistImages(ArtistProperties artist){	
+		mArtist=artist;
+		mArtistTitle=artist.getName();		
+		mTaskTitle="Fetching \"" +mArtistTitle + "\" from last.fm...";
 	}
 	
 	@Override
 	protected Void doInBackground(Void... params) {
 		//getXML();		
 							
-		URL xmlURL = buildURL(queryHandler.getAlbumQueryURL(mArtistTitle, mAlbumTitle));
+		URL xmlURL = buildURL(queryHandler.getArtistQueryURL(mArtistTitle,1));
 		downloadFile(xmlURL, "fetching XML",null);
 		
 		//parse XML
@@ -87,59 +85,60 @@ public class FetchAlbumDetails extends KinoTask{
 		e.printStackTrace();
 	}
 		
-		lastfmAlbumDetails albumDetails=queryHandler.getAlbumDetails();
-		String imagePath=albumDetails.images.get("large");
+		LinkedList<lastFMArtistImage> albumDetails=queryHandler.getArtistImages();
+		
+		String imagePath=albumDetails.get(0).imageURLS.get("extralarge");
 		
 		if (imagePath==null){
-			mAlbum.disableImage();
-			displayMessage("No image on LastFM for "+mArtistTitle+" - "+mAlbumTitle+" :(");
+			mArtist.disableImage();
+			displayMessage("No image on LastFM for "+mArtistTitle);
 			
 			cancel(true);
 		}
 		else{
 			
-			URL imageURL=buildURL(imagePath);
+			URL imageURL=buildURL(imagePath);			
 			String postfix=imagePath.substring(imagePath.length()-4,imagePath.length());
 			
-			final String albumImagePath=Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+Kino.ALBUM_DIR;
-			final String albumFileName=ConvertUtils.safeFileName(mArtistTitle)+"-"+ConvertUtils.safeFileName(mAlbumTitle)+postfix;
-			File albumImageFile = new File(albumImagePath,albumFileName);
+			final String artistImagePath=Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+Kino.ARTIST_DIR;
+			final String artistFileName=ConvertUtils.safeFileName(mArtistTitle)+postfix;
+			File artistImageFile = new File(artistImagePath,artistFileName);
 			FileOutputStream fos = null;
 			try {
-				fos = new FileOutputStream(albumImageFile);
+				fos = new FileOutputStream(artistImageFile);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
-			
-			//check for available storage size
+			//check for available sotrage size
             StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath()); 
             long bytesAvailable = (long)stat.getBlockSize() * (long)stat.getBlockCount(); 
-            
-			 if (mDownloaded> bytesAvailable){
-	         		displayMessage("Oops! not enough free space on SD card!");
-	        		cancel(true);
-	        		Log.e("Kino task "+mTaskId, "not enough free space on SD card. needed "+mDownloaded+" available "+bytesAvailable);
-				}
 			
-			downloadFile(imageURL, fos, "downloading album image...", new onDownloadComplete() {
+            if (mDownloaded> bytesAvailable){
+        		displayMessage("Oops! not enough free space on SD card!");
+       		cancel(true);
+       		Log.e("Kino task "+mTaskId, "not enough free space on SD card. needed "+mDownloaded+" available "+bytesAvailable);
+			}
+			
+			downloadFile(imageURL, fos, "downloading artist image...", new onDownloadComplete() {
 				
 				@Override
-				public void finishedDownload() {	
-								
-					Log.d(LOGTAG, "succesfully wrote "+albumImagePath+"/"+albumFileName);
-					   
-					Bitmap albumImage = BitmapFactory.decodeFile(albumImagePath+"/"+albumFileName);
-					if (albumImage !=null){
-						mAlbum.setImage(albumImage);
-						mAlbum.stopSearching();
+				public void finishedDownload() {
+													 				
+					Log.d(LOGTAG, "succesfully wrote "+artistImagePath+"/"+artistFileName);
+					
+
+					Bitmap albumImage = BitmapFactory.decodeFile(artistImagePath+"/"+artistFileName);
+					if (albumImage!=null){
+						mArtist.setImage(albumImage);
+						mArtist.stopSearching();
 						updateUI();
 					}
 					else{
-						Log.e("Kino task "+mTaskId, "couldn't decode downloaded image!");						
+						Log.e("Kino task "+mTaskId, "couldn't decode downloaded image!");		
 					}
-														
+
 					
 				}
 			});
@@ -147,7 +146,8 @@ public class FetchAlbumDetails extends KinoTask{
 		}
 	
 		return null;
-	}				
+	}		
+			
 
 	protected void publishProgress(int progress) {
 		//Log.d("progress",downloadURL+" "+progress);
@@ -168,9 +168,8 @@ public class FetchAlbumDetails extends KinoTask{
 		mTaskMaster.getMessageHandler().sendMessage(msg);	
 	}
 	
-	public boolean equals(FetchAlbumDetails another){
-		return (mAlbumTitle.equals(another.mAlbumTitle) &&
-				mArtistTitle.equals(another.mArtistTitle));
+	public boolean equals(FetchArtistImages another){
+		return (mArtistTitle.equals(another.mArtistTitle));				
 	}
 
 }

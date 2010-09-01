@@ -22,6 +22,7 @@ public class AlbumProperties implements Parcelable, Comparable<AlbumProperties> 
 	private int mAlbumYear;
 	private Bitmap albumImage;
 	private boolean searchingForAlbumImage=false;
+	private boolean mImageDisabled=false;
 	    
     
     @Override
@@ -96,24 +97,32 @@ public class AlbumProperties implements Parcelable, Comparable<AlbumProperties> 
 	}
 	
     public Bitmap getAlbumImage(KinoUI kinoui){
-		if (albumImage!=null){
+		if (mImageDisabled){
+			return null;
+		}
+    	
+    	if (albumImage!=null){
 			return albumImage;
 		}
 
 		//TODO make sure that the SDcard is properly mounted    	
 		String albumImagePath=Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+Kino.ALBUM_DIR;
-		String albumFileName=ConvertUtils.safeFileName(mArtistName)+"-"+ConvertUtils.safeFileName(mAlbumName)+".jpg";
-		File albumImageFile = new File(albumImagePath,albumFileName);
+		String albumFileNamePNG=ConvertUtils.safeFileName(mArtistName)+"-"+ConvertUtils.safeFileName(mAlbumName)+".png";
+		String albumFileNameJPG=ConvertUtils.safeFileName(mArtistName)+"-"+ConvertUtils.safeFileName(mAlbumName)+".jpg";
+		File albumImageFilePNG = new File(albumImagePath,albumFileNamePNG);
+		File albumImageFileJPG = new File(albumImagePath,albumFileNameJPG);						
 		
-		//TODO obviously, change this
-		if (albumImageFile.exists()){
-			albumImage = BitmapFactory.decodeFile(albumImageFile.getAbsolutePath());
+		if (albumImageFilePNG.exists()){			
+			albumImage = BitmapFactory.decodeFile(albumImageFilePNG.getAbsolutePath());
+		}
+		else if (albumImageFileJPG.exists()){
+			albumImage = BitmapFactory.decodeFile(albumImageFileJPG.getAbsolutePath());		
 		}
 		else{
 			if (!searchingForAlbumImage){				
-				Log.e(kinoui.getClass().getName(),"no artist image file: "+albumImagePath+"/"+albumFileName);
+				Log.e(kinoui.getClass().getName(),"no album image file: "+albumImagePath+"/"+ConvertUtils.safeFileName(mArtistName)+"-"+ConvertUtils.safeFileName(mAlbumName)+".*");
 				TaskMasterService taskmaster=kinoui.getTaskMaster();
-				taskmaster.addTask(new FetchAlbumDetails(mArtistName, mAlbumName));
+				taskmaster.addTask(new FetchAlbumDetails(this));
 				searchingForAlbumImage=true;
 			}
 			
@@ -121,6 +130,23 @@ public class AlbumProperties implements Parcelable, Comparable<AlbumProperties> 
 		
 		return albumImage;
     }
+
+	public void setImage(Bitmap image) {
+		albumImage=image;
+		
+	}
+
+	public void disableImage() {
+		mImageDisabled=true;
+		
+	}
+
+	public void stopSearching() {
+		searchingForAlbumImage=false;
+		
+	}
+	
+	
 	
 	
 }

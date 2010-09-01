@@ -17,6 +17,10 @@ import com.android.kino.logic.ArtistList;
 import com.android.kino.logic.ArtistProperties;
 import com.android.kino.logic.MediaProperties;
 import com.android.kino.logic.Playlist;
+import com.android.kino.logic.settings.SettingsContainer;
+import com.android.kino.logic.settings.SettingsLoader;
+import com.android.kino.logic.settings.SettingsContainer.Setting;
+import com.android.kino.utils.ConvertUtils;
 
 public class Library extends Service{
 	Kino kino = null;
@@ -28,12 +32,19 @@ public class Library extends Service{
 			
 	final String DBNAME ="MusicLibrary";
 	
-	public ArtistProperties getArtistFromCache(String artistTitle){
+	public ArtistProperties getArtistFromCache(String artistTitle){		
 		ArtistProperties artist=null;
 		if (!artistCache.containsKey(artistTitle)){		
 			artistCache.put(artistTitle, new ArtistProperties(artistTitle) );
 		}
-		artist = artistCache.get(artistTitle);
+		artist = artistCache.get(artistTitle);		
+		return artist;
+	}
+	
+	public ArtistProperties getArtistFromCache(String artistTitle, int totalSongs) {
+		ArtistProperties artist = getArtistFromCache(artistTitle);
+		artist.setTotalSongs(totalSongs);
+		
 		return artist;
 	}
 	
@@ -44,10 +55,14 @@ public class Library extends Service{
 		}
 		album = albumCache.get(getAlbumCacheKey(artistTitle,albumTitle));
 		return album;
-	}
+	}	
 	
 	private String getAlbumCacheKey(String artistTitle, String albumTitle){
 		return artistTitle+"-"+albumTitle;
+	}
+	
+	public static String getAlbumFileName(String artistTitle, String albumTitle){
+		return ConvertUtils.safeFileName(artistTitle)+"-"+ConvertUtils.safeFileName(albumTitle);
 	}
 	
 	@Override
@@ -63,13 +78,13 @@ public class Library extends Service{
 			
 			
 			//TODO use kino preferences defined mp3 dir
-			/*
+		/*
 			File rootDir = Environment.getExternalStorageDirectory();
 			SettingsContainer settings = SettingsLoader.loadCurrentSettings();
 			String mediaPath = settings.getConfiguredString(Setting.MEDIA_DIRECTORY);
 			File mp3dir = new File(rootDir, mediaPath);
 			scanDir(mp3dir, true);
-			*/			
+		*/
 		}
 		
 		return libraryBinder;
@@ -160,5 +175,6 @@ public class Library extends Service{
 			return Library.this;
 		}
 	}
+
 		
 }

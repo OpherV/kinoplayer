@@ -50,6 +50,13 @@ public class MenuArtistBrowse extends KinoUI implements OnItemClickListener {
     		startActivity(albumlistIntent);
 			       
 	       
-	    }        	    		
+	    }  
+	    
+		
+		@Override
+		public void updateUI() {	
+			super.updateUI();
+			artistListAdapter.notifyDataSetChanged();
+		}
 	
 }

@@ -195,10 +195,10 @@ public class LibraryDB extends SQLiteOpenHelper {
     	cursor.moveToFirst();
     	
     	while (!cursor.isAfterLast()){
-    		ArtistProperties artist=new ArtistProperties(
-					    				cursor.getString(cursor.getColumnIndex("artist")),
-					    				Integer.parseInt(cursor.getString(cursor.getColumnIndex("totalSongs")))
-					    				);
+    		ArtistProperties artist=library.getArtistFromCache(
+    														cursor.getString(cursor.getColumnIndex("artist")),
+    														Integer.parseInt(cursor.getString(cursor.getColumnIndex("totalSongs")))
+    														);
     		artists.add(artist);
     		cursor.moveToNext();
     	}
@@ -223,9 +223,9 @@ public class LibraryDB extends SQLiteOpenHelper {
     	cursor.moveToFirst();
     	
     	while (!cursor.isAfterLast()){
-    		AlbumProperties album=new AlbumProperties(
-					    				cursor.getString(cursor.getColumnIndex("albumTitle")),
-					    				cursor.getString(cursor.getColumnIndex("artist")),
+    		AlbumProperties album=library.getAlbumFromCache(
+    									cursor.getString(cursor.getColumnIndex("artist")),
+					    				cursor.getString(cursor.getColumnIndex("albumTitle")),					    				
 					    				Integer.parseInt(cursor.getString(cursor.getColumnIndex("albumYear")))
 					    				);
     		albums.add(album);
@@ -252,9 +252,9 @@ public class LibraryDB extends SQLiteOpenHelper {
     	cursor.moveToFirst();
     	
     	while (!cursor.isAfterLast()){
-    		AlbumProperties album=new AlbumProperties(
-					    				cursor.getString(cursor.getColumnIndex("albumTitle")),
-					    				cursor.getString(cursor.getColumnIndex("artist")),
+    		AlbumProperties album=library.getAlbumFromCache(
+    									cursor.getString(cursor.getColumnIndex("artist")),
+					    				cursor.getString(cursor.getColumnIndex("albumTitle")),					    				
 					    				Integer.parseInt(cursor.getString(cursor.getColumnIndex("albumYear")))
 					    				);
     		albums.add(album);

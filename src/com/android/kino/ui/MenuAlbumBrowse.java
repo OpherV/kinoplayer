@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.android.kino.Kino;
 import com.android.kino.R;
 import com.android.kino.logic.AlbumList;
 import com.android.kino.logic.AlbumProperties;
@@ -23,6 +24,7 @@ public class MenuAlbumBrowse extends KinoUI implements OnItemClickListener {
 	    AlbumList albumList=null;
 	    TextView artistTitleView;
 	    View artistTitleContainer;
+	    ArtistProperties artist;
 	    
 		@Override
 		protected void initUI() {
@@ -30,7 +32,13 @@ public class MenuAlbumBrowse extends KinoUI implements OnItemClickListener {
 			setContentView(R.layout.menu_albumbrowse);		
 			albumList=getIntent().getExtras().getParcelable("albumlist");
 			
-					
+			
+		}
+		
+		@Override
+		public void onKinoInit(Kino kino) {		
+			super.onKinoInit(kino);
+
 			 artistTitleView = (TextView)findViewById(R.id.menu_albumbrowse_artistname);			
 			 artistTitleContainer = (View)findViewById(R.id.menu_albumbrowse_titleContainer);		
 			
@@ -41,7 +49,7 @@ public class MenuAlbumBrowse extends KinoUI implements OnItemClickListener {
 			if (albumList.getArtistTitle()!=null){				
 				artistTitleView.setText(albumList.getArtistTitle());		
 						        
-				ArtistProperties artist=new ArtistProperties(albumList.getArtistTitle());
+				artist=library.getArtistFromCache(albumList.getArtistTitle());
 		        ImageView artistImageBG = (ImageView) findViewById(R.id.menu_albumbrowse_bgimage);
 		        artistImageBG.setImageBitmap(artist.getArtistImage(this));
 		        artistTitleContainer.setVisibility(View.VISIBLE);
@@ -55,7 +63,6 @@ public class MenuAlbumBrowse extends KinoUI implements OnItemClickListener {
 			albumlistView.setAdapter(albumListAdapter);			
 			
 			albumlistView.setOnItemClickListener(this);
-			
 			
 		}
 		
@@ -77,6 +84,18 @@ public class MenuAlbumBrowse extends KinoUI implements OnItemClickListener {
     		startActivity(playlistIntent);    		      
 	       
 	    }  
+	    
+		@Override
+		public void updateUI() {	
+			super.updateUI();
+			albumListAdapter.notifyDataSetChanged();
+			
+			if (albumList.getArtistTitle()!=null){							
+		        ImageView artistImageBG = (ImageView) findViewById(R.id.menu_albumbrowse_bgimage);
+		        artistImageBG.setImageBitmap(artist.getArtistImage(this));		        
+			}
+		}
+		
 	    
 	
 }

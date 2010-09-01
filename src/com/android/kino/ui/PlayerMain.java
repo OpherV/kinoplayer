@@ -120,4 +120,14 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
 		}
 		
 	}
+	
+	@Override
+	public void updateUI() {	
+		super.updateUI();
+		
+		//bg image			       
+        ImageView playerBGview = (ImageView) findViewById(R.id.playerBG);        
+        playerBGview.setImageBitmap(song.getArtistImage(this));
+		
+	}
 }

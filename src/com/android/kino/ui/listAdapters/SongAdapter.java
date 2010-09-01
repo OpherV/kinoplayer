@@ -10,6 +10,7 @@ import com.android.kino.ui.KinoUI;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +61,7 @@ public class SongAdapter extends ArrayAdapter<MediaProperties> {
         else{
         	songTitle.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD),Typeface.BOLD);
         	
-        	Bitmap albumBitmap=songObj.getAlbumImage(mContext);
+        	Bitmap albumBitmap=songObj.getAlbumImage(mContext);        	
 	        if (albumBitmap!=null){
 	        	albumImage.setImageBitmap(albumBitmap);
 	        }

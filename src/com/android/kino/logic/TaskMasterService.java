@@ -9,16 +9,17 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.kino.Kino;
 import com.android.kino.logic.tasks.FetchAlbumDetails;
 import com.android.kino.logic.tasks.KinoTask;
 import com.android.kino.ui.KinoUI;
-import com.android.kino.ui.StatusUpdater;
 
 public class TaskMasterService extends Service{
 	
-	public static final int MSG_UPDATEVIEW = 413; 
+	public static final int MSG_UPDATEVIEW = 413;
+	public static final int MSG_SHOWMESSAGE = 542; 
 	
 	Kino kino = null;	
 	IBinder taskmasterBinder=new TaskMasterBinder();
@@ -35,7 +36,12 @@ public class TaskMasterService extends Service{
 			switch(msg.what){
 				case MSG_UPDATEVIEW:
 				mDisplay.updateUI();
-					
+				break;
+				
+				case MSG_SHOWMESSAGE:
+					displayMessage(msg.getData().getString("text"));
+				break;
+				
 			}
 		}
 	};
@@ -122,6 +128,10 @@ public class TaskMasterService extends Service{
 	public void setDisplay(KinoUI kinoUI) {
 		mDisplay=kinoUI;
 		
+	}
+
+	public void displayMessage(String text) {
+		Toast.makeText(mDisplay, text, Toast.LENGTH_LONG).show();		
 	}
 
 }

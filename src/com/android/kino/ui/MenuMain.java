@@ -23,6 +23,7 @@ public class MenuMain extends KinoUI {
 			 
     private ListView playlistView=null;
     Playlist playlist=null;
+    private ArrayAdapter<MediaProperties> playlistAdapter;
     
     
     //listener for all song list
@@ -105,7 +106,7 @@ public class MenuMain extends KinoUI {
 	
 	private void setAllSongs(){
 		playlist=library.getAllSongs();
-		ArrayAdapter<MediaProperties> playlistAdapter = new SongAdapter(this,0, playlist,false);		
+		playlistAdapter = new SongAdapter(this,0, playlist,false);		
 		playlistView.setAdapter(playlistAdapter);					
 		playlistView.setOnItemClickListener(songsClickListener);
 	}
@@ -117,6 +118,12 @@ public class MenuMain extends KinoUI {
 	public void onKinoInit(Kino kino) {	
 		super.onKinoInit(kino);
 		setAllSongs();
+	}
+	
+	@Override
+	public void updateUI() {	
+		super.updateUI();
+		playlistAdapter.notifyDataSetChanged();
 	}
 	
 

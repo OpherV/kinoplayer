@@ -36,10 +36,7 @@ public class LastFmHandlerAlbum extends LastfmHandler{
     	if (inTag("image")){
         	albumDetails.images.put(currentAtts.get("size"),new String(ch, start, length));
     	}
-    	
-    	if (inTag("wiki") && localTag!=null && !localTag.equals("wiki")){
-        	albumDetails.wiki.put(localTag,new String(ch, start, length));
-    	}
+   
             
       }    
     
@@ -56,4 +53,5 @@ public class LastFmHandlerAlbum extends LastfmHandler{
 		}
 		
 	}
+
 }
