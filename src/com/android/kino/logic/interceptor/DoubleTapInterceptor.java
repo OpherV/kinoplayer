@@ -100,7 +100,7 @@ public class DoubleTapInterceptor extends AudioReader.Listener implements Runnab
         float sample = Math.abs(mLastSample);
         
         if (sample >= MIN_TAP_NOISE && sample <= MAX_TAP_NOISE) {
-            Log.e(TAG, "Silence interrupted after " + mSilenceCount);
+            Log.i(TAG, "Silence interrupted after " + mSilenceCount);
             if (!mHadFirstTap) {
                 // First tap is registered only after long enough silence
                 mHadFirstTap = mSilenceCount >= MIN_NEEDED_SILENCE;
