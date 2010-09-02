@@ -14,6 +14,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.android.kino.Kino;
 import com.android.kino.R;
 import com.android.kino.logic.AlbumProperties;
+import com.android.kino.logic.ArtistProperties;
 import com.android.kino.logic.MediaProperties;
 import com.android.kino.logic.Playlist;
 import com.android.kino.ui.listAdapters.SongAdapter;
@@ -46,11 +47,13 @@ public class MenuPlaylist extends KinoUI implements OnItemClickListener{
     	super.onKinoInit(kino);
     	
     	AlbumProperties album=null;
+    	ArtistProperties artist=null;
 		boolean isAlbumPlaylist=getIntent().getExtras().getBoolean("albumPlaylist");
 		if (isAlbumPlaylist){
 			album=library.getAlbumFromCache(getIntent().getExtras().getString("albumArtist"),
 															getIntent().getExtras().getString("albumTitle"),
 															getIntent().getExtras().getInt("albumYear"));
+			artist= library.getArtistFromCache(album.getArtistName());
 		}		 
     	
 		playlistAdapter = new SongAdapter(this, 0, playlist, isAlbumPlaylist);
@@ -65,7 +68,10 @@ public class MenuPlaylist extends KinoUI implements OnItemClickListener{
 		}
 		else{
 			
-	
+			//bg
+			ImageView artistImageBG = (ImageView) findViewById(R.id.menu_playlist_bgimage);
+	        artistImageBG.setImageBitmap(artist.getArtistImage(this));
+			
 			ImageView image = (ImageView) this.findViewById(R.id.menu_playlist_albumImage);
 		    Bitmap albumImage=album.getAlbumImage(this);
 		    if (albumImage!=null){

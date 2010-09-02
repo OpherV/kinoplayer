@@ -12,6 +12,11 @@
     android:visibility="gone"    
     android:layout_alignParentTop="true"        
      />	
+
+	<ImageView android:id="@+id/menu_playlist_bgimage"
+			    android:layout_width="fill_parent"
+		    	android:layout_height="fill_parent"
+		    	android:scaleType="centerCrop" />	     
      
 	 <RelativeLayout  		
 	 		android:id="@+id/menu_playlist_albumDetails"
