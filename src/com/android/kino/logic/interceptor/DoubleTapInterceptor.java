@@ -13,7 +13,6 @@ public class DoubleTapInterceptor extends AudioReader.Listener implements Runnab
 
     private static final int SAMPLE_EVERY = 40;
     
-    //private static final float SILENCE_CHANGE_FACTOR = 0.3f;
     private static final float MIN_TAP_NOISE = 30f;
     private static final float MAX_TAP_NOISE = 45f;
     private static final int MIN_NEEDED_SILENCE = 20;
@@ -39,7 +38,6 @@ public class DoubleTapInterceptor extends AudioReader.Listener implements Runnab
 
     private Thread mSamplingThread;
     
-    //private float mSilence = MIN_SILENCE;
     private int mSilenceCount = 0;
     private boolean mHadFirstTap = false;
     
@@ -101,10 +99,6 @@ public class DoubleTapInterceptor extends AudioReader.Listener implements Runnab
     private void takeSample() {
         float sample = Math.abs(mLastSample);
         
-        if (sample > 10) {
-            Log.e(TAG, "Sample - " + sample);
-        }
-        
         if (sample >= MIN_TAP_NOISE && sample <= MAX_TAP_NOISE) {
             Log.e(TAG, "Silence interrupted after " + mSilenceCount);
             if (!mHadFirstTap) {
@@ -118,18 +112,19 @@ public class DoubleTapInterceptor extends AudioReader.Listener implements Runnab
                     mListener.onEventTriggered(DoubleTapEvent.ID);
                 }
             }
+            else {
+                mHadFirstTap = false;
+            }
             mSilenceCount = 0;
         }
-        else if (sample < MIN_TAP_NOISE && mSilenceCount < MIN_NEEDED_SILENCE) {
+        else if (sample >= MIN_TAP_NOISE) {
+            Log.w(TAG, "Noise...");
+            mHadFirstTap = false;
+            mSilenceCount = 0;
+        }
+        else if (mSilenceCount < MIN_NEEDED_SILENCE) {
             ++mSilenceCount;
         }
-        else {
-            mSilenceCount = 0;
-        }
-        /*mSilence = sample*SILENCE_CHANGE_FACTOR + mSilence*(1-SILENCE_CHANGE_FACTOR);
-        if (mSilence < MIN_SILENCE) {
-            mSilence = MIN_SILENCE;
-        }*/
     }
 
     /**
