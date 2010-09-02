@@ -35,6 +35,7 @@ public class Kino extends Application implements ServiceUser {
     
     public final static String ALBUM_DIR="kino/images/albums";
     public final static String ARTIST_DIR="kino/images/artists";
+	public static final String KINODIR = "kino";
     
     public static Kino getKino(Activity activity) {
         return (Kino)activity.getApplication();

@@ -2,6 +2,7 @@ package com.android.kino.musiclibrary;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import android.app.Service;
 import android.content.Intent;
@@ -74,31 +75,52 @@ public class Library extends Service{
 		}		
 		else {
 			//setup db
-			db = new LibraryDB(this, DBNAME, null, 1);
-			
-			
-			//TODO use kino preferences defined mp3 dir
-		/*
-			File rootDir = Environment.getExternalStorageDirectory();
-			SettingsContainer settings = SettingsLoader.loadCurrentSettings();
-			String mediaPath = settings.getConfiguredString(Setting.MEDIA_DIRECTORY);
-			File mp3dir = new File(rootDir, mediaPath);
-			scanDir(mp3dir, true);
-		*/
+			db = new LibraryDB(this, DBNAME, null, 1);					
 		}
 		
 		return libraryBinder;
 	}
 	
+	public void updateLibrary(LibraryStatusUpdater updater){
+		cleanLibrary(updater);
+		
+		//TODO use kino preferences defined mp3 dir		
+		File rootDir = Environment.getExternalStorageDirectory();
+		SettingsContainer settings = SettingsLoader.loadCurrentSettings();
+		String mediaPath = settings.getConfiguredString(Setting.MEDIA_DIRECTORY);
+		File mp3dir = new File(rootDir, mediaPath);
+		scanDir(mp3dir, true, updater);		
+	}
+	
+	//removes files that are longer present on the media
+	public void cleanLibrary(LibraryStatusUpdater updater){
+		LinkedList<String> filenames= db.fetchAllSongFilenames();
+		
+		for (String filename: filenames){
+			File fileToCheck = new File(filename);
+			if (updater!=null){
+				updater.updateProgress("verifying "+filename);
+			}
+			if (!fileToCheck.exists()){
+				db.removeSong(filename);
+			}
+		}
+		
+	}
+	
 	
 	//scan files, add them to music library
-	private void scanDir(File dir, boolean recurse){
+	private void scanDir(File dir, boolean recurse, LibraryStatusUpdater updater){
 		File dirFiles[] = dir.listFiles();
-					
+
+		if (updater!=null){
+			updater.updateProgress("scanning "+dir.getAbsolutePath().toString());
+		}
+		
 		for (File file : dirFiles) {			
 			//drill down if recursing
 			if (file.isDirectory() && recurse){
-				scanDir(file, true);
+				scanDir(file, true, updater);
 			}			
 			else if (isMediaFile(file)){
 				addFileToLibrary(file);
@@ -174,6 +196,11 @@ public class Library extends Service{
 		public Library getLibrary(){
 			return Library.this;
 		}
+	}
+	
+	public static abstract class LibraryStatusUpdater{		
+		abstract public void updateProgress(String progress);
+		
 	}
 
 		

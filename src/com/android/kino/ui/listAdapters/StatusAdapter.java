@@ -48,8 +48,8 @@ public class StatusAdapter extends ArrayAdapter<KinoTask>{
 			
 			
 			actionView.setText(task.getTaskAction()+" ("+task.getTaskProgress()+"%)");
-			progressViewKnownLength.setMax(task.getMax());
-			progressViewKnownLength.setProgress(task.getDownloaded());
+			progressViewKnownLength.setMax(100);
+			progressViewKnownLength.setProgress(task.getTaskProgress());
 			
 		}
 		else{

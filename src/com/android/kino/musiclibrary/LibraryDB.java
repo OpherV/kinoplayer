@@ -1,6 +1,7 @@
 package com.android.kino.musiclibrary;
 
 import java.io.File;
+import java.util.LinkedList;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -158,6 +159,47 @@ public class LibraryDB extends SQLiteOpenHelper {
     	cursor.close();
     	
     	return playlist;
+    }
+    
+    public LinkedList<String> fetchAllSongFilenames(){
+    	String[] queryColumns = {"filename"};
+    	
+    	LinkedList<String> songFilenames = new LinkedList<String>();
+    	
+    	Cursor cursor = MusicLibraryDB.query(SONG_TABLE, //from
+                queryColumns, //select
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+    	cursor.moveToFirst();
+  
+       	while (!cursor.isAfterLast()){    		
+       		songFilenames.add(cursor.getString(cursor.getColumnIndex("filename")));
+    		cursor.moveToNext();
+    	}
+       	
+       	cursor.close();
+  
+    	return songFilenames;
+    }
+    
+    public void removeSong(String filename){    	
+    	MusicLibraryDB.delete (SONG_TABLE, //from
+    				"filename=\""+filename+"\"", //where
+    				null //args ?
+    				);
+    	Log.d(this.getClass().toString(),"removed song from library: "+filename);
+    }
+    
+    public void removeAllSongs(){
+    	MusicLibraryDB.delete (SONG_TABLE, //from
+				null, //where
+				null //args ?
+				);
+	Log.d(this.getClass().toString(),"removed all songs from library!");
     }
     
     public Playlist fetchSongsByAlbum(String artistTitle,String albumTitle){

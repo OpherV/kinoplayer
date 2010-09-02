@@ -4,10 +4,14 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.kino.Kino;
 import com.android.kino.R;
@@ -15,6 +19,7 @@ import com.android.kino.logic.KinoMediaPlayer;
 import com.android.kino.logic.KinoUser;
 import com.android.kino.logic.MediaProperties;
 import com.android.kino.logic.TaskMasterService;
+import com.android.kino.logic.tasks.UpdateLibrary;
 import com.android.kino.musiclibrary.Library;
 import com.android.kino.utils.ConvertUtils;
 
@@ -162,5 +167,24 @@ public class KinoUI extends Activity implements KinoUser{
 		return mTaskMaster;
 	}
 	
+		
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.kinoui_menu, menu);
+	    return true;
+	}
+		
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	    case R.id.menu_options_updatelibrary:
+	        
+	    	mTaskMaster.addTask(new UpdateLibrary(library));
+	    	
+	        return true;	    
+	    default:
+	        return super.onOptionsItemSelected(item);
+	    }
+	}
 	
 }

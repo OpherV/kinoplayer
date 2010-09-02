@@ -1,5 +1,6 @@
 package com.android.kino.musiclibrary;
 
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -8,7 +9,7 @@ public class LastFmHandlerArtistImages extends LastfmHandler{
 	private lastFMArtistImage currentLastFMImage; 
 	
 	public String getArtistQueryURL(String mArtistTitle, int limit) {
-		return "http://ws.audioscrobbler.com/2.0/?method=artist.getimages&artist="+mArtistTitle+"&api_key="+APIKEY+"&limit="+limit;
+		return "http://ws.audioscrobbler.com/2.0/?method=artist.getimages&artist="+URLEncoder.encode(mArtistTitle)+"&api_key="+APIKEY+"&limit="+limit;
 	}
     
         

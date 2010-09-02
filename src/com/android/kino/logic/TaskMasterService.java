@@ -24,7 +24,7 @@ public class TaskMasterService extends Service{
 	Kino kino = null;	
 	IBinder taskmasterBinder=new TaskMasterBinder();
 	
-	private final int MAXTASKS=1;
+	private final int MAXTASKS=3;
 	
 	private int taskCounter=1;
 	
