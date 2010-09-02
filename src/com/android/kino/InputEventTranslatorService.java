@@ -1,5 +1,8 @@
 package com.android.kino;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +14,8 @@ import com.android.kino.logic.InputEventTranslator;
 import com.android.kino.logic.KinoMediaPlayer;
 import com.android.kino.logic.KinoServiceConnection;
 import com.android.kino.logic.ServiceUser;
+import com.android.kino.logic.interceptor.DoubleTapInterceptor;
+import com.android.kino.logic.interceptor.InputEventInterceptor;
 
 /**
  * This service is only used to contain the InputEventTranslator running in the
@@ -23,6 +28,8 @@ public class InputEventTranslatorService extends Service implements ServiceUser 
     private final IBinder mBinder = new IETBinder();
     private InputEventTranslator mInputTranslator = null;
     private KinoServiceConnection mMediaPlayerConn = new KinoServiceConnection(this);
+    
+    private List<InputEventInterceptor> mInterceptors = new LinkedList<InputEventInterceptor>();
 
     
     /* (non-Javadoc)
@@ -42,6 +49,8 @@ public class InputEventTranslatorService extends Service implements ServiceUser 
             // TODO: Do something about this... failed to bind to media player
             return;
         }
+        
+        mInterceptors.add(new DoubleTapInterceptor());
     }
 
     /* (non-Javadoc)
@@ -57,6 +66,10 @@ public class InputEventTranslatorService extends Service implements ServiceUser 
             KinoMediaPlayer player =
                 ((MediaPlayerService.MPBinder) binder).getPlayer();
             mInputTranslator = new InputEventTranslator(player);
+            for (InputEventInterceptor interceptor : mInterceptors) {
+                interceptor.setListener(mInputTranslator);
+                interceptor.startIntercepting();
+            }
         }
         Log.d(getClass().getName(), "InputEventTranslatorService bound to media player");
     }
@@ -67,6 +80,9 @@ public class InputEventTranslatorService extends Service implements ServiceUser 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        for (InputEventInterceptor interceptor : mInterceptors) {
+            interceptor.stopIntercepting();
+        }
         doUnbindMediaPlayerService();
         Log.d(getClass().getName(), "InputEventTranslatorService.onDestroy");
     }

@@ -1,13 +1,14 @@
 package com.android.kino.logic;
 
 import com.android.kino.logic.action.KinoAction;
+import com.android.kino.logic.interceptor.InputEventListener;
 import com.android.kino.logic.settings.SettingsLoader;
 
 /**
  * Receives input from the input interceptors and communicates it to the media
  * player.
  */
-public class InputEventTranslator {
+public class InputEventTranslator implements InputEventListener {
     private KinoMediaPlayer mPlayer;
     
     public InputEventTranslator(KinoMediaPlayer player) {
@@ -20,7 +21,8 @@ public class InputEventTranslator {
      * 
      * @param eventId The event to handle.
      */
-    public void handleInput(int eventId) {
+    @Override
+    public void onEventTriggered(int eventId) {
         KinoAction action = SettingsLoader.loadCurrentSettings().getConfiguredAction(eventId);
         
         if (action != null) {
