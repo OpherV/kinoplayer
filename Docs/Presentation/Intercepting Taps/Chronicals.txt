@@ -1,0 +1,8 @@
+Quick and dirty machine learning using the accelerometers.
+Not working...
+Sampling taps.
+Plotting sensor output on taps showes nothing helpful - AccelerometerGivesNothing.bmp
+Trying out audio tap recognition.
+Sampling taps sound.
+Heuristic definded - AudioFiguredOut.bmp
+Working! - SUCCESS!.bmp
