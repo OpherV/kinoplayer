@@ -39,7 +39,6 @@ abstract public class KinoTask extends AsyncTask<Void,Void,Void>{
 	protected TASKLENGTH mTaskLength=TASKLENGTH.UNKNOWN_LENGTH;	
 	
 	private final String LOGTAG ="KinoTask";
-	private final int BUFFERSIZE = 1024*800;// Kb
 	
 	public void setTaskMaster(TaskMasterService taskMaster){
 		mTaskMaster=taskMaster;

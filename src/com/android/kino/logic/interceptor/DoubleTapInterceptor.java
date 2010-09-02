@@ -11,13 +11,18 @@ public class DoubleTapInterceptor extends AudioReader.Listener implements Runnab
     
     private static final float MIN_SILENCE = 5f;
 
-    private static final int SAMPLE_EVERY = 40;
+    // TODO Move to advanced settings
+    private static final int SAMPLE_EVERY = 30;
     
     private static final float MIN_TAP_NOISE = 30f;
-    private static final float MAX_TAP_NOISE = 45f;
+    private static final float MAX_TAP_NOISE = 50f;
     private static final int MIN_NEEDED_SILENCE = 20;
+    // TODO Move to advanced settings
     private static final int TAP_MIN_SPACE = 4;
+    // TODO Move to advanced settings
     private static final int TAP_MAX_SPACE = 10;
+    // TODO Move to advanced settings
+    private static final short TAP_MIN_MAX = 10000;
 
     // Maximum signal amplitude for 16-bit data.
     private static final float MAX_16_BIT = 32768;
@@ -30,7 +35,7 @@ public class DoubleTapInterceptor extends AudioReader.Listener implements Runnab
     // a 1kHz signal at 16,000 samples/sec.
     private static final float FUDGE = 55.6f;
     
-    private float mLastSample;
+    private float mLastPower;
     
     public boolean mStop = false;
     
@@ -42,9 +47,12 @@ public class DoubleTapInterceptor extends AudioReader.Listener implements Runnab
     private boolean mHadFirstTap = false;
     
     private InputEventListener mListener = null;
+
+	private short mLastMax;
     
     public DoubleTapInterceptor() {
-        mLastSample = MIN_SILENCE;
+        mLastPower = MIN_SILENCE;
+        mLastMax = 0;
         
         mAudio = new AudioReader();
     }
@@ -88,7 +96,18 @@ public class DoubleTapInterceptor extends AudioReader.Listener implements Runnab
 
     @Override
     public void onReadComplete(short[] buffer) {
-        mLastSample = (float) calculatePowerDb(buffer);
+    	long sum = 0;
+    	short max = 0;
+    	short s;
+    	for (int i = 0; i < buffer.length; ++i) {
+    		s = (short) Math.abs(buffer[i]);
+    		if (s > max) {
+    			max = s;
+    		}
+    		sum += s;
+    	}
+    	mLastMax = max;
+        mLastPower = (float) calculatePowerDb(buffer);
     }
 
     @Override
@@ -97,17 +116,18 @@ public class DoubleTapInterceptor extends AudioReader.Listener implements Runnab
     }
     
     private void takeSample() {
-        float sample = Math.abs(mLastSample);
+        float sample = Math.abs(mLastPower);
+        short max = mLastMax;
         
-        if (sample >= MIN_TAP_NOISE && sample <= MAX_TAP_NOISE) {
-            Log.i(TAG, "Silence interrupted after " + mSilenceCount);
+        if (max > TAP_MIN_MAX && sample >= MIN_TAP_NOISE && sample <= MAX_TAP_NOISE) {
+            Log.v(TAG, String.format("Silence interrupted after %d. s: %f\tm: %d", mSilenceCount, sample, max));
             if (!mHadFirstTap) {
                 // First tap is registered only after long enough silence
                 mHadFirstTap = mSilenceCount >= MIN_NEEDED_SILENCE;
             }
             else if (mSilenceCount >= TAP_MIN_SPACE && mSilenceCount <= TAP_MAX_SPACE) {
                 mHadFirstTap = false;
-                Log.e(TAG, "TAP!");
+                Log.w(TAG, "TAP!");
                 if (mListener != null) {
                     mListener.onEventTriggered(DoubleTapEvent.ID);
                 }
@@ -118,7 +138,7 @@ public class DoubleTapInterceptor extends AudioReader.Listener implements Runnab
             mSilenceCount = 0;
         }
         else if (sample >= MIN_TAP_NOISE) {
-            Log.w(TAG, "Noise...");
+            Log.v(TAG, String.format("Noise... s: %f\tm: %d", sample, max));
             mHadFirstTap = false;
             mSilenceCount = 0;
         }

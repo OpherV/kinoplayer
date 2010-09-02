@@ -6,8 +6,6 @@ import java.util.HashMap;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
-
-import com.android.kino.musiclibrary.LastFmHandlerArtistImages.lastFMArtistImage;
  
  
 public class LastfmHandler extends DefaultHandler{

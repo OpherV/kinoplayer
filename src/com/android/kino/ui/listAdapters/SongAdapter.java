@@ -2,21 +2,20 @@ package com.android.kino.ui.listAdapters;
 
 import java.util.List;
 
-import com.android.kino.R;
-import com.android.kino.logic.MediaProperties;
-import com.android.kino.logic.Playlist;
-import com.android.kino.ui.KinoUI;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.android.kino.R;
+import com.android.kino.logic.MediaProperties;
+import com.android.kino.logic.Playlist;
+import com.android.kino.ui.KinoUI;
 
 public class SongAdapter extends ArrayAdapter<MediaProperties> {
 

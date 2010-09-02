@@ -57,7 +57,7 @@ public class FetchArtistImages extends KinoTask{
 		
 		LinkedList<lastFMArtistImage> albumDetails=queryHandler.getArtistImages();
 		
-		String imagePath=albumDetails.get(0).imageURLS.get("extralarge");
+		String imagePath=albumDetails.get(0).imageURLS.get("original");
 		
 		if (imagePath==null){
 			mArtist.disableImage();

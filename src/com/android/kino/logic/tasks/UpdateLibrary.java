@@ -1,7 +1,5 @@
 package com.android.kino.logic.tasks;
 
-import android.util.Log;
-
 import com.android.kino.musiclibrary.Library;
 
 public class UpdateLibrary extends KinoTask{
