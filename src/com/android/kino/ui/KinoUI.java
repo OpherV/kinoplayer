@@ -1,11 +1,12 @@
 package com.android.kino.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,7 +16,6 @@ import android.view.View;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
-import android.view.View.OnTouchListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -258,7 +258,30 @@ public class KinoUI extends Activity implements KinoUser{
 	        
 	    	mTaskMaster.addTask(new UpdateLibrary(library));
 	    	
-	        return true;	    
+	        return true;
+
+	        //TODO this probably doesn't actually exit the application!	        
+	    case R.id.menu_options_exit:
+	    	
+	    	  //Ask the user if they want to quit
+	        new AlertDialog.Builder(this)
+	        .setIcon(android.R.drawable.ic_dialog_alert)
+	        .setTitle("Exit")
+	        .setMessage("Are you sure you want to quit?")
+	        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+	            @Override
+	            public void onClick(DialogInterface dialog, int which) {
+	               mPlayer.stop();
+	               kino.shutDown();
+	               moveTaskToBack(true);
+	            }
+
+	        })
+	        .setNegativeButton("No", null)
+	        .show();
+	    	
+	    	return true;
 	    default:
 	        return super.onOptionsItemSelected(item);
 	    }

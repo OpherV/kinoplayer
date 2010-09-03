@@ -177,7 +177,7 @@ public class Kino extends Application implements ServiceUser {
         stopService(new Intent(this, InputEventTranslatorService.class));
         stopService(new Intent(this, MediaPlayerService.class));
         stopService(new Intent(this, Library.class));
-        stopService(new Intent(this, TaskMasterService.class));
+        stopService(new Intent(this, TaskMasterService.class));        
     }
 
     /**

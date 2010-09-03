@@ -102,6 +102,7 @@ public class Library extends Service{
 				updater.updateProgress("verifying "+filename);
 			}
 			if (!fileToCheck.exists()){
+				Log.e(this.getClass().getName(),"file "+fileToCheck.getAbsolutePath()+" in DB but not on SD!");
 				db.removeSong(filename);
 			}
 		}
@@ -144,7 +145,20 @@ public class Library extends Service{
 		if (!db.songInDb(file)){
 		
 		MediaProperties mp3file = new MediaProperties(file.getAbsolutePath(),(LibraryBinder) this.libraryBinder);
-
+		if (mp3file.Title==null){
+			mp3file.Title="Unknown Title";
+			Log.e(this.getClass().getName(),"Title null on "+file.getAbsolutePath());
+		}
+		
+		if (mp3file.Artist==null){
+			mp3file.Artist="Unknown Artist";
+			Log.e(this.getClass().getName(),"Artist null on "+file.getAbsolutePath());
+		}
+		
+		if (mp3file.Album.getAlbumName()==null){
+			mp3file.Album.setTitle("Unknown Album");
+			Log.e(this.getClass().getName(),"Album null on "+file.getAbsolutePath());
+		}
 		
 		db.addSong(mp3file.Filename,				
 				mp3file.Title,
@@ -158,8 +172,9 @@ public class Library extends Service{
 		//Log.d("Library",file.getAbsolutePath()+": SONG IS NOT IN DB");
 		Log.d("Library","added to library: "+file.getAbsolutePath());
 		}
-		else{
+		else{			
 			Log.d("Library",file.getAbsolutePath()+": song is in DB");
+			return false;
 		}
 		
 		return true;
