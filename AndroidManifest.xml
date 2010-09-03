@@ -54,6 +54,10 @@
 		<activity
             android:name=".ui.MenuArtistBrowse"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
+            
+			<activity
+            android:name=".ui.MenuAlbumArtView"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
     </application>
 	
     <uses-permission android:name="android.permission.RECORD_AUDIO" />

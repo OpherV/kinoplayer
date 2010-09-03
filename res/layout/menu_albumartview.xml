@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    
+	
+	<ImageView android:id="@+id/menu_bgimage"
+			    android:layout_width="fill_parent"
+		    	android:layout_height="fill_parent"
+		    	android:scaleType="centerCrop" />	
+    
+	<com.android.kino.ui.PlayerMini 
+    android:id="@+id/player_mini"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:visibility="gone"    
+    android:layout_alignParentTop="true"        
+     />	     
+
+	<!--  button row -->
+     <LinearLayout     
+     	android:id="@+id/menu_buttonrow"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"        
+        android:layout_alignParentBottom="true"        
+        android:paddingBottom="5dp"        
+        android:gravity="center_horizontal"
+        android:background="#CC000000"
+        >
+        
+	<Button android:id="@+id/btn_return"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/icn_return"                          
+            android:layout_marginRight="30dp"   />                             
+                        
+    </LinearLayout>
+     	
+	<LinearLayout
+				android:layout_height="fill_parent"
+				android:layout_width="fill_parent"		
+				android:layout_below="@id/player_mini"
+				android:layout_above="@id/menu_buttonrow"
+				android:gravity="center"
+				android:background="#CC000000"
+				>
+		
+		<ImageView android:id="@+id/menu_albumImage" 
+				android:layout_height="fill_parent"
+				android:layout_width="fill_parent"
+		/>
+		
+	</LinearLayout>
+ 
+
+    
+	<com.android.kino.ui.StatusUpdater 
+    android:id="@+id/statusupdater"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"        
+	android:layout_above="@id/menu_buttonrow"  
+     />	
+
+</RelativeLayout>

@@ -3,10 +3,12 @@ package com.android.kino.ui.listAdapters;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +17,7 @@ import com.android.kino.R;
 import com.android.kino.logic.AlbumList;
 import com.android.kino.logic.AlbumProperties;
 import com.android.kino.ui.KinoUI;
+import com.android.kino.ui.MenuAlbumArtView;
 
 public class AlbumAdapter extends ArrayAdapter<AlbumProperties> {
 
@@ -33,7 +36,7 @@ public class AlbumAdapter extends ArrayAdapter<AlbumProperties> {
 	 @Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		  
-		AlbumProperties albumObj = albums.get(position);
+		final AlbumProperties albumObj = albums.get(position);
 		 
         View v=null;  
   		LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);              
@@ -68,6 +71,18 @@ public class AlbumAdapter extends ArrayAdapter<AlbumProperties> {
         	albumImage.setImageBitmap(albumBitmap);
         }
         
+        albumImage.setOnLongClickListener(new OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				Intent viewAlbumArt = new Intent(mContext,MenuAlbumArtView.class);
+				viewAlbumArt.putExtra("artistTitle", albumObj.getArtistName());
+				viewAlbumArt.putExtra("albumTitle", albumObj.getAlbumName());
+				viewAlbumArt.putExtra("albumYear", albumObj.getAlbumYear());
+				mContext.startActivity(viewAlbumArt);
+				return false;
+			}
+		});
         
 		 
 		return v;

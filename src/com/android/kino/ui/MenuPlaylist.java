@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -137,8 +137,24 @@ public class MenuPlaylist extends KinoUI implements OnItemClickListener{
 			ImageView image = (ImageView) this.findViewById(R.id.menu_playlist_albumImage);
 		    Bitmap albumImage=album.getAlbumImage(this);
 		    if (albumImage!=null){
-		    	image.setImageBitmap(albumImage);
-		    }
+		    	image.setImageBitmap(albumImage);		    	
+		    }		    
+		    
+		    final AlbumProperties fAlbum=album;
+		    final ArtistProperties fArtist=artist;
+		    image.setOnLongClickListener(new OnLongClickListener() {
+				
+				@Override
+				public boolean onLongClick(View v) {
+					Intent viewAlbumArt = new Intent(MenuPlaylist.this,MenuAlbumArtView.class);
+					viewAlbumArt.putExtra("artistTitle", fArtist.getName());
+					viewAlbumArt.putExtra("albumTitle", fAlbum.getAlbumName());
+					viewAlbumArt.putExtra("albumYear", fAlbum.getAlbumYear());
+					startActivity(viewAlbumArt);
+					return false;
+				}
+			});
+		    
 			
 			TextView albumTitle = (TextView) findViewById(R.id.albumItem_albumTitle);
 			albumTitle.setText(album.getAlbumName());

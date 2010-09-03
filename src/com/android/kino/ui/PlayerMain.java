@@ -6,6 +6,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.android.kino.R;
+import com.android.kino.logic.AlbumProperties;
+import com.android.kino.logic.ArtistProperties;
 import com.android.kino.logic.KinoMediaPlayer;
 import com.android.kino.logic.Playlist;
 import com.android.kino.utils.ConvertUtils;
@@ -196,6 +199,20 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
 	    
 	    ImageView image = (ImageView) this.findViewById(R.id.player_albumImage); 
 	    image.setImageBitmap(song.getAlbumImage(this));
+	    	    
+	    image.setOnLongClickListener(new OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				Intent viewAlbumArt = new Intent(PlayerMain.this,MenuAlbumArtView.class);
+				viewAlbumArt.putExtra("artistTitle", song.Artist);
+				viewAlbumArt.putExtra("albumTitle", song.Album.getAlbumName());
+				viewAlbumArt.putExtra("albumYear", song.Album.getAlbumYear());
+				startActivity(viewAlbumArt);
+				return false;
+			}
+		});
+	    
 	    
 	    
 	    //seekbar
