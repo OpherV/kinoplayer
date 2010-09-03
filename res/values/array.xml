@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="imgDownloadArray">
+        <item>Only when needed</item>
+        <item>At library update</item>
+    </string-array>
+    <string-array name="imgDownloadValues">
+        <item>lazyload</item>
+        <item>atupdate</item>
+    </string-array>
+    
+    <string-array name="actionArray">
+        <item>Play / Pause</item>
+        <item>Next Track</item>
+    </string-array>
+    <string-array name="actionValues">
+        <item>playpause</item>
+        <item>nexttrack</item>
+    </string-array>
+    
+    
+    <string-array name="libraryActions">
+        <item>Update Library</item>
+        <item>Purge Library</item>
+        <item>Remove All Images</item>
+    </string-array>
+</resources>

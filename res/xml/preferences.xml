@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Library">
+        <EditTextPreference
+            android:name="Music folder"
+            android:summary="The root directory of all your music files (mp3)"
+            android:defaultValue="mp3"
+            android:title="Music folder"
+            android:key="musicDir" />
+        <ListPreference
+            android:title="Download Images"
+            android:summary="Select when to download images"
+            android:key="imgDownload"
+            android:defaultValue="lazyload"
+            android:entries="@array/imgDownloadArray"
+            android:entryValues="@array/imgDownloadValues" />
+        <Preference
+            android:title="Library Actions"
+            android:key="libraryActions" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Kinetics">
+        <CheckBoxPreference
+            android:title="Double Tap"
+            android:defaultValue="true"
+            android:summary="Allow automatically identifying double taps"
+            android:key="allowDoubleTap" />
+        <ListPreference
+            android:title="Double Tap Action"
+            android:summary="Select the action to perform when double tapping the device"
+            android:key="doubleTapAction"
+            android:defaultValue="playpause"
+            android:entries="@array/actionArray"
+            android:entryValues="@array/actionValues" />
+    </PreferenceCategory>
+</PreferenceScreen>

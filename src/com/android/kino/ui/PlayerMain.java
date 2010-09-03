@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.android.kino.R;
-import com.android.kino.logic.AlbumProperties;
 import com.android.kino.logic.KinoMediaPlayer;
 import com.android.kino.logic.Playlist;
 import com.android.kino.utils.ConvertUtils;

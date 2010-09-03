@@ -61,7 +61,10 @@ public class DoubleTapInterceptor extends AudioReader.Listener implements Runnab
     public void run() {
         long runtime = 0;
         while (!mStop) {
-            if (SAMPLE_EVERY > runtime) {
+            long before = new Date().getTime();
+            takeSample();
+            runtime = new Date().getTime() - before;
+            if (!mStop && SAMPLE_EVERY > runtime) {
                 try {
                     Thread.sleep(SAMPLE_EVERY - runtime);
                 }
@@ -69,10 +72,9 @@ public class DoubleTapInterceptor extends AudioReader.Listener implements Runnab
                     break;
                 }
             }
-            long before = new Date().getTime();
-            takeSample();
-            runtime = new Date().getTime() - before;
         }
+        // Note: This might cause an exception in a race condition with startIntercepting
+        mSamplingThread = null;
     }
 
     @Override
@@ -82,10 +84,24 @@ public class DoubleTapInterceptor extends AudioReader.Listener implements Runnab
 
     @Override
     public void startIntercepting() {
-        mAudio.startReader(8000, 256, this);
-        
-        mSamplingThread = new Thread(this);
-        mSamplingThread.start();
+        if (mStop || mSamplingThread == null || !mSamplingThread.isAlive()) {
+            mAudio.startReader(8000, 256, this);
+            
+            if (mSamplingThread != null) {
+                mStop = true;
+                while (mSamplingThread.isAlive()) {
+                    try {
+                        Thread.sleep(SAMPLE_EVERY);
+                    }
+                    catch (InterruptedException e) {
+                        break;
+                    }
+                }
+            }
+            mStop = false;
+            mSamplingThread = new Thread(this);
+            mSamplingThread.start();
+        }
     }
 
     @Override

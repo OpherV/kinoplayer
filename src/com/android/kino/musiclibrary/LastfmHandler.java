@@ -66,7 +66,6 @@ public class LastfmHandler extends DefaultHandler{
     		try {
     			newURL = new URL(urlString);
     		} catch (MalformedURLException e) {
-    			// TODO Auto-generated catch block
     			e.printStackTrace();
     		}
     		

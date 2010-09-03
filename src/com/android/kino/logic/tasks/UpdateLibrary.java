@@ -2,7 +2,7 @@ package com.android.kino.logic.tasks;
 
 import com.android.kino.musiclibrary.Library;
 
-public class UpdateLibrary extends KinoTask{
+public class UpdateLibrary extends KinoTask {
 	private Library mLibrary;
 	private Library.LibraryStatusUpdater mUpdater = new Library.LibraryStatusUpdater(){
 		@Override
@@ -10,7 +10,6 @@ public class UpdateLibrary extends KinoTask{
 			mTaskAction=progresString;
 			updateUI();
 		}
-		
 	};
 	
 	public UpdateLibrary(Library library){

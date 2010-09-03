@@ -7,7 +7,10 @@ import com.android.kino.logic.action.KinoAction;
 public interface SettingsContainer {
     
     public enum Setting {
-        MEDIA_DIRECTORY
+        MEDIA_DIRECTORY,
+        LAZY_LOAD_IMAGES,
+        ENABLE_DOUBLE_TAP,
+        DOUBLE_TAP_ACTION
     };
 
     public String getName();
@@ -23,6 +26,16 @@ public interface SettingsContainer {
      * directory.
      */
     public void setConfiguredString(Setting setting, String value);
+    
+    /**
+     * Get a boolean assigned to a setting.
+     */
+    public boolean getConfiguredBoolean(Setting setting);
+    
+    /**
+     * Assign a boolean to a setting.
+     */
+    public void setConfiguredBoolean(Setting setting, boolean value);
 
     public KinoAction getConfiguredAction(int eventId);
 

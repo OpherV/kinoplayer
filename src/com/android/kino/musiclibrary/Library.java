@@ -84,9 +84,9 @@ public class Library extends Service{
 	public void updateLibrary(LibraryStatusUpdater updater){
 		cleanLibrary(updater);
 		
-		//TODO use kino preferences defined mp3 dir		
+		//// Get the xml/preferences.xml preferences		
 		File rootDir = Environment.getExternalStorageDirectory();
-		SettingsContainer settings = SettingsLoader.loadCurrentSettings();
+		SettingsContainer settings = SettingsLoader.loadCurrentSettings(this);
 		String mediaPath = settings.getConfiguredString(Setting.MEDIA_DIRECTORY);
 		File mp3dir = new File(rootDir, mediaPath);
 		scanDir(mp3dir, true, updater);		

@@ -63,8 +63,6 @@ public class LibraryDB extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // TODO Auto-generated method stub
-        
     }
 
     //check if song is in DB

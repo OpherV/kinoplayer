@@ -18,6 +18,7 @@ public class DefaultSettings implements SettingsContainer {
     
     private Map<Integer, Integer> mSettings;
     private Map<Setting, String> mStringSettings;
+    private Map<Setting, Boolean> mBooleanSettings;
     
     public DefaultSettings() {
         this(null);
@@ -33,6 +34,7 @@ public class DefaultSettings implements SettingsContainer {
             }
         }
         mStringSettings = new HashMap<Setting, String>();
+        mBooleanSettings = new HashMap<Setting, Boolean>();
     }
 
     @Override
@@ -48,6 +50,16 @@ public class DefaultSettings implements SettingsContainer {
     @Override
     public void setConfiguredString(Setting setting, String value) {
         mStringSettings.put(setting, value);
+    }
+
+    @Override
+    public boolean getConfiguredBoolean(Setting setting) {
+        return mBooleanSettings.get(setting);
+    }
+
+    @Override
+    public void setConfiguredBoolean(Setting setting, boolean value) {
+        mBooleanSettings.put(setting, value);
     }
 
     @Override

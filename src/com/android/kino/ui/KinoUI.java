@@ -97,6 +97,7 @@ public class KinoUI extends Activity implements KinoUser{
     @Override
     protected void onDestroy() {    
     	super.onDestroy();
+        kino.showNotification();
     	//stop the gui updater
     	guiUpdater.removeCallbacks(guiUpdateTask);
     }

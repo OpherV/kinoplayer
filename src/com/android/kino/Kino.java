@@ -9,8 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.android.kino.logic.InputEventTranslator;
 import com.android.kino.logic.KinoMediaPlayer;
 import com.android.kino.logic.KinoServiceConnection;
 import com.android.kino.logic.KinoUser;
@@ -24,15 +24,16 @@ import com.android.kino.musiclibrary.Library;
 public class Kino extends Application implements ServiceUser {
 
     private KinoServiceConnection mMediaPlayerConn = new KinoServiceConnection(this);
+    private KinoServiceConnection mInputTranslatorConn = new KinoServiceConnection(this);
     private KinoServiceConnection mLibraryConn = new KinoServiceConnection(this);
     private KinoServiceConnection mTaskMasterConn = new KinoServiceConnection(this);
     private KinoMediaPlayer mPlayer = null;
+    private InputEventTranslator mInputTranslator = null;
     private Library mLibrary = null;
     private TaskMasterService mTaskMaster = null;
     
     private List<KinoUser> mUsers = new LinkedList<KinoUser>();
     private boolean mIsInitialized = false;
-    
     public final static String ALBUM_DIR="kino/images/albums";
     public final static String ARTIST_DIR="kino/images/artists";
 	public static final String KINODIR = "kino";
@@ -43,6 +44,10 @@ public class Kino extends Application implements ServiceUser {
     
     public KinoMediaPlayer getPlayer() {
         return mPlayer;
+    }
+    
+    public InputEventTranslator getInputTranslator() {
+        return mInputTranslator;
     }
     
     public Library getLibrary() {
@@ -80,7 +85,7 @@ public class Kino extends Application implements ServiceUser {
         boolean success = bindService(
                 new Intent(this, MediaPlayerService.class),
                 mMediaPlayerConn,
-                Context.BIND_AUTO_CREATE);
+                BIND_AUTO_CREATE);
         if (!success) {
             Log.e(getClass().getName(), "Failed to bind to media player service");
             // TODO: Do something about this... failed to bind to media player
@@ -91,6 +96,16 @@ public class Kino extends Application implements ServiceUser {
         result = startService(new Intent(this, InputEventTranslatorService.class));
         if (result == null) {
             Log.e(getClass().getName(), "Failed to start input event translator service");
+            return;
+        }
+        
+        success = bindService(
+                new Intent(this, InputEventTranslatorService.class),
+                mInputTranslatorConn,
+                BIND_AUTO_CREATE);
+        if (!success) {
+            Log.e(getClass().getName(), "Failed to bind to input event translator service");
+            // TODO: Do something about this... failed to bind to input event translator
             return;
         }
         Log.d(getClass().getName(), "Kino started OK");
@@ -119,15 +134,16 @@ public class Kino extends Application implements ServiceUser {
         if (binder instanceof MediaPlayerService.MPBinder) {
         	mPlayer = ((MediaPlayerService.MPBinder) binder).getPlayer();
         }
+        else if (binder instanceof InputEventTranslatorService.IETBinder) {
+            mInputTranslator = ((InputEventTranslatorService.IETBinder) binder).getInputTranslator();
+        }
         else if (binder instanceof Library.LibraryBinder){
         	mLibrary = ((Library.LibraryBinder) binder).getLibrary();
-        	Toast.makeText(this, "library up!", Toast.LENGTH_SHORT).show();
         }
         else if (binder instanceof TaskMasterService.TaskMasterBinder){
         	mTaskMaster = ((TaskMasterService.TaskMasterBinder) binder).getTaskMaster();
-        	Toast.makeText(this, "taskmaster up!", Toast.LENGTH_SHORT).show();
         }
-        mIsInitialized = mPlayer != null && mLibrary != null && mTaskMaster != null;
+        mIsInitialized = mPlayer != null && mInputTranslator != null && mLibrary != null && mTaskMaster != null;
         if (mIsInitialized) {
             for (KinoUser user : mUsers) {
                 user.onKinoInit(this);
@@ -143,7 +159,6 @@ public class Kino extends Application implements ServiceUser {
     }
 
     public void showNotification() {
-        Toast.makeText(this, "Showing notificaiton", Toast.LENGTH_SHORT).show();
         ((MediaPlayerService.MPBinder)mMediaPlayerConn.getBinder()).showNotification();
     }
 
@@ -174,6 +189,10 @@ public class Kino extends Application implements ServiceUser {
             unbindService(mMediaPlayerConn);
             mPlayer = null;
         }
+        if (isBoundToInputTranslator()) {
+            unbindService(mInputTranslatorConn);
+            mInputTranslatorConn = null;
+        }
         if (isBoundToLibrary()) {
             unbindService(mLibraryConn);
             mLibrary = null;
@@ -186,6 +205,10 @@ public class Kino extends Application implements ServiceUser {
     
     private boolean isBoundToMediaPlayer() {
         return mPlayer != null;
+    }
+    
+    private boolean isBoundToInputTranslator() {
+        return mInputTranslatorConn != null;
     }
     
     private boolean isBoundToLibrary() {

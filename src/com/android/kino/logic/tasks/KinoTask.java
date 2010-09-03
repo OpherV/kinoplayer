@@ -92,7 +92,6 @@ abstract public class KinoTask extends AsyncTask<Void,Void,Void>{
 		try {
 			fos = new FileOutputStream(file);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}		
@@ -108,7 +107,6 @@ abstract public class KinoTask extends AsyncTask<Void,Void,Void>{
         	try {
 				fos.close();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			return null;
@@ -129,7 +127,6 @@ abstract public class KinoTask extends AsyncTask<Void,Void,Void>{
                 	try {
         				fos.close();
         			} catch (IOException e1) {
-        				// TODO Auto-generated catch block
         				e1.printStackTrace();
         			}
         			return null;
@@ -187,14 +184,12 @@ abstract public class KinoTask extends AsyncTask<Void,Void,Void>{
         	try {
 				fos.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
             if (input!=null){
             	try {
 					input.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
             }                        
@@ -233,7 +228,6 @@ abstract public class KinoTask extends AsyncTask<Void,Void,Void>{
 				try {
 					xmlfis.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -254,7 +248,6 @@ abstract public class KinoTask extends AsyncTask<Void,Void,Void>{
 		try {
 			newURL = new URL(urlString);
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

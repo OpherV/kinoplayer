@@ -19,7 +19,6 @@ public class AlbumList extends LinkedList<AlbumProperties> implements Parcelable
 	
 	@Override
 	public int describeContents() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 	
