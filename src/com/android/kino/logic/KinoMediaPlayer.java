@@ -290,7 +290,13 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
      *         is no current playlist or if set current media failed.
      */
     public boolean next() {
-        return playNextMedia();
+        // Play only if was playing before
+        if (isPlaying()) {
+            return playNextMedia();
+        }
+        else {
+            return setNextMedia();
+        }
     }
 
     /**
@@ -303,6 +309,7 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
      */
     public boolean previous() {
         Log.d(getClass().getName(), "Playing previous media");
+        boolean shouldPlay = isPlaying();
         // TODO(test) Test playing an empty playlist
         if (mPlaylist == null) {
             Log.d(getClass().getName(), "Can't previous - no playlist");
@@ -342,7 +349,10 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
             mPlayOrder = null;
             return false;
         }
-        mMp.start();
+        // Play only if was playing before
+        if (shouldPlay) {
+            mMp.start();
+        }
         return true;
     }
     
