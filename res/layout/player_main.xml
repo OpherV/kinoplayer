@@ -20,7 +20,7 @@
      	android:id="@+id/player_songDetails"
      	android:layout_alignParentTop="true"      
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"        
+        android:layout_height="130dp"        
         android:layout_margin="8dp"
         android:padding="8dp"
         android:background="@layout/ui_box"        
@@ -59,31 +59,24 @@
         	android:layout_alignParentTop="true"
         	android:layout_margin="4dp"        	
         	 />
-
-    </RelativeLayout>
-    
-  
-    
-     <LinearLayout
-      android:orientation="vertical"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"            
-      android:layout_below="@id/player_songDetails"      
-       >
-    
+        	       	
 		   	<SeekBar android:id="@+id/player_seek"
 						android:layout_width="fill_parent"
-						android:layout_height="40dp"
-						android:layout_marginTop="10dp"
-						android:layout_marginBottom="10dp"
-			 />
-		    
-		    <TextView android:id="@+id/player_timeElapsed"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		     />
-     
-     </LinearLayout>
+						android:layout_height="30dp"
+						android:layout_alignParentBottom="true"
+			 />		
+		
+		 <TextView android:id="@+id/player_timeElapsed"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"	        
+	        android:layout_centerHorizontal="true"
+	        android:textColor="#FFFFFF"
+	        android:layout_above="@id/player_seek"
+	        android:textSize="11dp"
+	     />   
+    </RelativeLayout>
+    
+      
      
   <ImageView android:id="@+id/btn_back"
             android:layout_width="50dp"

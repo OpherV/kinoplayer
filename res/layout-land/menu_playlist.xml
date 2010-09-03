@@ -68,7 +68,7 @@
 				/>		
 		</LinearLayout>	
 
-  <!--  button row -->
+ 	 <!--  button row -->
      <LinearLayout     
      	android:id="@+id/menu_buttonrow"
         android:orientation="vertical"
@@ -80,6 +80,7 @@
         android:layout_alignParentRight="true"
         android:padding="5dp"
         android:layout_below="@id/player_mini"
+        android:layout_alignParentBottom="true"
         >
         
 	<Button android:id="@+id/btn_return"

@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 
-public class PlayerMini extends LinearLayout implements OnClickListener{
+public class PlayerMini extends LinearLayout{
 	private Context mContext;
 	
 	 public PlayerMini(Context context, AttributeSet attrs){	 
@@ -21,13 +21,6 @@ public class PlayerMini extends LinearLayout implements OnClickListener{
         }
         
         mContext=context;
-        setOnClickListener(this);
-	}
-
-	@Override
-	public void onClick(View v) {
-		mContext.startActivity(new Intent(mContext,PlayerMain.class));    
-		
-	}	 	
+	} 	
 
 }

@@ -1,15 +1,21 @@
 package com.android.kino.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -45,10 +51,12 @@ public class KinoUI extends Activity implements KinoUser{
 	private Animation aFadeinpartial;
 	private Animation aFadeoutpartial;
 	private Animation aFadeoutfull;
+	
+	private boolean miniplayerSwipe=false;
 		
 	protected static final int SWIPE_MIN_DISTANCE = 120;
 	protected static final int SWIPE_MAX_OFF_PATH = 250;
-	protected static final int SWIPE_THRESHOLD_VELOCITY = 1500;      	
+	protected static final int SWIPE_THRESHOLD_VELOCITY = 1500;
 	
 	// updates the gui every second
 	protected Runnable guiUpdateTask = new Runnable() {
@@ -86,7 +94,7 @@ public class KinoUI extends Activity implements KinoUser{
 
         updaterView = (StatusUpdater) findViewById(R.id.statusupdater);
         updaterView.initStatusUpdater();        
-		mTaskMaster.setDisplay(this);
+		mTaskMaster.setDisplay(this);		
                 
     }      
     
@@ -104,9 +112,7 @@ public class KinoUI extends Activity implements KinoUser{
     
     protected void initSongDetails(){
 	    
-		song = mPlayer.getCurrentMedia();
-		
-		playermini= (PlayerMini) this.findViewById(R.id.player_mini);		
+		song = mPlayer.getCurrentMedia();			
 		
 		//make sure that a song is indeed playing
 		if (song!=null){
@@ -154,8 +160,62 @@ public class KinoUI extends Activity implements KinoUser{
 		
 		kino=Kino.getKino(this);		
 		
-		initUI();
-		        			          
+		initUI();		
+		     
+
+		// miniplayer Gesture detection
+        GestureActions bgActions = new GestureActions(){
+        	@Override
+        	public void swipeLeft() {
+                mPlayer.previous();
+                initSongDetails();                
+        	}
+        	
+        	@Override
+        	public void swipeRight() {            	
+                    mPlayer.next();
+                    initSongDetails();                    
+        	}
+        	        	
+        };
+        
+        final GestureDetector gestureDetector = new GestureDetector(new GenericGestureDetector(bgActions));       
+        View.OnTouchListener gestureListener = new View.OnTouchListener() {
+             public boolean onTouch(View v, MotionEvent event) {            	 
+                 if (gestureDetector.onTouchEvent(event)) {
+                	 miniplayerSwipe=true;
+                     return true;
+                 }                 
+                 miniplayerSwipe=false;
+                 return false;
+             }          
+         };
+         
+         playermini= (PlayerMini) this.findViewById(R.id.player_mini);
+         if (playermini!=null){
+        	 playermini.setOnTouchListener(gestureListener);
+        	 playermini.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					startActivity(new Intent(KinoUI.this,PlayerMain.class));    					
+				}
+			});
+        	 
+        	 playermini.setOnLongClickListener(new OnLongClickListener() {
+				
+				@Override
+				public boolean onLongClick(View v) {
+					if (!miniplayerSwipe){
+						mPlayer.togglePlayPause();
+						return true;
+					}
+					return false;
+				}
+			});
+         }
+         
+		
 		kino.registerUser(this);
 	}
 	

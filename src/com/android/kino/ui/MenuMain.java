@@ -1,5 +1,7 @@
 package com.android.kino.ui;
 
+import java.util.ArrayList;
+
 import android.content.Intent;
 import android.os.Parcelable;
 import android.view.View;
@@ -15,6 +17,7 @@ import com.android.kino.Kino;
 import com.android.kino.R;
 import com.android.kino.logic.AlbumList;
 import com.android.kino.logic.ArtistList;
+import com.android.kino.logic.ArtistProperties;
 import com.android.kino.logic.MediaProperties;
 import com.android.kino.logic.Playlist;
 import com.android.kino.ui.listAdapters.SongAdapter;
@@ -45,7 +48,7 @@ public class MenuMain extends KinoUI {
 	
 	@Override
 	protected void initUI() {	    				
-
+			super.initUI();
 			
 			setContentView(R.layout.menu_main);
 			playlistView=(ListView)findViewById(R.id.mainmenu_list);			
@@ -68,8 +71,13 @@ public class MenuMain extends KinoUI {
 
 					Intent albumlistIntent=new Intent(MenuMain.this,MenuArtistBrowse.class);
 					ArtistList allArtists=library.getAllArtists();
-					//TODO fetch the allsongs playlist from the library and pass it
-					albumlistIntent.putExtra("artistlist",(Parcelable)allArtists);						
+					
+					ArrayList<String> artistNames = new ArrayList<String>();
+					for (ArtistProperties artist : allArtists){
+						artistNames.add(artist.getName());
+					}
+					
+					albumlistIntent.putExtra("artistlist",artistNames);						
 		    		startActivity(albumlistIntent);
 					
 				}
@@ -83,9 +91,24 @@ public class MenuMain extends KinoUI {
 					
 					
 					Intent albumlistIntent=new Intent(MenuMain.this,MenuAlbumBrowse.class);
-					AlbumList allAlbums =library.getAllAlbums();
-					albumlistIntent.putExtra("albumlist",(Parcelable)allAlbums);						
+					AlbumList allAlbums =library.getAllAlbums();							
+					
+					ArrayList<String> albumTitles = new ArrayList<String>();
+					ArrayList<String> albumArtists= new ArrayList<String>();
+					int[] albumYears = new int[allAlbums.size()];
+				
+					for (int i=0;i<allAlbums.size();i++){
+						albumTitles.add(allAlbums.get(i).getAlbumName());
+						albumArtists.add(allAlbums.get(i).getArtistName());
+						albumYears[i]=allAlbums.get(i).getAlbumYear();
+						
+					}
+										
+					albumlistIntent.putExtra("albumTitleList",albumTitles);
+					albumlistIntent.putExtra("albumArtistList",albumArtists);
+					albumlistIntent.putExtra("albumYears",albumYears);
 		    		startActivity(albumlistIntent);
+					
 					
 					
 					

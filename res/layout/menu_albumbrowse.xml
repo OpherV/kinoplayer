@@ -83,8 +83,8 @@
 		 <com.android.kino.ui.StatusUpdater 
 	    android:id="@+id/statusupdater"
 	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"    
-	    android:layout_alignParentBottom="true"
+	    android:layout_height="wrap_content"    	    
+	    android:layout_above="@id/menu_buttonrow"  
 	     />
    	     
 

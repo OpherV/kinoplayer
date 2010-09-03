@@ -14,7 +14,7 @@ import com.android.kino.logic.tasks.FetchArtistImages;
 import com.android.kino.ui.KinoUI;
 import com.android.kino.utils.ConvertUtils;
 
-public class ArtistProperties implements Parcelable{
+public class ArtistProperties{
 	private String mArtistName=null;
 	private int mTotalSongs;
 	private Bitmap mArtistImage=null;
@@ -58,17 +58,6 @@ public class ArtistProperties implements Parcelable{
 	        }
 	    };
 
-	@Override
-	public int describeContents() {		
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(mArtistName);
-		dest.writeInt(mTotalSongs);		
-		
-	}
 	
     public Bitmap getArtistImage(KinoUI kinoui){
 		if (mImageDisabled){

@@ -15,7 +15,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-public class AlbumProperties implements Parcelable, Comparable<AlbumProperties>  {
+public class AlbumProperties implements Comparable<AlbumProperties>  {
 
 	private String mAlbumName;
 	private String mArtistName;	
@@ -84,17 +84,6 @@ public class AlbumProperties implements Parcelable, Comparable<AlbumProperties> 
 	        }
 	    };
 
-	@Override
-	public int describeContents() {		
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(mAlbumName);
-		dest.writeString(mArtistName);
-		dest.writeInt(mAlbumYear);		
-	}
 	
     public Bitmap getAlbumImage(KinoUI kinoui){
 		if (mImageDisabled){

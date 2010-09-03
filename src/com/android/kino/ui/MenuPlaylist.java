@@ -1,5 +1,7 @@
 package com.android.kino.ui;
 
+import java.util.ArrayList;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Parcelable;
@@ -32,7 +34,8 @@ public class MenuPlaylist extends KinoUI implements OnItemClickListener{
     
 	@Override
 	protected void initUI() {
-
+		super.initUI();
+		
 		setContentView(R.layout.menu_playlist);		
 		playlist=getIntent().getExtras().getParcelable("playlist");
 		
@@ -86,17 +89,42 @@ public class MenuPlaylist extends KinoUI implements OnItemClickListener{
 		}
 		else{
 			
-			btn_return.setOnClickListener(new OnClickListener() {
+			btn_return.setOnClickListener(new OnClickListener() { 
 				
 				@Override
-				public void onClick(View v) {
-					Playlist playlist=mPlayer.getPlaylist();
+				public void onClick(View v) {					
+
+					AlbumList albums=null;
 					
-					ArtistProperties artistClicked = library.getArtistFromCache(playlist.getArtistTitle());			
-					AlbumList albums=library.getAlbumsByArtist(artistClicked.getName());
+					String artistTitle=playlist.getArtistTitle();
+					if (artistTitle!=null){
+						ArtistProperties artistClicked = library.getArtistFromCache(artistTitle);
+						albums=library.getAlbumsByArtist(artistClicked.getName());
+					}
+					else{
+						albums=library.getAllAlbums();
+					}							
 					
-					Intent albumlistIntent=new Intent(MenuPlaylist.this,MenuAlbumBrowse.class);								
-					albumlistIntent.putExtra("albumlist",(Parcelable)albums);						
+					
+					Intent albumlistIntent=new Intent(MenuPlaylist.this,MenuAlbumBrowse.class);			
+					
+					ArrayList<String> albumTitles = new ArrayList<String>();
+					ArrayList<String> albumArtists= new ArrayList<String>();
+					int[] albumYears = new int[albums.size()];
+				
+					for (int i=0;i<albums.size();i++){
+						albumTitles.add(albums.get(i).getAlbumName());
+						albumArtists.add(albums.get(i).getArtistName());
+						albumYears[i]=albums.get(i).getAlbumYear();
+						
+					}
+					
+					if (artistTitle!=null){
+						albumlistIntent.putExtra("artistTitle",artistTitle);
+					}
+					albumlistIntent.putExtra("albumTitleList",albumTitles);
+					albumlistIntent.putExtra("albumArtistList",albumArtists);
+					albumlistIntent.putExtra("albumYears",albumYears);
 		    		startActivity(albumlistIntent);
 					
 				}
