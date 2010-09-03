@@ -84,7 +84,6 @@ public class MenuMain extends KinoUI {
 					
 					Intent albumlistIntent=new Intent(MenuMain.this,MenuAlbumBrowse.class);
 					AlbumList allAlbums =library.getAllAlbums();
-					//TODO fetch the allsongs playlist from the library and pass it
 					albumlistIntent.putExtra("albumlist",(Parcelable)allAlbums);						
 		    		startActivity(albumlistIntent);
 					

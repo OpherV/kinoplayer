@@ -10,5 +10,6 @@
 
 	<color name="itemBGcolor">#99000000</color>
 	<color name="titleBGcolor">#CC000000</color>
+	<color name="btnrowBGcolor">#33FFFFFF</color>	
 
 </resources>

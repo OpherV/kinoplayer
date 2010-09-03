@@ -68,16 +68,38 @@
 				/>		
 		</LinearLayout>	
 
+  <!--  button row -->
+     <LinearLayout     
+     	android:id="@+id/menu_buttonrow"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+                            
+        android:gravity="center_vertical"
+        android:background="@color/titleBGcolor"
+        android:layout_alignParentRight="true"
+        android:padding="5dp"
+        android:layout_below="@id/player_mini"
+        >
+        
+	<Button android:id="@+id/btn_return"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/icn_return"                          
+            android:layout_marginTop="30dp"   />                             
+                        
+    </LinearLayout>
+
 	<ListView
     android:id="@+id/playlist"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_toRightOf="@id/menu_playlist_albumDetailsContainer"
-    android:layout_alignParentRight="true"
-    android:layout_alignParentBottom="true"
     android:layout_below="@id/player_mini"	
-    android:background="@color/itemBGcolor" 
+    android:layout_toLeftOf="@id/menu_buttonrow"
+    android:background="@color/btnrowBGcolor" 
  	android:cacheColorHint="#00000000"
+ 	android:layout_alignParentBottom="true"   
     />    
 
 </RelativeLayout>

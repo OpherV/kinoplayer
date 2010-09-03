@@ -2,10 +2,14 @@ package com.android.kino.ui;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -13,6 +17,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.android.kino.Kino;
 import com.android.kino.R;
+import com.android.kino.logic.AlbumList;
 import com.android.kino.logic.AlbumProperties;
 import com.android.kino.logic.ArtistProperties;
 import com.android.kino.logic.MediaProperties;
@@ -23,12 +28,17 @@ public class MenuPlaylist extends KinoUI implements OnItemClickListener{
     
     private ArrayAdapter<MediaProperties> playlistAdapter=null;
     Playlist playlist=null;
+    Button btn_return=null;
+    ViewGroup albumDetails=null;
     
 	@Override
 	protected void initUI() {
 
 		setContentView(R.layout.menu_playlist);		
-		playlist=getIntent().getExtras().getParcelable("playlist");					
+		playlist=getIntent().getExtras().getParcelable("playlist");
+		
+		albumDetails = (ViewGroup)findViewById(R.id.menu_playlist_albumDetailsContainer);
+		btn_return= (Button) this.findViewById(R.id.btn_return);
 	}
     
     @Override
@@ -59,14 +69,39 @@ public class MenuPlaylist extends KinoUI implements OnItemClickListener{
 		playlistAdapter = new SongAdapter(this, 0, playlist, isAlbumPlaylist);
 		
 		ListView playlistView = (ListView)findViewById(R.id.playlist);
-		playlistView.setAdapter(playlistAdapter);
+		playlistView.setAdapter(playlistAdapter);					
 		
-		if (!isAlbumPlaylist){
-			ViewGroup albumDetails = (ViewGroup)findViewById(R.id.menu_playlist_albumDetails);
+		if (!isAlbumPlaylist){			
 			albumDetails.setVisibility(View.GONE);
+									
+				btn_return.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {											
+						Intent mainMenuIntent=new Intent(MenuPlaylist.this,MenuMain.class);											
+			    		startActivity(mainMenuIntent);
+						
+					}
+				});
 			
 		}
 		else{
+			
+			btn_return.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Playlist playlist=mPlayer.getPlaylist();
+					
+					ArtistProperties artistClicked = library.getArtistFromCache(playlist.getArtistTitle());			
+					AlbumList albums=library.getAlbumsByArtist(artistClicked.getName());
+					
+					Intent albumlistIntent=new Intent(MenuPlaylist.this,MenuAlbumBrowse.class);								
+					albumlistIntent.putExtra("albumlist",(Parcelable)albums);						
+		    		startActivity(albumlistIntent);
+					
+				}
+			});
 			
 			//bg
 			ImageView artistImageBG = (ImageView) findViewById(R.id.menu_playlist_bgimage);

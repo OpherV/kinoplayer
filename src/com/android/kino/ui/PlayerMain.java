@@ -1,15 +1,21 @@
 package com.android.kino.ui;
 
+import android.content.Intent;
+import android.os.Parcelable;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.android.kino.R;
+import com.android.kino.logic.AlbumProperties;
+import com.android.kino.logic.KinoMediaPlayer;
+import com.android.kino.logic.Playlist;
 import com.android.kino.utils.ConvertUtils;
 
 public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{			
@@ -22,6 +28,10 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
 	ImageView btn_forward=null;
 	ImageView btn_back=null;	
 	ImageView playerBGview =null;	
+	
+	Button btn_return=null;
+	Button btn_repeat=null;
+	Button btn_shuffle=null;
 	
 	private boolean navbuttonsVisible=true;
 	
@@ -54,7 +64,7 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
                 setPausePlay();
                 if (!navbuttonsVisible){
                 	guiUpdater.removeCallbacks(rHideButtons);
-                	fadeinButtons();
+                	fadeinMediaButtons();
 	                navbuttonsVisible=true;
                 }
             }
@@ -93,13 +103,17 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
 		        			          
 	}
 	
-	private void fadeinButtons(){
+	private void fadeinMediaButtons(){
         fadein_partial(btn_play);
-     //   fadein_partial(btn_forward);
-     //   fadein_partial(btn_back);
         
         scheduleTask(rHideButtons,BTNTIMEOUT);
         
+	}
+	
+	private void fadeInMenuButtons(){
+        fadein_partial(btn_return);
+        fadein_partial(btn_shuffle);
+        fadein_partial(btn_repeat);
 	}
 	
 	private void fadeoutButtons(){				
@@ -113,6 +127,60 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
 	    
 		song = mPlayer.getCurrentMedia();
 		
+		
+		btn_return= (Button) this.findViewById(R.id.btn_return);
+		btn_return.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Playlist playlist=mPlayer.getPlaylist();
+				
+				Intent playlistIntent=new Intent(PlayerMain.this,MenuPlaylist.class);	
+				playlistIntent.putExtra("playlist",(Parcelable)playlist);
+				if (playlist.getAlbumTitle()!=null){
+					playlistIntent.putExtra("albumPlaylist",true);
+					playlistIntent.putExtra("albumTitle",playlist.getAlbumTitle());
+					playlistIntent.putExtra("albumArtist",playlist.getArtistTitle());
+					playlistIntent.putExtra("albumYear",playlist.getAlbumYear());					}				    									
+				
+	    		startActivity(playlistIntent);    		      
+				
+			}
+		});
+		
+		btn_shuffle= (Button) this.findViewById(R.id.btn_shuffle);   
+		btn_shuffle.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                if (mPlayer.isShuffle()){
+                	mPlayer.setShuffle(false);
+                }
+                else{
+                	mPlayer.setShuffle(true);
+                }
+                 
+                setShuffle();
+            }
+        });
+		
+		btn_repeat= (Button) this.findViewById(R.id.btn_repeat);
+		btn_repeat.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                if (mPlayer.getRepeatMode()==KinoMediaPlayer.RepeatMode.ALL){
+                	mPlayer.setRepeatMode(KinoMediaPlayer.RepeatMode.ONE);
+                }
+                else if (mPlayer.getRepeatMode()==KinoMediaPlayer.RepeatMode.ONE){
+                	mPlayer.setRepeatMode(KinoMediaPlayer.RepeatMode.OFF);
+                }
+                else if (mPlayer.getRepeatMode()==KinoMediaPlayer.RepeatMode.OFF){
+                	mPlayer.setRepeatMode(KinoMediaPlayer.RepeatMode.ALL);
+                }
+                setRepeat();
+            }
+        });
 		
 		//bg image			                      
         playerBGview.setImageBitmap(song.getArtistImage(this));
@@ -142,6 +210,8 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
 	    songSeek.setOnSeekBarChangeListener(this);	    	    
 	    	  
 	    setPausePlay();
+	    setShuffle();
+	    setRepeat();
 	    // TODO call updateTrack something	    	   
 	}
 	
@@ -195,11 +265,33 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
 		}
 	}
 	
+	private void setShuffle(){
+		if (mPlayer.isShuffle()){
+			btn_shuffle.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.icn_shuffle));
+		}
+		else{
+			btn_shuffle.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.icn_shuffleoff));			
+		}
+	}
+	
+	private void setRepeat(){
+		if (mPlayer.getRepeatMode()==KinoMediaPlayer.RepeatMode.OFF){
+			btn_repeat.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.icn_repeatoff));
+		}
+		else if (mPlayer.getRepeatMode()==KinoMediaPlayer.RepeatMode.ALL){
+			btn_repeat.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.icn_repeatall));
+		}
+		else if (mPlayer.getRepeatMode()==KinoMediaPlayer.RepeatMode.ONE){
+			btn_repeat.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.icn_repeatone));
+		}
+	}
+	
 	@Override
 	protected void onResume() {	
 		super.onResume();
 		setPausePlay();
-		fadeinButtons();
+		fadeinMediaButtons();
+		fadeInMenuButtons();
 	}	
 	        
 	

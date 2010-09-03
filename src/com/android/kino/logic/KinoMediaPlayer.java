@@ -37,7 +37,7 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
     private RepeatMode mRepeatMode = RepeatMode.OFF;
     private boolean mIsShuffleOn = false;
 
-    public enum RepeatMode { OFF, ONE, ALL };
+    public static enum RepeatMode { OFF, ONE, ALL };
     
     public KinoMediaPlayer() {
         mMp = new MediaPlayer();
@@ -226,7 +226,17 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
         Log.d(getClass().getName(), "Setting repeat mode - " + repeat);
         mRepeatMode = repeat;
     }
+    
+    public RepeatMode getRepeatMode(){
+    	return mRepeatMode;
+    }
 
+    
+    public boolean isShuffle(){
+    	return mIsShuffleOn;
+    }
+    
+    
     /**
      * Set shuffle mode on/off.
      */
@@ -481,5 +491,9 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
         else {
             playNextMedia();
         }
+    }
+    
+    public Playlist getPlaylist(){
+    	return mPlaylist;	
     }
 }
