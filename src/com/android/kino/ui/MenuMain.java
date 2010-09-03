@@ -101,7 +101,7 @@ public class MenuMain extends KinoUI {
 					Toast.makeText(MenuMain.this, "Not impemented yet... :(", Toast.LENGTH_SHORT).show();
 					
 				}
-			});
+			});			
 	}
 	
 	private void setAllSongs(){
@@ -124,7 +124,7 @@ public class MenuMain extends KinoUI {
 	public void updateUI() {	
 		super.updateUI();
 		playlistAdapter.notifyDataSetChanged();
-	}
+	}		
 	
 
 }

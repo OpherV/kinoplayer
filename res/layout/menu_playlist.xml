@@ -5,24 +5,26 @@
     android:layout_height="fill_parent"
     >
     
-<com.android.kino.ui.PlayerMini 
+
+	<ImageView android:id="@+id/menu_playlist_bgimage"
+			    android:layout_width="fill_parent"
+		    	android:layout_height="fill_parent"
+		    	android:scaleType="centerCrop" />	
+    
+	<com.android.kino.ui.PlayerMini 
     android:id="@+id/player_mini"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:visibility="gone"    
     android:layout_alignParentTop="true"        
-     />	
-
-	<ImageView android:id="@+id/menu_playlist_bgimage"
-			    android:layout_width="fill_parent"
-		    	android:layout_height="fill_parent"
-		    	android:scaleType="centerCrop" />	     
+     />	     
      
 	 <RelativeLayout  		
 	 		android:id="@+id/menu_playlist_albumDetails"
 			android:layout_width="fill_parent"
 			 android:layout_height="?android:attr/listPreferredItemHeight"
-			 android:layout_below="@id/player_mini"			 
+			 android:layout_below="@id/player_mini"
+			 android:background="@color/titleBGcolor"			 
 			 >
 		
 		<LinearLayout	android:id="@+id/menu_playlist_imageContainer" 
@@ -81,7 +83,9 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_below="@id/menu_playlist_albumDetails"
-	android:layout_alignParentBottom="true"
+	android:layout_alignParentBottom="true"	
+ 	android:background="@color/itemBGcolor" 
+ 	android:cacheColorHint="#00000000"
     />
     
 	<com.android.kino.ui.StatusUpdater 

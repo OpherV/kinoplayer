@@ -7,10 +7,15 @@ import android.os.SystemClock;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.kino.Kino;
 import com.android.kino.R;
@@ -36,6 +41,15 @@ public class KinoUI extends Activity implements KinoUser{
 
 	protected Handler guiUpdater;	
 	final int GUI_UPDATE_INTERVAL = 1000;
+	public static enum VIEWMODE {visible,invisible};
+	
+	private Animation aFadeinpartial;
+	private Animation aFadeoutpartial;
+	private Animation aFadeoutfull;
+		
+	protected static final int SWIPE_MIN_DISTANCE = 120;
+	protected static final int SWIPE_MAX_OFF_PATH = 250;
+	protected static final int SWIPE_THRESHOLD_VELOCITY = 1500;      	
 	
 	// updates the gui every second
 	protected Runnable guiUpdateTask = new Runnable() {
@@ -134,6 +148,10 @@ public class KinoUI extends Activity implements KinoUser{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {	
 		super.onCreate(savedInstanceState);		
+		aFadeinpartial=AnimationUtils.loadAnimation(this, R.anim.fadein_partial);
+		aFadeoutpartial=AnimationUtils.loadAnimation(this, R.anim.fadeout_partial);
+		aFadeoutfull=AnimationUtils.loadAnimation(this, R.anim.fadein_full);			
+		
 		kino=Kino.getKino(this);		
 		
 		initUI();
@@ -185,5 +203,53 @@ public class KinoUI extends Activity implements KinoUser{
 	        return super.onOptionsItemSelected(item);
 	    }
 	}
+	
+	
+	protected void fadein_partial(View v) {		
+        v.startAnimation(aFadeinpartial);
+    }
+    
+    protected void fadeout_partial(View v) {    	
+        v.startAnimation(aFadeoutpartial);
+    }
+    
+    public void scheduleTask(Runnable task, int millisecs){    	    	
+       	       guiUpdater.postDelayed(task,millisecs);  
+    }
+   
+    public class GestureActions{    	
+    	public void swipeRight() {}    	
+    	public void swipeLeft() {} 	
+    	public  void touch() {}
+    }
+    
+	public class GenericGestureDetector extends SimpleOnGestureListener {
+		private GestureActions mGestureActions;
+		
+		GenericGestureDetector(GestureActions gestureActions){
+			mGestureActions=gestureActions;
+		}
+		
+		
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {        	
+            try {
+                if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
+                    return false;
+                // right to left swipe
+                if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    mGestureActions.swipeLeft();
+                    return true;
+                }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                	mGestureActions.swipeRight();
+                	return true;
+                }
+      
+            } catch (Exception e) {
+                // nothing
+            }
+            return false;
+        }
+    }
 	
 }

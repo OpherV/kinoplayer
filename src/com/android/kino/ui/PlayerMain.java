@@ -1,56 +1,119 @@
 package com.android.kino.ui;
 
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TabHost.OnTabChangeListener;
 
 import com.android.kino.R;
 import com.android.kino.utils.ConvertUtils;
 
 public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{			
 	
+	final private int BTNTIMEOUT=6000;
+	
 	private boolean updatingSeekBar=false;
 	private SeekBar songSeek=null;
-
-
+	ImageView btn_play=null;
+	ImageView btn_forward=null;
+	ImageView btn_back=null;	
+	ImageView playerBGview =null;	
 	
+	private boolean navbuttonsVisible=true;
+	
+	private Runnable rHideButtons=new Runnable(){
+
+		@Override
+		public void run() {				
+			fadeoutButtons();	
+			navbuttonsVisible=false;
+		}
+    	
+    };
+    
+		
 	@Override
 	protected void initUI(){		
 		setContentView(R.layout.player_main);
+		btn_back = (ImageView) findViewById(R.id.btn_back);
+		btn_forward = (ImageView) findViewById(R.id.btn_forward);
 		
-		Button btn_back = (Button) findViewById(R.id.btn_back);
-		btn_back.setOnClickListener(new OnClickListener() {
+        btn_play = (ImageView) findViewById(R.id.btn_play);
+        
+        playerBGview = (ImageView) findViewById(R.id.playerBG); 
+        
+        playerBGview.setOnClickListener(new OnClickListener() {
             
             @Override
             public void onClick(View v) {
+                mPlayer.togglePlayPause();
+                setPausePlay();
+                if (!navbuttonsVisible){
+                	guiUpdater.removeCallbacks(rHideButtons);
+                	fadeinButtons();
+	                navbuttonsVisible=true;
+                }
+            }
+        });
+                                     
+        
+	    // Gesture detection
+        GestureActions bgActions = new GestureActions(){
+        	@Override
+        	public void swipeLeft() {
                 mPlayer.previous();
                 initSongDetails();
-            }
-        });
-		
-        Button btn_forward = (Button) findViewById(R.id.btn_forward);
-        btn_forward.setOnClickListener(new OnClickListener() {
-            
-            @Override
-            public void onClick(View v) {
-                mPlayer.next();
-                initSongDetails();
-            }
-        });
+                setPausePlay();
+        	}
+        	
+        	@Override
+        	public void swipeRight() {            	
+                    mPlayer.next();
+                    initSongDetails();
+                    setPausePlay();
+        	}
+        	        	
+        };
         
-        Button btn_play = (Button) findViewById(R.id.btn_play);
-        btn_play.setOnClickListener(new OnClickListener() {
-            
-            @Override
-            public void onClick(View v) {
-                mPlayer.togglePlayPause();                
-            }
-        });
+        final GestureDetector gestureDetector = new GestureDetector(new GenericGestureDetector(bgActions));       
+        View.OnTouchListener gestureListener = new View.OnTouchListener() {
+             public boolean onTouch(View v, MotionEvent event) {            	 
+                 if (gestureDetector.onTouchEvent(event)) {                	 
+                     return true;
+                 }                 
+                 return false;
+             }
+         };
+         
+         playerBGview.setOnTouchListener(gestureListener);
 		        			          
+	}
+	
+	private void fadeinButtons(){
+        fadein_partial(btn_play);
+     //   fadein_partial(btn_forward);
+     //   fadein_partial(btn_back);
+        
+        scheduleTask(rHideButtons,BTNTIMEOUT);
+        
+	}
+	
+	private void fadeoutButtons(){				
+        fadeout_partial(btn_play);
+     //   fadeout_partial(btn_forward);
+     //   fadeout_partial(btn_back);
+        
 	}
 
 	protected void initSongDetails(){
@@ -58,8 +121,7 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
 		song = mPlayer.getCurrentMedia();
 		
 		
-		//bg image			       
-        ImageView playerBGview = (ImageView) findViewById(R.id.playerBG);        
+		//bg image			                      
         playerBGview.setImageBitmap(song.getArtistImage(this));
 		
         //details
@@ -86,8 +148,8 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
 	    
 	    songSeek.setOnSeekBarChangeListener(this);	    	    
 	    	  
-
-	    // TODO call updateTrack something
+	    setPausePlay();
+	    // TODO call updateTrack something	    	   
 	}
 	
 	protected void updateSongDetails(){	
@@ -130,4 +192,22 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
         playerBGview.setImageBitmap(song.getArtistImage(this));
 		
 	}
+	
+	private void setPausePlay(){
+		if (mPlayer.isPlaying()){
+			btn_play.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.icn_pause));
+		}
+		else{
+			btn_play.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.icn_play));
+		}
+	}
+	
+	@Override
+	protected void onResume() {	
+		super.onResume();
+		setPausePlay();
+		fadeinButtons();
+	}	
+	        
+	
 }

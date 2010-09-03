@@ -5,7 +5,12 @@
     android:layout_height="fill_parent"
     >
     
-<com.android.kino.ui.PlayerMini 
+   	<ImageView android:id="@+id/menu_playlist_bgimage"
+		    android:layout_width="fill_parent"
+	    	android:layout_height="fill_parent"
+	    	android:scaleType="centerCrop" />
+    
+	<com.android.kino.ui.PlayerMini 
     android:id="@+id/player_mini"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -19,21 +24,17 @@
     android:layout_height="wrap_content"    
     android:layout_alignParentBottom="true"
      />	
-     
-	<ImageView android:id="@+id/menu_playlist_bgimage"
-			    android:layout_width="fill_parent"
-		    	android:layout_height="fill_parent"
-		    	android:scaleType="centerCrop" />	   
-     											
+     	        										
 											
 	<LinearLayout 
 				android:id="@+id/menu_playlist_albumDetailsContainer"
-				android:layout_height="wrap_content"
+				android:layout_height="fill_parent"
 				android:layout_width="wrap_content"
 				android:orientation="vertical"			
-				android:layout_below="@id/player_mini"
-				android:layout_centerVertical="true"														
-				android:padding="20dp"				
+				android:layout_below="@id/player_mini"																	
+				android:padding="20dp"		
+				android:background="@color/titleBGcolor"
+				android:layout_alignParentBottom="true"		
 				>
 				<TextView android:id="@+id/albumItem_albumTitle"
 							android:layout_height="wrap_content"
@@ -74,7 +75,9 @@
     android:layout_toRightOf="@id/menu_playlist_albumDetailsContainer"
     android:layout_alignParentRight="true"
     android:layout_alignParentBottom="true"
-    android:layout_below="@id/player_mini"		
+    android:layout_below="@id/player_mini"	
+    android:background="@color/itemBGcolor" 
+ 	android:cacheColorHint="#00000000"
     />    
 
 </RelativeLayout>

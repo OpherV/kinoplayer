@@ -25,6 +25,7 @@ public class MenuAlbumBrowse extends KinoUI implements OnItemClickListener {
 	    TextView artistTitleView;
 	    View artistTitleContainer;
 	    ArtistProperties artist;
+	    boolean mBGImageSet=false;
 	    
 		@Override
 		protected void initUI() {
@@ -90,9 +91,10 @@ public class MenuAlbumBrowse extends KinoUI implements OnItemClickListener {
 			super.updateUI();
 			albumListAdapter.notifyDataSetChanged();
 			
-			if (albumList.getArtistTitle()!=null){							
-		        ImageView artistImageBG = (ImageView) findViewById(R.id.menu_albumbrowse_bgimage);
-		        artistImageBG.setImageBitmap(artist.getArtistImage(this));		        
+			if (albumList.getArtistTitle()!=null && !mBGImageSet){	
+		        ImageView artistImageBG = (ImageView) findViewById(R.id.menu_albumbrowse_bgimage);		        
+		        artistImageBG.setImageBitmap(artist.getArtistImage(this));
+		        mBGImageSet=true;
 			}
 		}
 		

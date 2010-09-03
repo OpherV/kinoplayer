@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.android.kino.Kino;
@@ -70,7 +71,7 @@ public class MenuPlaylist extends KinoUI implements OnItemClickListener{
 			
 			//bg
 			ImageView artistImageBG = (ImageView) findViewById(R.id.menu_playlist_bgimage);
-	        artistImageBG.setImageBitmap(artist.getArtistImage(this));
+	        artistImageBG.setImageBitmap(artist.getArtistImage(this));	        
 			
 			ImageView image = (ImageView) this.findViewById(R.id.menu_playlist_albumImage);
 		    Bitmap albumImage=album.getAlbumImage(this);
