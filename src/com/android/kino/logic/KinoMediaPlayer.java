@@ -109,6 +109,10 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
         if (mPlayOrder == null) {
             return 0;
         }
+        // Next index -1 doesn't work for random because next could be 0!
+        if (mPlayOrder instanceof Playlist.RandomIterator) {
+            return ((Playlist.RandomIterator)mPlayOrder).currentIndex();
+        }
         return mPlayOrder.nextIndex() - 1;
     }
 
@@ -409,6 +413,8 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
         else {
             // Repeat is off - don't do anything
             Log.d(getClass().getName(), "Can't next - repeat is off");
+            // Remain in this song
+            setCurrentMedia(mCurrentMedia);
             return false;
         }
     }

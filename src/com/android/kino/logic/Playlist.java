@@ -119,9 +119,10 @@ public class Playlist extends LinkedList<MediaProperties> implements Parcelable 
     // TODO Add sort or iterators as needed by the UI (by track#, by artist,
     //      by title, by playing order etc.)
     
-    private class RandomIterator implements ListIterator<MediaProperties> {
+    class RandomIterator implements ListIterator<MediaProperties> {
         
         private ListIterator<Integer> mOrder;
+        public int mPosition;
 
         public RandomIterator(int position, Random random) {
             LinkedList<Integer> order = new LinkedList<Integer>();
@@ -133,6 +134,7 @@ public class Playlist extends LinkedList<MediaProperties> implements Parcelable 
             shuffleList(order, random);
             order.addFirst(position);
             mOrder = order.listIterator();
+            mPosition = position;
         }
         
         @Override
@@ -142,7 +144,8 @@ public class Playlist extends LinkedList<MediaProperties> implements Parcelable 
 
         @Override
         public MediaProperties next() {
-            return Playlist.this.get(mOrder.next());
+            mPosition = mOrder.next();
+            return Playlist.this.get(mPosition);
         }
 
         @Override
@@ -165,7 +168,8 @@ public class Playlist extends LinkedList<MediaProperties> implements Parcelable 
 
         @Override
         public MediaProperties previous() {
-            return Playlist.this.get(mOrder.previous());
+            mPosition = mOrder.previous();
+            return Playlist.this.get(mPosition);
         }
 
         @Override
@@ -194,6 +198,10 @@ public class Playlist extends LinkedList<MediaProperties> implements Parcelable 
         @Override
         public void set(MediaProperties object) {
             throw new UnsupportedOperationException();
+        }
+
+        public int currentIndex() {
+            return mPosition;
         }
     }
 

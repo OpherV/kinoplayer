@@ -18,6 +18,7 @@ import com.android.kino.logic.event.DoubleTapEvent;
 import com.android.kino.logic.settings.SettingsContainer.Setting;
 
 public abstract class SettingsLoader {
+    private static final String TAG = "SettingsLoader";
 
     private static final String ACTION_PLAY_PAUSE = "playpause";
     private static final String ACTION_NEXT_TRACK = "nexttrack";
@@ -59,7 +60,7 @@ public abstract class SettingsLoader {
     }
     
     public static SettingsContainer loadCurrentSettings(Context context) {
-        Log.d("SettingsLoader", "loadCurrentSettings");
+        Log.d(TAG, "loadCurrentSettings - " + context);
         if (mCurrentSettings != null) {
             return mCurrentSettings;
         }
@@ -74,8 +75,11 @@ public abstract class SettingsLoader {
         mCurrentSettings = settings;
     }
     
+    /**
+     * Update the current Kino settings according to the Android preferences.
+     */
     public static void updateCurrentSettings(Activity context) {
-        Log.d("SettingsLoader", "updateCurrentSettings");
+        Log.d(TAG, "updateCurrentSettings");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         
         String musicDir = prefs.getString("musicDir", DEFAULT_MUSIC_DIR);
@@ -108,8 +112,11 @@ public abstract class SettingsLoader {
         }
     }
 
+    /**
+     * Updates Android preferences according to a Kino container.
+     */
     private static void setPreferences(SettingsContainer settings, Context context) {
-        Log.d("SettingsLoader", "setPreferences");
+        Log.d(TAG, "setPreferences");
         String musicDir = settings.getConfiguredString(Setting.MEDIA_DIRECTORY);
         boolean imgLazyLoad = settings.getConfiguredBoolean(Setting.LAZY_LOAD_IMAGES);
         boolean allowDoubleTap = settings.getConfiguredBoolean(Setting.ENABLE_DOUBLE_TAP);
@@ -134,7 +141,7 @@ public abstract class SettingsLoader {
             break;
         }
         default:
-            Log.e("SettingsLoader", "Unsupported action - " + doubleTapAction.getActionID());
+            Log.e(TAG, "Unsupported action - " + doubleTapAction.getActionID());
         }
         
         if (context instanceof Activity) {
