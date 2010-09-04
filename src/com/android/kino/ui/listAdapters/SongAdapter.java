@@ -15,13 +15,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.kino.R;
-import com.android.kino.logic.AlbumProperties;
-import com.android.kino.logic.ArtistProperties;
 import com.android.kino.logic.MediaProperties;
 import com.android.kino.logic.Playlist;
 import com.android.kino.ui.KinoUI;
 import com.android.kino.ui.MenuAlbumArtView;
-import com.android.kino.ui.MenuPlaylist;
 
 public class SongAdapter extends ArrayAdapter<MediaProperties> {
 
