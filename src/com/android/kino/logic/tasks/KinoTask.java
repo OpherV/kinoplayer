@@ -81,6 +81,12 @@ abstract public class KinoTask extends AsyncTask<Void,Void,Void>{
 		Message msg = new Message();
 		msg.what=TaskMasterService.MSG_UPDATEVIEW;
 		mTaskMaster.getMessageHandler().sendMessage(msg);	
+	}
+	
+	protected void refreshData(){
+		Message msg = new Message();
+		msg.what=TaskMasterService.MSG_REFRESHDATA;
+		mTaskMaster.getMessageHandler().sendMessage(msg);	
 	}	
 	
 	protected File downloadFile(URL fileURL, String localFileName, String taskAction){

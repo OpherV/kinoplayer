@@ -45,7 +45,12 @@ public class SongAdapter extends ArrayAdapter<MediaProperties> {
         v = inflater.inflate(R.layout.item_song, null);
 
         ImageView songImage = (ImageView) v.findViewById(R.id.songItem_image);
-        songImage.setImageBitmap(songObj.getAlbumImage(mContext));
+        if (songImage!=null){
+        	songImage.setImageBitmap(songObj.getAlbumImage(mContext));
+   
+        	//TODO fadein the image if it was refreshed. how?
+///        	((KinoUI) mContext).fadein_full(songImage);
+        }        
         
         TextView songTitle = (TextView)  v.findViewById(R.id.songItem_songTitle);
         songTitle.setText((position+1)+". "+songObj.Title);

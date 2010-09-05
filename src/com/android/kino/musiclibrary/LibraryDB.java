@@ -149,7 +149,7 @@ public class LibraryDB extends SQLiteOpenHelper {
                 null,
                 null,
                 null, null, null,
-                "artist, title ASC");
+                "title ASC");
     	cursor.moveToFirst();
     	
     	Playlist playlist = playlistFromCursor(cursor);

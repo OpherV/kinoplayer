@@ -43,7 +43,7 @@ public class MenuAlbumBrowse extends KinoUI implements OnItemClickListener {
 			btn_return= (Button) this.findViewById(R.id.btn_return);
 			
 			
-		}
+		}		
 		
 		@Override
 		public void onKinoInit(Kino kino) {		

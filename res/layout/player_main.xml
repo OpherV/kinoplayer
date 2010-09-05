@@ -78,24 +78,22 @@
     
       
      
-  <ImageView android:id="@+id/btn_back"
+  <Button android:id="@+id/btn_back"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/btn_back"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"  
-            android:layout_marginLeft="20dp"        
-            android:visibility="gone"  
+            android:layout_marginLeft="20dp"                    
             />
             
-	<ImageView android:id="@+id/btn_forward"
+	<Button android:id="@+id/btn_forward"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/btn_forward"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"   
-            android:visibility="gone"              
             />
             
 	<ImageView android:id="@+id/btn_play"

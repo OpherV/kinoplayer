@@ -1,5 +1,6 @@
 package com.android.kino.ui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
@@ -75,7 +76,9 @@ public class LibraryActionsMenu extends ListActivity implements OnItemClickListe
     private class ClearImages implements OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            // TODO (implement) Delete images
+        	
+        	//TODO how can i call this without the library object?
+        	//mTaskMaster.addTask(new CleanMediaFiles());
         }
     }
     

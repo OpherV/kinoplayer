@@ -1,6 +1,7 @@
 package com.android.kino.musiclibrary;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -107,6 +108,46 @@ public class Library extends Service{
 			}
 		}
 		
+	}
+	
+	//clears the album dir of images
+	public void cleanAlbumDir(LibraryStatusUpdater updater){
+		File rootDir = Environment.getExternalStorageDirectory();		
+		String albumImagesPath = rootDir.getAbsolutePath()+"/"+Kino.ALBUM_DIR;
+		File albumImagesDir = new File(albumImagesPath);
+		
+		for (File file : albumImagesDir.listFiles()){
+			updater.updateProgress("Deleting: "+file.getAbsolutePath());
+			file.delete();
+		}
+		
+		Collection<AlbumProperties> albums = albumCache.values();
+		for (AlbumProperties album : albums){
+			updater.updateProgress("Removing image from cache: "+album.getAlbumName()+" - "+album.getArtistName());
+			album.setImage(null);
+		}
+	}
+	
+	//clears the artist dir of images
+	public void cleanArtistDir(LibraryStatusUpdater updater){
+		File rootDir = Environment.getExternalStorageDirectory();		
+		String artistImagesPath = rootDir.getAbsolutePath()+"/"+Kino.ARTIST_DIR;
+		File artistImagesDir = new File(artistImagesPath);
+		
+		for (File file : artistImagesDir.listFiles()){
+			updater.updateProgress("Deleting: "+file.getAbsolutePath());
+			file.delete();
+		}
+		
+		Collection<ArtistProperties> artists= artistCache.values();
+		for (ArtistProperties artist: artists){
+			updater.updateProgress("Removing image from cache: "+artist.getName());
+			artist.setImage(null);
+		}
+	}
+	
+	public void purgeLibrary(){
+		db.removeAllSongs();
 	}
 	
 	

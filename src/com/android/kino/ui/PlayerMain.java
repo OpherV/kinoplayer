@@ -25,8 +25,8 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
 	private boolean updatingSeekBar=false;
 	private SeekBar songSeek=null;
 	ImageView btn_play=null;
-	ImageView btn_forward=null;
-	ImageView btn_back=null;	
+	Button btn_forward=null;
+	Button btn_back=null;	
 	ImageView playerBGview =null;	
 	
 	Button btn_return=null;
@@ -39,7 +39,7 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
 
 		@Override
 		public void run() {				
-			fadeoutButtons();	
+			fadeoutMediaButtons();	
 			navbuttonsVisible=false;
 		}
     	
@@ -49,8 +49,45 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
 	@Override
 	protected void initUI(){		
 		setContentView(R.layout.player_main);
-		btn_back = (ImageView) findViewById(R.id.btn_back);
-		btn_forward = (ImageView) findViewById(R.id.btn_forward);
+		btn_back = (Button) findViewById(R.id.btn_back);
+		btn_forward = (Button) findViewById(R.id.btn_forward);
+		
+		btn_back.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {				
+				if (navbuttonsVisible){
+					mPlayer.previous();
+					initSongDetails();
+                	guiUpdater.removeCallbacks(rHideButtons);
+                	scheduleTask(rHideButtons,BTNTIMEOUT);
+				}
+				else if (!navbuttonsVisible){
+                	guiUpdater.removeCallbacks(rHideButtons);
+                	fadeinMediaButtons();
+	                navbuttonsVisible=true;
+                }
+				
+			}
+		});
+		
+		btn_forward.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if (navbuttonsVisible){
+					mPlayer.next();
+					initSongDetails();
+					guiUpdater.removeCallbacks(rHideButtons);
+					scheduleTask(rHideButtons,BTNTIMEOUT);
+				}
+				else if (!navbuttonsVisible){
+                	guiUpdater.removeCallbacks(rHideButtons);
+                	fadeinMediaButtons();
+	                navbuttonsVisible=true;
+                }
+			}
+		});
 		
         btn_play = (ImageView) findViewById(R.id.btn_play);
         
@@ -59,13 +96,17 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
         playerBGview.setOnClickListener(new OnClickListener() {
             
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {            	
                 mPlayer.togglePlayPause();
                 setPausePlay();
                 if (!navbuttonsVisible){
                 	guiUpdater.removeCallbacks(rHideButtons);
                 	fadeinMediaButtons();
 	                navbuttonsVisible=true;
+                }
+                else{
+                	guiUpdater.removeCallbacks(rHideButtons);
+                	scheduleTask(rHideButtons,BTNTIMEOUT);                	
                 }
             }
         });
@@ -105,6 +146,8 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
 	
 	private void fadeinMediaButtons(){
         fadein_partial(btn_play);
+        fadein_partial(btn_forward);
+        fadein_partial(btn_back);
         
         scheduleTask(rHideButtons,BTNTIMEOUT);
         
@@ -116,10 +159,10 @@ public class PlayerMain extends KinoUI implements OnSeekBarChangeListener{
         fadein_partial(btn_repeat);
 	}
 	
-	private void fadeoutButtons(){				
+	private void fadeoutMediaButtons(){				
         fadeout_partial(btn_play);
-     //   fadeout_partial(btn_forward);
-     //   fadeout_partial(btn_back);
+        fadeout_partial(btn_forward);
+        fadeout_partial(btn_back);
         
 	}
 

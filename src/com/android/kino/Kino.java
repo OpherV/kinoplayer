@@ -140,8 +140,9 @@ public class Kino extends Application implements ServiceUser {
         else if (binder instanceof Library.LibraryBinder){
         	mLibrary = ((Library.LibraryBinder) binder).getLibrary();
         }
-        else if (binder instanceof TaskMasterService.TaskMasterBinder){
+        else if (binder instanceof TaskMasterService.TaskMasterBinder){        	
         	mTaskMaster = ((TaskMasterService.TaskMasterBinder) binder).getTaskMaster();
+        	mTaskMaster.setKino(this);
         }
         mIsInitialized = mPlayer != null && mInputTranslator != null && mLibrary != null && mTaskMaster != null;
         if (mIsInitialized) {

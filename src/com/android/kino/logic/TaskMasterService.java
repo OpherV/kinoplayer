@@ -19,9 +19,10 @@ import com.android.kino.ui.KinoUI;
 public class TaskMasterService extends Service{
 	
 	public static final int MSG_UPDATEVIEW = 413;
+	public static final int MSG_REFRESHDATA = 623;
 	public static final int MSG_SHOWMESSAGE = 542; 
 	
-	Kino kino = null;	
+	private Kino kino = null;	
 	IBinder taskmasterBinder=new TaskMasterBinder();
 	
 	private final int MAXTASKS=3;
@@ -34,20 +35,30 @@ public class TaskMasterService extends Service{
 		public void handleMessage(Message msg) {
 			
 			switch(msg.what){
-				case MSG_UPDATEVIEW:
-				mDisplay.updateUI();
+				case MSG_UPDATEVIEW:				
+				mDisplay.updateUI();				
 				break;
+
+				case MSG_REFRESHDATA:
+				mDisplay.onKinoInit(kino);								
+				break;
+					
 				
 				case MSG_SHOWMESSAGE:
 					displayMessage(msg.getData().getString("text"));
 				break;
 				
 			}
+
 		}
 	};
 	
 	private KinoUI mDisplay=null;
 	
+	
+	public void setKino(Kino kinoObj){
+		kino=kinoObj;
+	}
 
 	
 	public LinkedList<KinoTask> getRunningTasks(){

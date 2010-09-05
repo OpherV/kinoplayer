@@ -28,6 +28,7 @@ import com.android.kino.logic.KinoMediaPlayer;
 import com.android.kino.logic.KinoUser;
 import com.android.kino.logic.MediaProperties;
 import com.android.kino.logic.TaskMasterService;
+import com.android.kino.logic.tasks.CleanMediaFiles;
 import com.android.kino.logic.tasks.UpdateLibrary;
 import com.android.kino.musiclibrary.Library;
 import com.android.kino.utils.ConvertUtils;
@@ -50,7 +51,7 @@ public class KinoUI extends Activity implements KinoUser{
 	
 	private Animation aFadeinpartial;
 	private Animation aFadeoutpartial;
-	private Animation aFadeoutfull;
+	private Animation aFadeinfull;
 	
 	private boolean miniplayerSwipe=false;
 		
@@ -156,7 +157,7 @@ public class KinoUI extends Activity implements KinoUser{
 		super.onCreate(savedInstanceState);		
 		aFadeinpartial=AnimationUtils.loadAnimation(this, R.anim.fadein_partial);
 		aFadeoutpartial=AnimationUtils.loadAnimation(this, R.anim.fadeout_partial);
-		aFadeoutfull=AnimationUtils.loadAnimation(this, R.anim.fadein_full);			
+		aFadeinfull=AnimationUtils.loadAnimation(this, R.anim.fadein_full);			
 		
 		kino=Kino.getKino(this);		
 		
@@ -282,11 +283,34 @@ public class KinoUI extends Activity implements KinoUser{
 	        .show();
 	    	
 	    	return true;
+	    	
+	    case R.id.menu_options_removeimages:
+	    	
+	    	  //Ask the user if they want to remove images
+	        new AlertDialog.Builder(this)
+	        .setIcon(android.R.drawable.ic_dialog_alert)
+	        .setTitle("Exit")
+	        .setMessage("Are you sure you want to remove all media images?")
+	        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+	            @Override
+	            public void onClick(DialogInterface dialog, int which) {
+	            	mTaskMaster.addTask(new CleanMediaFiles(library));
+	            }
+
+	        })
+	        .setNegativeButton("No", null)
+	        .show();
+	    	
+	    	return true;
 	    default:
 	        return super.onOptionsItemSelected(item);
 	    }
 	}
 	
+	public void fadein_full(View v) {		
+        v.startAnimation(aFadeinfull);
+    }
 	
 	protected void fadein_partial(View v) {		
         v.startAnimation(aFadeinpartial);
@@ -334,5 +358,5 @@ public class KinoUI extends Activity implements KinoUser{
             return false;
         }
     }
-	
+		
 }

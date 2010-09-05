@@ -2,7 +2,7 @@ package com.android.kino.logic.tasks;
 
 import com.android.kino.musiclibrary.Library;
 
-public class UpdateLibrary extends KinoTask {
+public class CleanMediaFiles extends KinoTask {
 	private Library mLibrary;
 	private Library.LibraryStatusUpdater mUpdater = new Library.LibraryStatusUpdater(){
 		@Override
@@ -12,9 +12,9 @@ public class UpdateLibrary extends KinoTask {
 		}
 	};
 	
-	public UpdateLibrary(Library library){
+	public CleanMediaFiles(Library library){
 		mLibrary=library;
-		mTaskTitle="Updating Library";
+		mTaskTitle="Cleaning media files";
 	}	
 	
 	@Override
@@ -24,14 +24,14 @@ public class UpdateLibrary extends KinoTask {
 
 	@Override
 	protected Void doInBackground(Void... arg0) {
-		mLibrary.updateLibrary(mUpdater);				
+		mLibrary.cleanAlbumDir(mUpdater);				
+		mLibrary.cleanArtistDir(mUpdater);
 		return null;
 	}
 	
 	@Override
 	protected void onPostExecute(Void result) {	
 		super.onPostExecute(result);
-		refreshData();
 		mTaskMaster.taskDone(this);	
 	}
 
