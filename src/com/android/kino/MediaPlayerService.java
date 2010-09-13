@@ -7,6 +7,8 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.android.kino.logic.KinoMediaPlayer;
@@ -24,6 +26,9 @@ public class MediaPlayerService extends Service{
     
     private NotificationManager mNotificationMngr;
     private KinoMediaPlayer mMediaPlayer = null;
+
+    private TelephonyManager mTelephonyManager;
+    private PhoneStateListener mPhoneCallListener;
     
     /* (non-Javadoc)
      * @see android.app.Service#onCreate()
@@ -36,6 +41,53 @@ public class MediaPlayerService extends Service{
             mMediaPlayer = new KinoMediaPlayer();
         }
         
+        mTelephonyManager  = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        mPhoneCallListener = new PhoneStateListener() {
+            private boolean mShouldResume = false;
+            private boolean mIncommingCall = false;
+            
+            @Override
+            public void onCallStateChanged(int state, String incomingNumber) {
+                Log.d("PhoneStateListener", "Call from " + incomingNumber + ": " + state);
+                switch (state) {
+                case TelephonyManager.CALL_STATE_RINGING: {
+                    mIncommingCall = true;
+                    // Only pause if currently playing
+                    pauseIfNeeded();
+                    break;
+                }
+                case TelephonyManager.CALL_STATE_IDLE: {
+                    mIncommingCall = false;
+                    resumeIfNeeded();
+                    break;
+                }
+                case TelephonyManager.CALL_STATE_OFFHOOK: {
+                    // Phone call in progress
+                    if (!mIncommingCall) {
+                        // The user is dialing
+                        pauseIfNeeded();
+                    }
+                    break;
+                }
+                }
+            }
+            
+            private void pauseIfNeeded() {
+                mShouldResume = mMediaPlayer.isPlaying();
+                if (mShouldResume) {
+                    mMediaPlayer.togglePlayPause();
+                }
+            }
+            
+            private void resumeIfNeeded() {
+                if (mShouldResume) {
+                    mShouldResume = false;
+                    mMediaPlayer.togglePlayPause();
+                }
+            }
+        };
+        mTelephonyManager.listen(mPhoneCallListener, PhoneStateListener.LISTEN_CALL_STATE);
+        
         mNotificationMngr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
     }
 
@@ -46,6 +98,9 @@ public class MediaPlayerService extends Service{
     public void onDestroy() {
         super.onDestroy();
         Log.d(getClass().getName(), "MediaPlayerService.onDestroy");
+        mTelephonyManager.listen(mPhoneCallListener, PhoneStateListener.LISTEN_NONE);
+        mMediaPlayer.stop();
+        mMediaPlayer.dispose();
     }
 
     /* (non-Javadoc)
@@ -122,6 +177,10 @@ public class MediaPlayerService extends Service{
             // Send the notification.
             // We use a layout id because it is a unique number.  We use it later to cancel.
             mNotificationMngr.notify(R.string.mp_service_notification, notification);
+        }
+        
+        public void clearNotification() {
+            mNotificationMngr.cancel(R.string.mp_service_notification);
         }
     }
 

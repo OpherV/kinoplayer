@@ -175,6 +175,7 @@ public class Kino extends Application implements ServiceUser {
      * TODO: Use this in some 'ShutDown' button
      */
     public void shutDown() {
+        ((MediaPlayerService.MPBinder)mMediaPlayerConn.getBinder()).clearNotification();
         stopService(new Intent(this, InputEventTranslatorService.class));
         stopService(new Intent(this, MediaPlayerService.class));
         stopService(new Intent(this, Library.class));
