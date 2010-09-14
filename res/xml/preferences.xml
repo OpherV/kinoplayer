@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
         android:title="Library">
-        <EditTextPreference
+        <Preference
             android:name="Music folder"
             android:summary="The root directory of all your music files (mp3)"
             android:defaultValue="mp3"

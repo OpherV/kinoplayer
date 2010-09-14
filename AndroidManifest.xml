@@ -58,6 +58,17 @@
 			<activity
             android:name=".ui.MenuAlbumArtView"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
+            
+            
+	  <activity android:exported="true" android:name=".filebrowser.BrowserFolder"
+	  			android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+	  >
+	       <intent-filter>
+	           <action android:name="android.intent.action.PICK"></action>
+	           <category android:name="android.intent.category.DEFAULT"></category>
+	           <data android:scheme="folder"></data>
+	       </intent-filter>
+	   </activity>
     </application>
 	
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />

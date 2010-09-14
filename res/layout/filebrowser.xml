@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >    	    
+     	 										
+	<TextView android:id="@+id/filebrowser_title"
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"
+				android:layout_alignParentTop="true"
+				android:text="title"
+				android:textSize="12dp"
+				android:textColor="#AAAAAA"
+				 />
+	
+
+  <!--  button row -->
+     <LinearLayout     
+     	android:id="@+id/menu_buttonrow"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"        
+        android:layout_alignParentBottom="true"                
+        android:gravity="center_horizontal"
+        android:background="@color/btnrowBGcolor"
+        >
+        
+		<Button android:id="@+id/btn_ok"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Ok"                          
+	            android:layout_marginRight="30dp"   />                             
+	            
+		<Button android:id="@+id/btn_cancel"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="cancel"
+	            android:layout_marginRight="30dp"   />
+                        
+    </LinearLayout>
+
+	<ListView
+    android:id="@+id/filebrowser_list"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"    
+    android:layout_below="@id/filebrowser_title"    
+    android:layout_above="@id/menu_buttonrow"
+    />    
+
+</RelativeLayout>
