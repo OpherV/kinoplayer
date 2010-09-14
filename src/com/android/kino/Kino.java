@@ -23,6 +23,7 @@ import com.android.kino.musiclibrary.Library;
  */
 public class Kino extends Application implements ServiceUser {
 
+    private static final String TAG = "Kino";
     private KinoServiceConnection mMediaPlayerConn = new KinoServiceConnection(this);
     private KinoServiceConnection mInputTranslatorConn = new KinoServiceConnection(this);
     private KinoServiceConnection mLibraryConn = new KinoServiceConnection(this);
@@ -73,12 +74,12 @@ public class Kino extends Application implements ServiceUser {
         super.onCreate();
         // Ignores the 'savedInstanceState' - the state will be restored by
         // onRestoreInstanceState.        
-        Log.d(getClass().getName(), "Kino.onCreate");
+        Log.d(TAG, "Kino.onCreate");
 
         // Create media player service and get media player
         Object result = startService(new Intent(this, MediaPlayerService.class));
         if (result == null) {
-            Log.e(getClass().getName(), "Failed to start media player service");
+            Log.e(TAG, "Failed to start media player service");
             return;
         }
         
@@ -87,7 +88,7 @@ public class Kino extends Application implements ServiceUser {
                 mMediaPlayerConn,
                 BIND_AUTO_CREATE);
         if (!success) {
-            Log.e(getClass().getName(), "Failed to bind to media player service");
+            Log.e(TAG, "Failed to bind to media player service");
             // TODO: Do something about this... failed to bind to media player
             return;
         }
@@ -95,7 +96,7 @@ public class Kino extends Application implements ServiceUser {
         // Create input event translator service
         result = startService(new Intent(this, InputEventTranslatorService.class));
         if (result == null) {
-            Log.e(getClass().getName(), "Failed to start input event translator service");
+            Log.e(TAG, "Failed to start input event translator service");
             return;
         }
         
@@ -104,11 +105,11 @@ public class Kino extends Application implements ServiceUser {
                 mInputTranslatorConn,
                 BIND_AUTO_CREATE);
         if (!success) {
-            Log.e(getClass().getName(), "Failed to bind to input event translator service");
+            Log.e(TAG, "Failed to bind to input event translator service");
             // TODO: Do something about this... failed to bind to input event translator
             return;
         }
-        Log.d(getClass().getName(), "Kino started OK");
+        Log.d(TAG, "Kino started OK");
         
         //bind the library service
         boolean libraryBound = bindService(new Intent(this, Library.class), mLibraryConn , Context.BIND_AUTO_CREATE);
@@ -126,7 +127,7 @@ public class Kino extends Application implements ServiceUser {
     @Override
     public void onConnected(IBinder binder) {
         if (binder == null) {
-            Log.e(getClass().getName(), "Failed to get binder");
+            Log.e(TAG, "Failed to get binder");
             return;
         }
         
@@ -154,7 +155,7 @@ public class Kino extends Application implements ServiceUser {
     
     @Override
     public void onTerminate() {
-        Log.d(getClass().getName(), "Kino.onDestroy");
+        Log.d(TAG, "Kino.onDestroy");
         doUnbindMediaPlayerService();
         super.onTerminate();
     }
@@ -175,11 +176,26 @@ public class Kino extends Application implements ServiceUser {
      * TODO: Use this in some 'ShutDown' button
      */
     public void shutDown() {
+        Log.d(TAG, "shutting down");
+        if (mPlayer != null && mPlayer.isPlaying()) {
+            mPlayer.stop();
+        }
+        if (mInputTranslator != null) {
+            mInputTranslator.disableDoubleTap();
+        }
         ((MediaPlayerService.MPBinder)mMediaPlayerConn.getBinder()).clearNotification();
-        stopService(new Intent(this, InputEventTranslatorService.class));
-        stopService(new Intent(this, MediaPlayerService.class));
-        stopService(new Intent(this, Library.class));
-        stopService(new Intent(this, TaskMasterService.class));        
+        if (!stopService(new Intent(this, InputEventTranslatorService.class))) {
+            Log.e(TAG, "InputEventTranslatorService failed to be stopped");
+        }
+        if (!stopService(new Intent(this, MediaPlayerService.class))) {
+            Log.e(TAG, "MediaPlayerService failed to be stopped");
+        }
+        if (!stopService(new Intent(this, Library.class))) {
+            Log.e(TAG, "Library failed to be stopped");
+        }
+        if (!stopService(new Intent(this, TaskMasterService.class))) {
+            Log.e(TAG, "TaskMasterService failed to be stopped");
+        }
     }
 
     /**

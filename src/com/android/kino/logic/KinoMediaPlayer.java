@@ -17,6 +17,10 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
     // be considered as seek to end and will result in playing the next media
     private static final int MIN_SEEK_THRESHOLD = 1000;
     
+    // Navigating to previous track after RESTART_TRACK_THRESHOLD milliseconds
+    // will result in seeking to the beginning of the track
+    private static final int RESTART_TRACK_THRESHOLD = 3000;
+    
     /**
      * Implementation notes:
      * See the diagram in this link -
@@ -322,6 +326,10 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
      *         media failed.
      */
     public boolean previous() {
+        if (safeGetDuration() > RESTART_TRACK_THRESHOLD) {
+            seek(0);
+            return true;
+        }
         Log.d(getClass().getName(), "Playing previous media");
         boolean shouldPlay = isPlaying();
         // TODO(test) Test playing an empty playlist

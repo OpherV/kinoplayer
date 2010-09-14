@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import android.util.Log;
+
 import com.android.kino.logic.action.ActionFactory;
 import com.android.kino.logic.action.KinoAction;
 
@@ -16,6 +18,7 @@ import com.android.kino.logic.action.KinoAction;
  */
 public class DefaultSettings implements SettingsContainer {
     
+    private String TAG = this.toString();
     private Map<Integer, Integer> mSettings;
     private Map<Setting, String> mStringSettings;
     private Map<Setting, Boolean> mBooleanSettings;
@@ -44,31 +47,37 @@ public class DefaultSettings implements SettingsContainer {
 
     @Override
     public String getConfiguredString(Setting setting) {
+        Log.d(TAG, "Got " + mStringSettings.get(setting) + " of " + setting);
         return mStringSettings.get(setting);
     }
 
     @Override
     public void setConfiguredString(Setting setting, String value) {
+        Log.d(TAG, "Setting " + setting + " to " + value);
         mStringSettings.put(setting, value);
     }
 
     @Override
     public boolean getConfiguredBoolean(Setting setting) {
+        Log.d(TAG, "Got " + mBooleanSettings.get(setting) + " of " + setting);
         return mBooleanSettings.get(setting);
     }
 
     @Override
     public void setConfiguredBoolean(Setting setting, boolean value) {
+        Log.d(TAG, "Setting " + setting + " to " + value);
         mBooleanSettings.put(setting, value);
     }
 
     @Override
     public KinoAction getConfiguredAction(int eventId) {
+        Log.d(TAG, "Got action " + mSettings.get(eventId) + " of event " + eventId);
         return ActionFactory.create(mSettings.get(eventId));
     }
 
     @Override
     public void setConfiguredAction(int eventId, int actionId) {
+        Log.d(TAG, "Setting action " + actionId + " to event " + eventId);
         mSettings.put(eventId, actionId);
     }
 
@@ -84,7 +93,7 @@ public class DefaultSettings implements SettingsContainer {
 
     @Override
     public boolean isConfigured(Setting setting) {
-        return mStringSettings.containsKey(setting);
+        return mStringSettings.containsKey(setting) || mBooleanSettings.containsKey(setting);
     }
 
 }

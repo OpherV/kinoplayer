@@ -3,12 +3,14 @@ package com.android.kino.logic;
 import java.util.LinkedList;
 import java.util.List;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.android.kino.logic.action.KinoAction;
 import com.android.kino.logic.interceptor.DoubleTapInterceptor;
 import com.android.kino.logic.interceptor.InputEventInterceptor;
 import com.android.kino.logic.interceptor.InputEventListener;
+import com.android.kino.logic.settings.SettingsContainer;
 import com.android.kino.logic.settings.SettingsLoader;
 import com.android.kino.logic.settings.SettingsContainer.Setting;
 
@@ -21,10 +23,11 @@ public class InputEventTranslator implements InputEventListener {
     
     private List<InputEventInterceptor> mInterceptors = new LinkedList<InputEventInterceptor>();
     
-    public InputEventTranslator(KinoMediaPlayer player) {
+    public InputEventTranslator(KinoMediaPlayer player, Context context) {
         mPlayer = player;
         
-        if (SettingsLoader.loadCurrentSettings(null).getConfiguredBoolean(Setting.ENABLE_DOUBLE_TAP)) {
+        SettingsContainer settings = SettingsLoader.loadCurrentSettings(context);
+        if (settings.getConfiguredBoolean(Setting.ENABLE_DOUBLE_TAP)) {
             mInterceptors.add(new DoubleTapInterceptor());
         }
     }

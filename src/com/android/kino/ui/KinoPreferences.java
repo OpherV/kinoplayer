@@ -1,22 +1,21 @@
 package com.android.kino.ui;
 
 import java.io.File;
-import java.net.URI;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.preference.Preference.OnPreferenceClickListener;
-import android.util.Log;
 import android.widget.Toast;
 
+import com.android.kino.Kino;
 import com.android.kino.R;
-import com.android.kino.logic.settings.SettingsContainer;
 import com.android.kino.logic.settings.SettingsLoader;
-import com.android.kino.logic.settings.SettingsContainer.Setting;
 
 public class KinoPreferences extends PreferenceActivity {
 	
@@ -41,8 +40,8 @@ public class KinoPreferences extends PreferenceActivity {
             public boolean onPreferenceClick(Preference preference) {
                 
         		File rootDir = Environment.getExternalStorageDirectory();
-        		SettingsContainer settings = SettingsLoader.loadCurrentSettings(KinoPreferences.this);
-        		String mediaPath = settings.getConfiguredString(Setting.MEDIA_DIRECTORY);
+        		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(KinoPreferences.this);
+        		String mediaPath = prefs.getString("musicDir", "mp3");
         		File mp3dir = new File(rootDir, mediaPath);
             	
             	Intent pickFolder = new Intent();
@@ -55,7 +54,7 @@ public class KinoPreferences extends PreferenceActivity {
         });
     }
     
- // Listen for results.
+    // Listen for results.
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         // See which child activity is calling us back.
         switch (requestCode) {
@@ -65,22 +64,23 @@ public class KinoPreferences extends PreferenceActivity {
                 if (resultCode == RESULT_CANCELED){
                     //
                 } 
-                else if (resultCode==RESULT_OK) {             
-                	String mp3dir=data.getData().toString();                    
+                else if (resultCode == RESULT_OK) {             
+                	String mp3dir = data.getData().toString();
                     
                     //TODO or - is this the right way to save a preference? i think not. (it doesn't show if the user clicks the music folder again)
-                	Toast.makeText(this,mp3dir ,Toast.LENGTH_LONG).show();
-                    getPreferences(MODE_WORLD_WRITEABLE).edit().putString("musicDir", mp3dir).commit();
+                	Toast.makeText(this, mp3dir ,Toast.LENGTH_LONG).show();
+                	SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                	prefs.putString("musicDir", mp3dir).commit();
                 }
             default:
                 break;
         }
     }
     
-    
     @Override
-    protected void onDestroy() {
+    protected void onPause() {
+        super.onPause();
         SettingsLoader.updateCurrentSettings(this);
-        super.onDestroy();
+        Kino.getKino(this).showNotification();
     }
 }

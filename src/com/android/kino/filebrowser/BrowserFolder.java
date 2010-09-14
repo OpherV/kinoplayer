@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -42,7 +41,6 @@ public class BrowserFolder extends Activity{
 		
 		Button btn_ok=(Button) findViewById(R.id.btn_ok);
 		btn_ok.setOnClickListener(new OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
 				   Intent intent = getIntent();
@@ -50,7 +48,6 @@ public class BrowserFolder extends Activity{
 				   intent.setData(uri);
 				   setResult(RESULT_OK,intent);
 				   finish();
-				
 			}
 		});
 		
@@ -67,39 +64,27 @@ public class BrowserFolder extends Activity{
 		});
 		
 		mListView.setOnItemClickListener(new OnItemClickListener() {
-			
-							@Override
-							public void onItemClick(AdapterView<?> l,
-									View v, int position, long id) {
-
-												                
-				                String selectedFileString = l.getItemAtPosition(position).toString();  
-				                if (selectedFileString.equals(".")) {
-				                        // Refresh
-				                		BrowserFolder.this.browseTo(BrowserFolder.this.currentDirectory);
-				                } else if(selectedFileString.equals("..")){
-				                		BrowserFolder.this.upOneLevel();
-				                }
-				                else{
-				                	BrowserFolder.this.browseTo(new File(selectedFileString));
-				                }
-								
-							}
-			        
-							
+			@Override
+			public void onItemClick(AdapterView<?> l, View v, int position, long id) {
+                String selectedFileString = l.getItemAtPosition(position).toString();  
+                if (selectedFileString.equals(".")) {
+                        // Refresh
+                		BrowserFolder.this.browseTo(BrowserFolder.this.currentDirectory);
+                } else if(selectedFileString.equals("..")){
+                		BrowserFolder.this.upOneLevel();
+                } else {
+                	BrowserFolder.this.browseTo(new File(selectedFileString));
+                }
+			}
 		});
 		
 		aIntent=getIntent();    	
     	processExternalRequest();
     }
-    
-		private void browseToRoot() {
-		        browseTo(new File("/"));
-		}
 	
     private void upOneLevel(){
         if(this.currentDirectory.getParent() != null)
-                this.browseTo(this.currentDirectory.getParentFile());
+            this.browseTo(this.currentDirectory.getParentFile());
     }
     
     private void fill(ArrayList<File> files) {
@@ -107,10 +92,10 @@ public class BrowserFolder extends Activity{
        
         // Add the "." and the ".." == 'Up one level'
         try {
-                Thread.sleep(10);
+            Thread.sleep(10);
         } catch (InterruptedException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
         }
         //i feel as if this is not needed
         //this.directoryEntries.add(".");
@@ -118,18 +103,18 @@ public class BrowserFolder extends Activity{
         if(this.currentDirectory.getParent() != null)
                 this.directoryEntries.add("..");
        
-        switch(this.displayMode){
-                case ABSOLUTE:
-                        for (File file : files){
-                                this.directoryEntries.add(file.getPath());
-                        }
-                        break;
-                case RELATIVE: // On relative Mode, we have to add the current-path to the beginning
-                        int currentPathStringLenght = this.currentDirectory.getAbsolutePath().length();
-                        for (File file : files){
-                                this.directoryEntries.add(file.getAbsolutePath().substring(currentPathStringLenght));
-                        }
-                        break;
+        switch (this.displayMode) {
+        case ABSOLUTE:
+            for (File file : files){
+                    this.directoryEntries.add(file.getPath());
+            }
+            break;
+        case RELATIVE: // On relative Mode, we have to add the current-path to the beginning
+            int currentPathStringLenght = this.currentDirectory.getAbsolutePath().length();
+            for (File file : files){
+                this.directoryEntries.add(file.getAbsolutePath().substring(currentPathStringLenght));
+            }
+            break;
         }
        
         ArrayAdapter<String> directoryList = new ArrayAdapter<String>(this,
@@ -138,15 +123,15 @@ public class BrowserFolder extends Activity{
         mListView.setAdapter(directoryList);
 }
     
-    private void browseTo(final File aDirectory){
-        if (aDirectory.isDirectory()){
-                this.currentDirectory = aDirectory;
-                mTitle.setText(currentDirectory.getAbsolutePath().toString());
-                fill(getSubDirs(aDirectory));
+    private void browseTo(final File aDirectory) {
+        if (aDirectory.isDirectory()) {
+            this.currentDirectory = aDirectory;
+            mTitle.setText(currentDirectory.getAbsolutePath().toString());
+            fill(getSubDirs(aDirectory));
         }
     }
     
-    private ArrayList<File> getSubDirs(final File dir){    
+    private ArrayList<File> getSubDirs(final File dir) {    
     	ArrayList<File> subdirs = new ArrayList<File>();
     	for (File file : dir.listFiles()){
     		if (file.isDirectory()){

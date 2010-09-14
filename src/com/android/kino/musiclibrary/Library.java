@@ -27,7 +27,7 @@ import com.android.kino.utils.ConvertUtils;
 public class Library extends Service{
 	Kino kino = null;
 	LibraryDB db = null;
-	IBinder libraryBinder=new LibraryBinder();
+	IBinder libraryBinder = new LibraryBinder();
 	
 	HashMap<String,ArtistProperties> artistCache = new HashMap<String,ArtistProperties>();
 	HashMap<String,AlbumProperties> albumCache = new HashMap<String,AlbumProperties>();

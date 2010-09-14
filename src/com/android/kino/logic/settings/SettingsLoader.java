@@ -62,17 +62,17 @@ public abstract class SettingsLoader {
     public static SettingsContainer loadCurrentSettings(Context context) {
         Log.d(TAG, "loadCurrentSettings - " + context);
         if (mCurrentSettings != null) {
+            setPreferencesAccordingToSettings(mCurrentSettings, context);
             return mCurrentSettings;
         }
-        mCurrentSettings = loadDefaultSettings(context);
-        if (context != null) {
-            setPreferences(mCurrentSettings, context);
-        }
+        mCurrentSettings = new SettingsProfile(loadDefaultSettings(context), "Custom");
+        setSettingsAccordingToPreferences(context, mCurrentSettings);
         return mCurrentSettings;
     }
     
-    public static void setCurrentSettings(SettingsContainer settings) {
+    public static void setCurrentSettings(Context context, SettingsContainer settings) {
         mCurrentSettings = settings;
+        setPreferencesAccordingToSettings(mCurrentSettings, context);
     }
     
     /**
@@ -80,24 +80,9 @@ public abstract class SettingsLoader {
      */
     public static void updateCurrentSettings(Activity context) {
         Log.d(TAG, "updateCurrentSettings");
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        
-        String musicDir = prefs.getString("musicDir", DEFAULT_MUSIC_DIR);
-        String imgDownload = prefs.getString("imgDownload", IMAGE_LAZY_DOWNLOAD);
-        boolean allowDoubleTap = prefs.getBoolean("allowDoubleTap", DEFAULT_ALLOW_TAP);
-        String doubleTapAction = prefs.getString("doubleTapAction", ACTION_PLAY_PAUSE);
-        
-        SettingsContainer settings = loadCurrentSettings(null);
-        settings.setConfiguredString(Setting.MEDIA_DIRECTORY, musicDir);
-        settings.setConfiguredBoolean(Setting.LAZY_LOAD_IMAGES, imgDownload.equals(IMAGE_LAZY_DOWNLOAD));
-        settings.setConfiguredBoolean(Setting.ENABLE_DOUBLE_TAP, allowDoubleTap);
-    
-        if (doubleTapAction.equals(ACTION_PLAY_PAUSE)) {
-            settings.setConfiguredAction(DoubleTapEvent.ID, PlayPauseToggle.ID);
-        }
-        else if (doubleTapAction.equals(ACTION_NEXT_TRACK)) {
-            settings.setConfiguredAction(DoubleTapEvent.ID, NextTrack.ID);
-        }
+        SettingsContainer settings = loadCurrentSettings(context);
+        setSettingsAccordingToPreferences(context, settings);
+        boolean allowDoubleTap = settings.getConfiguredBoolean(Setting.ENABLE_DOUBLE_TAP);
     
         InputEventTranslator inputTranslator = Kino.getKino(context).getInputTranslator();
         if (inputTranslator != null) {
@@ -111,11 +96,32 @@ public abstract class SettingsLoader {
             }
         }
     }
+    
+    private static void setSettingsAccordingToPreferences(Context context, SettingsContainer settings) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        
+        String musicDir = prefs.getString("musicDir", DEFAULT_MUSIC_DIR);
+        String imgDownload = prefs.getString("imgDownload", IMAGE_LAZY_DOWNLOAD);
+        boolean allowDoubleTap = prefs.getBoolean("allowDoubleTap", DEFAULT_ALLOW_TAP);
+        String doubleTapAction = prefs.getString("doubleTapAction", ACTION_PLAY_PAUSE);
+        Log.d(TAG, "allowDoubleTap in prefs = " + allowDoubleTap);
+        
+        settings.setConfiguredString(Setting.MEDIA_DIRECTORY, musicDir);
+        settings.setConfiguredBoolean(Setting.LAZY_LOAD_IMAGES, imgDownload.equals(IMAGE_LAZY_DOWNLOAD));
+        settings.setConfiguredBoolean(Setting.ENABLE_DOUBLE_TAP, allowDoubleTap);
+    
+        if (doubleTapAction.equals(ACTION_PLAY_PAUSE)) {
+            settings.setConfiguredAction(DoubleTapEvent.ID, PlayPauseToggle.ID);
+        }
+        else if (doubleTapAction.equals(ACTION_NEXT_TRACK)) {
+            settings.setConfiguredAction(DoubleTapEvent.ID, NextTrack.ID);
+        }
+    }
 
     /**
      * Updates Android preferences according to a Kino container.
      */
-    private static void setPreferences(SettingsContainer settings, Context context) {
+    private static void setPreferencesAccordingToSettings(SettingsContainer settings, Context context) {
         Log.d(TAG, "setPreferences");
         String musicDir = settings.getConfiguredString(Setting.MEDIA_DIRECTORY);
         boolean imgLazyLoad = settings.getConfiguredBoolean(Setting.LAZY_LOAD_IMAGES);
@@ -142,10 +148,6 @@ public abstract class SettingsLoader {
         }
         default:
             Log.e(TAG, "Unsupported action - " + doubleTapAction.getActionID());
-        }
-        
-        if (context instanceof Activity) {
-            updateCurrentSettings((Activity) context);
         }
     }
 }

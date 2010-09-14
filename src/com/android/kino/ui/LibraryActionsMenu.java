@@ -15,6 +15,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.android.kino.Kino;
 import com.android.kino.R;
 import com.android.kino.logic.TaskMasterService;
+import com.android.kino.logic.tasks.CleanMediaFiles;
 import com.android.kino.logic.tasks.UpdateLibrary;
 import com.android.kino.musiclibrary.Library;
 
@@ -75,16 +76,16 @@ public class LibraryActionsMenu extends ListActivity implements OnItemClickListe
     private class ClearImages implements OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-        	
-        	//TODO how can i call this without the library object?
-        	//mTaskMaster.addTask(new CleanMediaFiles());
+            Kino kino = Kino.getKino(LibraryActionsMenu.this);
+        	mTaskMaster.addTask(new CleanMediaFiles(kino.getLibrary()));
         }
     }
     
     private class ClearLibrary implements OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            // TODO (implement) Purge library
+            Kino kino = Kino.getKino(LibraryActionsMenu.this);
+            kino.getLibrary().purgeLibrary();
         }
     }
     

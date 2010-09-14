@@ -2,14 +2,11 @@ package com.android.kino.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
@@ -32,6 +29,9 @@ import com.android.kino.logic.KinoMediaPlayer;
 import com.android.kino.logic.KinoUser;
 import com.android.kino.logic.MediaProperties;
 import com.android.kino.logic.TaskMasterService;
+import com.android.kino.logic.settings.SettingsContainer;
+import com.android.kino.logic.settings.SettingsLoader;
+import com.android.kino.logic.settings.SettingsContainer.Setting;
 import com.android.kino.logic.tasks.CleanMediaFiles;
 import com.android.kino.logic.tasks.UpdateLibrary;
 import com.android.kino.musiclibrary.Library;
@@ -86,12 +86,21 @@ public class KinoUI extends Activity implements KinoUser {
        };
        
     public void onKinoInit(Kino kino) {
-        mPlayer= kino.getPlayer();        
+        mPlayer = kino.getPlayer();        
         library = kino.getLibrary();
-        mTaskMaster= kino.getTaskMaster();
+        mTaskMaster = kino.getTaskMaster();
+        
+        // TODO: The shutdown doesn't kill the application so when starting the
+        // application after exiting it, the interception doesn't restart, so
+        // start it here
+        SettingsContainer settings = SettingsLoader.loadCurrentSettings(this);
+        if (settings.getConfiguredBoolean(Setting.ENABLE_DOUBLE_TAP)) {
+            kino.getInputTranslator().enableDoubleTap();
+        }
+        
         initSongDetails();                
         
-        //start the gui update timer                               
+        //start the gui update timer
         guiUpdater = new Handler();
         guiUpdater.postAtTime(guiUpdateTask, GUI_UPDATE_INTERVAL);
         
@@ -108,15 +117,105 @@ public class KinoUI extends Activity implements KinoUser {
     }
     
     @Override
-    protected void onDestroy() {    
+    protected void onCreate(Bundle savedInstanceState) {    
+        super.onCreate(savedInstanceState);        
+        aFadeinpartial = AnimationUtils.loadAnimation(this, R.anim.fadein_partial);
+        aFadeoutpartial = AnimationUtils.loadAnimation(this, R.anim.fadeout_partial);
+        aFadeinfull = AnimationUtils.loadAnimation(this, R.anim.fadein_full);
+        
+        kino = Kino.getKino(this);
+        
+        initUI();
+    
+        // miniplayer Gesture detection
+        GestureActions bgActions = new GestureActions(){
+            @Override
+            public void swipeLeft() {
+                mPlayer.previous();
+                initSongDetails();                
+            }
+            
+            @Override
+            public void swipeRight() {                
+                    mPlayer.next();
+                    initSongDetails();                    
+            }
+        };
+        
+        final GestureDetector gestureDetector = new GestureDetector(new GenericGestureDetector(bgActions));       
+        View.OnTouchListener gestureListener = new View.OnTouchListener() {
+             public boolean onTouch(View v, MotionEvent event) {                 
+                 if (gestureDetector.onTouchEvent(event)) {
+                     miniplayerSwipe = true;
+                     return true;
+                 }                 
+                 miniplayerSwipe = false;
+                 return false;
+             }          
+         };
+         
+         playermini = (PlayerMini) this.findViewById(R.id.player_mini);
+         if (playermini!=null){
+             playermini.setOnTouchListener(gestureListener);
+             playermini.setOnClickListener(new OnClickListener() {
+                
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(KinoUI.this,PlayerMain.class));                        
+                }
+            });
+             
+             playermini.setOnLongClickListener(new OnLongClickListener() {
+                
+                @Override
+                public boolean onLongClick(View v) {
+                    if (!miniplayerSwipe){
+                        mPlayer.togglePlayPause();
+                        return true;
+                    }
+                    return false;
+                }
+            });
+         }
+         
+        kino.registerUser(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();        
+        if (playermini!=null){
+            if (song!=null){
+               playermini.setVisibility(View.VISIBLE);
+            }
+               else{
+                   playermini.setVisibility(View.GONE);
+            }
+        }        
+        
+        if (mTaskMaster!=null){
+            mTaskMaster.setDisplay(this);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d("KinoUI", "onPause");
+        super.onPause();
+        if (!isFinishing()) {
+            kino.showNotification();
+        }
+    }
+    
+    @Override
+    protected void onDestroy() {
+        Log.d("KinoUI", "onDestroy");
         super.onDestroy();
-        kino.showNotification();
         //stop the gui updater
         guiUpdater.removeCallbacks(guiUpdateTask);
     }
     
     protected void initSongDetails(){
-        
         song = mPlayer.getCurrentMedia();            
         
         //make sure that a song is indeed playing
@@ -156,90 +255,7 @@ public class KinoUI extends Activity implements KinoUser {
         }
     }
                     
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {    
-        super.onCreate(savedInstanceState);        
-        aFadeinpartial=AnimationUtils.loadAnimation(this, R.anim.fadein_partial);
-        aFadeoutpartial=AnimationUtils.loadAnimation(this, R.anim.fadeout_partial);
-        aFadeinfull=AnimationUtils.loadAnimation(this, R.anim.fadein_full);
-        
-        kino = Kino.getKino(this);        
-        
-        initUI();
-
-        // miniplayer Gesture detection
-        GestureActions bgActions = new GestureActions(){
-            @Override
-            public void swipeLeft() {
-                mPlayer.previous();
-                initSongDetails();                
-            }
-            
-            @Override
-            public void swipeRight() {                
-                    mPlayer.next();
-                    initSongDetails();                    
-            }
-        };
-        
-        final GestureDetector gestureDetector = new GestureDetector(new GenericGestureDetector(bgActions));       
-        View.OnTouchListener gestureListener = new View.OnTouchListener() {
-             public boolean onTouch(View v, MotionEvent event) {                 
-                 if (gestureDetector.onTouchEvent(event)) {
-                     miniplayerSwipe=true;
-                     return true;
-                 }                 
-                 miniplayerSwipe=false;
-                 return false;
-             }          
-         };
-         
-         playermini = (PlayerMini) this.findViewById(R.id.player_mini);
-         if (playermini!=null){
-             playermini.setOnTouchListener(gestureListener);
-             playermini.setOnClickListener(new OnClickListener() {
-                
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(KinoUI.this,PlayerMain.class));                        
-                }
-            });
-             
-             playermini.setOnLongClickListener(new OnLongClickListener() {
-                
-                @Override
-                public boolean onLongClick(View v) {
-                    if (!miniplayerSwipe){
-                        mPlayer.togglePlayPause();
-                        return true;
-                    }
-                    return false;
-                }
-            });
-         }
-         
-        kino.registerUser(this);
-    }
-    
-    @Override
-    protected void onResume() {
-        super.onResume();        
-        if (playermini!=null){
-            if (song!=null){
-               playermini.setVisibility(View.VISIBLE);
-            }
-               else{
-                   playermini.setVisibility(View.GONE);
-            }
-        }        
-        
-        if (mTaskMaster!=null){
-            mTaskMaster.setDisplay(this);
-        }
-    }
-
-    
-    protected void initUI(){}    
+    protected void initUI() {}
     
     
     public TaskMasterService getTaskMaster(){
@@ -257,52 +273,39 @@ public class KinoUI extends Activity implements KinoUser {
         // Handle item selection
         switch (item.getItemId()) {
         case R.id.menu_options_updatelibrary:
-            
             mTaskMaster.addTask(new UpdateLibrary(library));
-            
             return true;
-
-            //TODO this probably doesn't actually exit the application!            
         case R.id.menu_options_exit:
-            
-              //Ask the user if they want to quit
+            // Ask the user if they want to quit
             new AlertDialog.Builder(this)
             .setIcon(android.R.drawable.ic_dialog_alert)
             .setTitle("Exit")
             .setMessage("Are you sure you want to quit?")
             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                   mPlayer.stop();
-                   kino.shutDown();
-                   moveTaskToBack(true);
+                    finish();
+                    //moveTaskToBack(true);
+                    kino.shutDown();
                 }
-
             })
-            .setNegativeButton("No", null)
-            .show();
-            
+            .setNegativeButton("No", null).show();
             return true;
-            
         case R.id.menu_options_removeimages:
-            
-              //Ask the user if they want to remove images
+            // Ask the user if they want to remove images
             new AlertDialog.Builder(this)
             .setIcon(android.R.drawable.ic_dialog_alert)
             .setTitle("Exit")
             .setMessage("Are you sure you want to remove all media images?")
             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    mTaskMaster.addTask(new CleanMediaFiles(library));
+                public void onClick(DialogInterface dialog,
+                                    int which) {
+                    mTaskMaster.addTask(new CleanMediaFiles(
+                            library));
                 }
-
             })
-            .setNegativeButton("No", null)
-            .show();
-            
+            .setNegativeButton("No", null).show();
             return true;
         default:
             return super.onOptionsItemSelected(item);

@@ -21,14 +21,13 @@ import com.android.kino.logic.Playlist;
 import com.android.kino.ui.listAdapters.SongAdapter;
 
 public class MenuMain extends KinoUI {
-             
-    private ListView playlistView=null;
-    Playlist playlist=null;
+    private ListView playlistView = null;
+    Playlist playlist = null;
     private ArrayAdapter<MediaProperties> playlistAdapter;
     
     
     //listener for all song list
-    OnItemClickListener songsClickListener=new OnItemClickListener() {
+    OnItemClickListener songsClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id){
             // set the player to start playing the right song in the playlist
@@ -40,11 +39,11 @@ public class MenuMain extends KinoUI {
     };
     
     @Override
-    protected void initUI() {                        
+    protected void initUI() {
         super.initUI();
         
         setContentView(R.layout.menu_main);
-        playlistView=(ListView)findViewById(R.id.mainmenu_list);            
+        playlistView = (ListView)findViewById(R.id.mainmenu_list);            
                                 
         Button bAllSongs = (Button) findViewById(R.id.mainmenu_btn_allsongs);
         bAllSongs.setOnClickListener(new OnClickListener() {
@@ -106,21 +105,21 @@ public class MenuMain extends KinoUI {
         });
     }
     
-    private void setAllSongs(){
-        playlist=library.getAllSongs();
+    private void setAllSongs() {
+        playlist = library.getAllSongs();
         playlistAdapter = new SongAdapter(this,0, playlist,false);        
         playlistView.setAdapter(playlistAdapter);                    
         playlistView.setOnItemClickListener(songsClickListener);
     }
     
     @Override
-    public void onKinoInit(Kino kino) {    
+    public void onKinoInit(Kino kino) {
         super.onKinoInit(kino);
         setAllSongs();
     }
     
     @Override
-    public void updateUI() {    
+    public void updateUI() {
         super.updateUI();
         playlistAdapter.notifyDataSetChanged();
     }

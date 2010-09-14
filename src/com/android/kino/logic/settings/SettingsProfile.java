@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 
+import android.util.Log;
+
 import com.android.kino.logic.action.KinoAction;
 
 /**
@@ -12,6 +14,7 @@ import com.android.kino.logic.action.KinoAction;
  */
 public class SettingsProfile extends DefaultSettings {
     
+    private String TAG = this.toString();
     private String mName;
     private SettingsContainer mDefaults;
     
@@ -35,6 +38,7 @@ public class SettingsProfile extends DefaultSettings {
         if (super.isConfigured(setting)) {
             return super.getConfiguredString(setting);
         }
+        Log.d(TAG, "Getting from defaults");
         return mDefaults.getConfiguredString(setting);
     }
 
@@ -43,6 +47,7 @@ public class SettingsProfile extends DefaultSettings {
         if (super.isConfigured(setting)) {
             return super.getConfiguredBoolean(setting);
         }
+        Log.d(TAG, "Getting from defaults");
         return mDefaults.getConfiguredBoolean(setting);
     }
 
@@ -51,6 +56,7 @@ public class SettingsProfile extends DefaultSettings {
         if (super.isConfigured(eventId)) {
             return super.getConfiguredAction(eventId);
         }
+        Log.d(TAG, "Getting from defaults");
         return mDefaults.getConfiguredAction(eventId);
     }
 

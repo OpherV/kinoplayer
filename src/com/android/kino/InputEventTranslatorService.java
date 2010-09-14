@@ -56,7 +56,7 @@ public class InputEventTranslatorService extends Service implements ServiceUser 
         if (mInputTranslator == null) {
             KinoMediaPlayer player =
                 ((MediaPlayerService.MPBinder) binder).getPlayer();
-            mInputTranslator = new InputEventTranslator(player);
+            mInputTranslator = new InputEventTranslator(player, this);
             mInputTranslator.startIntercepting();
         }
         Log.d(getClass().getName(), "InputEventTranslatorService bound to media player");
