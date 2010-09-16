@@ -1,5 +1,6 @@
 package com.android.kino.musiclibrary;
 
+import java.io.Externalizable;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
@@ -7,9 +8,11 @@ import java.util.LinkedList;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.Environment;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.android.kino.Kino;
@@ -76,20 +79,49 @@ public class Library extends Service{
 		}		
 		else {
 			//setup db
-			db = new LibraryDB(this, DBNAME, null, 1);					
+			db = new LibraryDB(this, DBNAME, null, 1);
+			verifyDirs();
 		}
 		
 		return libraryBinder;
 	}
 	
+	private void verifyDirs(){
+		File kinoDir = new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Kino.KINODIR);
+		if (!kinoDir.exists()){
+			Log.d(this.getClass().getName(),kinoDir.getAbsolutePath()+" does not exist. creating.");
+			kinoDir.mkdir();
+		}
+		
+		File ImagesDir = new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Kino.IMAGES_DIR);
+		if (!ImagesDir.exists()){
+			Log.d(this.getClass().getName(),ImagesDir.getAbsolutePath()+" does not exist. creating.");
+			ImagesDir.mkdir();
+		}
+		
+		File ArtistDir = new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Kino.ALBUM_DIR);
+		if (!ArtistDir.exists()){
+			Log.d(this.getClass().getName(),ArtistDir.getAbsolutePath()+" does not exist. creating.");
+			ArtistDir.mkdir();
+		}
+		
+		File AlbumDir = new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Kino.ARTIST_DIR);
+		if (!AlbumDir.exists()){
+			Log.d(this.getClass().getName(),AlbumDir.getAbsolutePath()+" does not exist. creating.");
+			AlbumDir.mkdir();
+		}
+	}
+	
 	public void updateLibrary(LibraryStatusUpdater updater){
 		cleanLibrary(updater);
 		
-		//// Get the xml/preferences.xml preferences		
-		File rootDir = Environment.getExternalStorageDirectory();
-		SettingsContainer settings = SettingsLoader.loadCurrentSettings(this);
-		String mediaPath = settings.getConfiguredString(Setting.MEDIA_DIRECTORY);
-		File mp3dir = new File(rootDir, mediaPath);
+		
+		//TODO or's settings are broken. use the android prefs.
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);        
+        String musicDir = prefs.getString("musicDir", Environment.getExternalStorageDirectory().getPath()+"/"+ Kino.MUSIC_DIR);
+		
+		String mediaPath = musicDir;
+		File mp3dir = new File(mediaPath);
 		scanDir(mp3dir, true, updater);		
 	}
 	

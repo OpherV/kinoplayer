@@ -110,7 +110,17 @@ public class MenuAlbumBrowse extends KinoUI implements OnItemClickListener {
 			}
 			
 			ListView albumlistView = (ListView)findViewById(R.id.albumlist);
-			albumlistView.setAdapter(albumListAdapter);			
+			albumlistView.setAdapter(albumListAdapter);
+			
+			TextView txt_nodata = (TextView) findViewById(R.id.txt_nodata);
+			if  (albumListAdapter.getCount()==0){
+				txt_nodata.setVisibility(View.VISIBLE);
+				txt_nodata.setText("No albums in library");				
+			}
+			else{
+				txt_nodata.setVisibility(View.GONE);
+			}
+			
 			
 			albumlistView.setOnItemClickListener(this);
 			

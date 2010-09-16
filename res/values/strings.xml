@@ -5,7 +5,9 @@
     <string name="mp_service_notification">Kino Media Player</string>
     <string name="some_service_connected">Service connected</string>
     <string name="app_name">Kino</string>
-    
+    <string name="firstrun1_title">Welcome to Kino Media Player!</string>
+    <string name="firstrun1_text">Let\'s get you set up - click the buttton below to pick the root directory where your music files are located</string>
+    <string name="firstrun2">What can you do with Kino? Try the following things: \n * double tap the device to toggle pause\\play \n * swipe your finger left or right to select the previous or next song  \n\n Have fun!</string>
 
 
 	<color name="itemBGcolor">#99000000</color>

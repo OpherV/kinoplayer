@@ -35,9 +35,11 @@ public class Kino extends Application implements ServiceUser {
     
     private List<KinoUser> mUsers = new LinkedList<KinoUser>();
     private boolean mIsInitialized = false;
-    public final static String ALBUM_DIR="kino/images/albums";
-    public final static String ARTIST_DIR="kino/images/artists";
-	public static final String KINODIR = "kino";
+    public static final String KINODIR = "kino";
+    public static final String MUSIC_DIR = "mp3";
+    public final static String IMAGES_DIR=KINODIR+"/images";
+    public final static String ALBUM_DIR=IMAGES_DIR+"/albums";    
+    public final static String ARTIST_DIR=IMAGES_DIR+"/artists";	
     
     public static Kino getKino(Activity activity) {
         return (Kino)activity.getApplication();

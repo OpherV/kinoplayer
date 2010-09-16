@@ -80,6 +80,15 @@
 	    android:layout_above="@id/menu_buttonrow"
 	    />
 	    
+	    <TextView
+	    android:id="@+id/txt_nodata"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/menu_albumbrowse_topbar"
+		android:visibility="gone"
+	    />
+	    
+	    
 		 <com.android.kino.ui.StatusUpdater 
 	    android:id="@+id/statusupdater"
 	    android:layout_width="wrap_content"

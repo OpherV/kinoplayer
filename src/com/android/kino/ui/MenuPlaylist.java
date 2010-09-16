@@ -40,7 +40,7 @@ public class MenuPlaylist extends KinoUI implements OnItemClickListener{
 		playlist=getIntent().getExtras().getParcelable("playlist");
 		
 		albumDetails = (ViewGroup)findViewById(R.id.menu_playlist_albumDetailsContainer);
-		btn_return= (Button) this.findViewById(R.id.btn_return);
+		btn_return= (Button) this.findViewById(R.id.btn_return);				
 	}
     
     @Override
@@ -72,6 +72,15 @@ public class MenuPlaylist extends KinoUI implements OnItemClickListener{
 		
 		ListView playlistView = (ListView)findViewById(R.id.playlist);
 		playlistView.setAdapter(playlistAdapter);					
+		
+		TextView txt_nodata = (TextView) findViewById(R.id.txt_nodata);		
+		if  (playlistAdapter.getCount()==0){
+			txt_nodata.setVisibility(View.VISIBLE);
+			txt_nodata.setText("No songs in library");
+		}
+		else{
+			txt_nodata.setVisibility(View.GONE);
+		}
 		
 		if (!isAlbumPlaylist){			
 			albumDetails.setVisibility(View.GONE);

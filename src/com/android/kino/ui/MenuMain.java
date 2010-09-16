@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.android.kino.Kino;
@@ -110,6 +111,15 @@ public class MenuMain extends KinoUI {
         playlistAdapter = new SongAdapter(this,0, playlist,false);        
         playlistView.setAdapter(playlistAdapter);                    
         playlistView.setOnItemClickListener(songsClickListener);
+        
+		TextView txt_nodata = (TextView) findViewById(R.id.txt_nodata);		
+		if  (playlistAdapter.getCount()==0){
+			txt_nodata.setVisibility(View.VISIBLE);
+			txt_nodata.setText("No songs in library");
+		}
+		else{
+			txt_nodata.setVisibility(View.GONE);
+		}
     }
     
     @Override
@@ -122,5 +132,5 @@ public class MenuMain extends KinoUI {
     public void updateUI() {
         super.updateUI();
         playlistAdapter.notifyDataSetChanged();
-    }
+    }        
 }

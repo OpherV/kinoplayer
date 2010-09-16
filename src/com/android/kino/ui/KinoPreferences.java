@@ -19,7 +19,7 @@ import com.android.kino.logic.settings.SettingsLoader;
 
 public class KinoPreferences extends PreferenceActivity {
 	
-	private final int PICKMUSICDIR = 1;
+	public final static int PICKMUSICDIR = 1;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +65,10 @@ public class KinoPreferences extends PreferenceActivity {
                     //
                 } 
                 else if (resultCode == RESULT_OK) {             
-                	String mp3dir = data.getData().toString();
+                	String mp3dir = data.getData().getPath();
                     
                     //TODO or - is this the right way to save a preference? i think not. (it doesn't show if the user clicks the music folder again)
-                	Toast.makeText(this, mp3dir ,Toast.LENGTH_LONG).show();
+                	//Toast.makeText(this, mp3dir ,Toast.LENGTH_LONG).show();
                 	SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(this).edit();
                 	prefs.putString("musicDir", mp3dir).commit();
                 }

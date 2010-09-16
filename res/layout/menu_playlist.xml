@@ -108,6 +108,14 @@
  	android:cacheColorHint="#00000000"
     />
     
+    <TextView
+    android:id="@+id/txt_nodata"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/menu_playlist_albumDetailsContainer"
+    android:visibility="gone"
+    />
+    
 	<com.android.kino.ui.StatusUpdater 
     android:id="@+id/statusupdater"
     android:layout_width="wrap_content"

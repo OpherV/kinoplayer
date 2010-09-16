@@ -2,11 +2,17 @@ package com.android.kino.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
@@ -19,9 +25,11 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.kino.Kino;
 import com.android.kino.R;
@@ -58,10 +66,14 @@ public class KinoUI extends Activity implements KinoUser {
     private Animation aFadeinfull;
     
     private boolean miniplayerSwipe=false;
+    
+    private SharedPreferences mPrefs;
         
     protected static final int SWIPE_MIN_DISTANCE = 120;
     protected static final int SWIPE_MAX_OFF_PATH = 250;
     protected static final int SWIPE_THRESHOLD_VELOCITY = 1500;
+    
+    private Dialog dialog;
     
     // updates the gui every second
     protected Runnable guiUpdateTask = new Runnable() {
@@ -196,6 +208,7 @@ public class KinoUI extends Activity implements KinoUser {
         if (mTaskMaster!=null){
             mTaskMaster.setDisplay(this);
         }
+        
     }
 
     @Override
@@ -255,7 +268,94 @@ public class KinoUI extends Activity implements KinoUser {
         }
     }
                     
-    protected void initUI() {}
+    protected void initUI() {
+    	firstRun1();
+    	
+    }
+    
+    private void firstRun1(){
+    	firstRunPreferences();
+    	if (getFirstRun()){
+    		
+    		
+            dialog = new Dialog(this);            
+            dialog.setContentView(R.layout.firstrun);
+            dialog.setTitle(R.string.firstrun1_title);
+            dialog.show();
+            
+            Button btn_selectrootdir = (Button) dialog.findViewById(R.id.btn_firstrun);            
+            btn_selectrootdir.setText("Select root dir");
+            
+            btn_selectrootdir.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+	            	Intent pickFolder = new Intent();
+	                pickFolder.setAction(Intent.ACTION_PICK );
+	                Uri theUri = Uri.parse("folder://" + Environment.getExternalStorageDirectory().getPath() ) ;
+	                pickFolder.setData(theUri);
+	                startActivityForResult(pickFolder,KinoPreferences.PICKMUSICDIR);
+					
+				}
+			});
+            	
+            
+    		
+    		
+    	}
+    }
+    
+    private void firstRun2(){
+    	mTaskMaster.addTask(new UpdateLibrary(library));
+
+        dialog = new Dialog(this);            
+        dialog.setContentView(R.layout.firstrun);
+        dialog.setTitle(R.string.firstrun1_title);
+        dialog.show();
+        
+        Button btn_ok = (Button) dialog.findViewById(R.id.btn_firstrun);            
+        btn_ok.setText("Ok");
+
+        TextView txt_firstrun = (TextView) dialog.findViewById(R.id.txt_firstrun);
+        txt_firstrun.setText(R.string.firstrun2);
+        
+        btn_ok.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {				
+            	dialog.dismiss();			
+			}
+		});
+    	
+    	setRunned();
+    }
+    
+    
+    
+    // Listen for results.
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        // See which child activity is calling us back.
+        switch (requestCode) {
+            case KinoPreferences.PICKMUSICDIR:
+                // This is the standard resultCode that is sent back if the
+                // activity crashed or didn't doesn't supply an explicit result.
+                if (resultCode == RESULT_CANCELED){
+                    //
+                } 
+                else if (resultCode == RESULT_OK) {             
+                	String mp3dir = data.getData().getPath();
+                    
+                	//Toast.makeText(this, mp3dir ,Toast.LENGTH_LONG).show();
+                	SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                	prefs.putString("musicDir", mp3dir).commit();
+                	dialog.dismiss();
+                	firstRun2();
+                }
+            default:
+                break;
+        }
+    }
     
     
     public TaskMasterService getTaskMaster(){
@@ -291,6 +391,8 @@ public class KinoUI extends Activity implements KinoUser {
             })
             .setNegativeButton("No", null).show();
             return true;
+            //TODO opher- add the cancel to the settings
+            /*
         case R.id.menu_options_removeimages:
             // Ask the user if they want to remove images
             new AlertDialog.Builder(this)
@@ -306,6 +408,12 @@ public class KinoUI extends Activity implements KinoUser {
                 }
             })
             .setNegativeButton("No", null).show();
+            return true;
+            */
+            
+        case R.id.menu_options_preferences:
+            Intent prefsIntent=new Intent(KinoUI.this,KinoPreferences.class);
+            startActivity(prefsIntent);
             return true;
         default:
             return super.onOptionsItemSelected(item);
@@ -361,4 +469,32 @@ public class KinoUI extends Activity implements KinoUser {
             return false;
         }
     }
+    
+    
+    /**
+     * get if this is the first run
+     *
+     * @return returns true, if this is the first run
+     */
+        public boolean getFirstRun() {
+        return mPrefs.getBoolean("firstRun", true);
+     }
+     
+     /**
+     * store the first run
+     */
+     public void setRunned() {
+        SharedPreferences.Editor edit = mPrefs.edit();
+        edit.putBoolean("firstRun", false);
+        edit.commit();
+     }
+          
+     
+     /**
+     * setting up preferences storage
+     */
+     public void firstRunPreferences() {
+        Context mContext = this.getApplicationContext();
+        mPrefs = mContext.getSharedPreferences("myAppPrefs", 0); //0 = mode private. only this app can read these preferences
+     }
 }

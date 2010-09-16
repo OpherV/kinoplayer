@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/menu_options_updatelibrary"
-          android:title="Update Library" />
-    <item android:id="@+id/menu_options_removeimages"
-          android:title="Remove Media Images" />
+          android:title="Update Library" />    
+    <item android:id="@+id/menu_options_preferences"
+          android:title="Preferences" />  
     <item android:id="@+id/menu_options_exit"
           android:title="Exit Kino" />  
 </menu>

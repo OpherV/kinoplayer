@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.android.kino.Kino;
@@ -72,7 +73,17 @@ public class MenuArtistBrowse extends KinoUI implements OnItemClickListener {
 			
 			
 			ListView albumlistView = (ListView)findViewById(R.id.artistlist);
-			albumlistView.setAdapter(artistListAdapter);			
+			albumlistView.setAdapter(artistListAdapter);
+			
+			TextView txt_nodata = (TextView) findViewById(R.id.txt_nodata);
+			if  (artistListAdapter.getCount()==0){
+				txt_nodata.setVisibility(View.VISIBLE);
+				txt_nodata.setText("No artists in library");
+			}
+			else{
+				txt_nodata.setVisibility(View.GONE);
+			}
+			
 						
 			btn_return= (Button) this.findViewById(R.id.btn_return);
 
