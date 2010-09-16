@@ -62,9 +62,13 @@ public abstract class SettingsLoader {
     public static SettingsContainer loadCurrentSettings(Context context) {
         Log.d(TAG, "loadCurrentSettings - " + context);
         if (mCurrentSettings != null) {
-            setPreferencesAccordingToSettings(mCurrentSettings, context);
+        	//FIXME or - does this work?
+        	if (context != null){
+        		setPreferencesAccordingToSettings(mCurrentSettings, context);
+        	}
             return mCurrentSettings;
         }
+        
         mCurrentSettings = new SettingsProfile(loadDefaultSettings(context), "Custom");
         setSettingsAccordingToPreferences(context, mCurrentSettings);
         return mCurrentSettings;

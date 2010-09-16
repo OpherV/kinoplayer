@@ -326,10 +326,13 @@ public class KinoMediaPlayer implements OnErrorListener, OnCompletionListener {
      *         media failed.
      */
     public boolean previous() {
+    	/*
+    	 //FIXME this doesn't work properly
         if (safeGetDuration() > RESTART_TRACK_THRESHOLD) {
             seek(0);
             return true;
         }
+        */
         Log.d(getClass().getName(), "Playing previous media");
         boolean shouldPlay = isPlaying();
         // TODO(test) Test playing an empty playlist

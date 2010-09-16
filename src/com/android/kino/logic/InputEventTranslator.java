@@ -40,6 +40,7 @@ public class InputEventTranslator implements InputEventListener {
      */
     @Override
     public void onEventTriggered(int eventId) {
+   
         KinoAction action = SettingsLoader.loadCurrentSettings(null).getConfiguredAction(eventId);
         
         if (action != null) {
