@@ -1,6 +1,5 @@
 package com.android.kino.musiclibrary;
 
-import java.io.Externalizable;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,9 +21,6 @@ import com.android.kino.logic.ArtistList;
 import com.android.kino.logic.ArtistProperties;
 import com.android.kino.logic.MediaProperties;
 import com.android.kino.logic.Playlist;
-import com.android.kino.logic.settings.SettingsContainer;
-import com.android.kino.logic.settings.SettingsLoader;
-import com.android.kino.logic.settings.SettingsContainer.Setting;
 import com.android.kino.utils.ConvertUtils;
 
 public class Library extends Service{

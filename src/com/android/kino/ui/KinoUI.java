@@ -29,7 +29,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.kino.Kino;
 import com.android.kino.R;
@@ -40,7 +39,6 @@ import com.android.kino.logic.TaskMasterService;
 import com.android.kino.logic.settings.SettingsContainer;
 import com.android.kino.logic.settings.SettingsLoader;
 import com.android.kino.logic.settings.SettingsContainer.Setting;
-import com.android.kino.logic.tasks.CleanMediaFiles;
 import com.android.kino.logic.tasks.UpdateLibrary;
 import com.android.kino.musiclibrary.Library;
 import com.android.kino.utils.ConvertUtils;
@@ -270,14 +268,11 @@ public class KinoUI extends Activity implements KinoUser {
                     
     protected void initUI() {
     	firstRun1();
-    	
     }
     
-    private void firstRun1(){
+    private void firstRun1() {
     	firstRunPreferences();
-    	if (getFirstRun()){
-    		
-    		
+    	if (getFirstRun()) {
             dialog = new Dialog(this);            
             dialog.setContentView(R.layout.firstrun);
             dialog.setTitle(R.string.firstrun1_title);
@@ -287,22 +282,15 @@ public class KinoUI extends Activity implements KinoUser {
             btn_selectrootdir.setText("Select root dir");
             
             btn_selectrootdir.setOnClickListener(new OnClickListener() {
-				
 				@Override
 				public void onClick(View v) {
-					
 	            	Intent pickFolder = new Intent();
 	                pickFolder.setAction(Intent.ACTION_PICK );
 	                Uri theUri = Uri.parse("folder://" + Environment.getExternalStorageDirectory().getPath() ) ;
 	                pickFolder.setData(theUri);
-	                startActivityForResult(pickFolder,KinoPreferences.PICKMUSICDIR);
-					
+	                startActivityForResult(pickFolder, KinoPreferences.PICKMUSICDIR);
 				}
 			});
-            	
-            
-    		
-    		
     	}
     }
     
@@ -331,8 +319,6 @@ public class KinoUI extends Activity implements KinoUser {
     	setRunned();
     }
     
-    
-    
     // Listen for results.
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         // See which child activity is calling us back.
@@ -357,12 +343,10 @@ public class KinoUI extends Activity implements KinoUser {
         }
     }
     
-    
     public TaskMasterService getTaskMaster(){
         return mTaskMaster;
     }
     
-        
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.kinoui_menu, menu);
