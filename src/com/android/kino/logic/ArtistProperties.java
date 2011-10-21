@@ -13,6 +13,7 @@ import com.android.kino.Kino;
 import com.android.kino.logic.tasks.FetchArtistImages;
 import com.android.kino.ui.KinoUI;
 import com.android.kino.utils.ConvertUtils;
+import com.android.kino.utils.ImageUtils;
 
 public class ArtistProperties{
 	private String mArtistName=null;
@@ -75,11 +76,13 @@ public class ArtistProperties{
 		File artistImageFileJPG = new File(artistImagePath,artistFileNameJPG);
 		File artistImageFilePNG = new File(artistImagePath,artistFileNamePNG);
 		
-		if (artistImageFilePNG.exists()){			
-			mArtistImage = BitmapFactory.decodeFile(artistImageFilePNG.getAbsolutePath());
+		if (artistImageFilePNG.exists()){
+			mArtistImage = ImageUtils.decodeFile(artistImageFilePNG.getAbsolutePath(),300);
+			//mArtistImage = BitmapFactory.decodeFile(artistImageFilePNG.getAbsolutePath());
 		}
-		else if (artistImageFileJPG.exists()){			
-			mArtistImage = BitmapFactory.decodeFile(artistImageFileJPG.getAbsolutePath());
+		else if (artistImageFileJPG.exists()){
+			mArtistImage = ImageUtils.decodeFile(artistImageFileJPG.getAbsolutePath(),300);
+			//mArtistImage = BitmapFactory.decodeFile(artistImageFileJPG.getAbsolutePath());
 		}
 		else{	
 		

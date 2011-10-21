@@ -16,6 +16,14 @@ import com.android.kino.ui.KinoUI;
 
 public class ArtistAdapter extends ArrayAdapter<ArtistProperties> {
 
+		// static to save the reference to the outer class and to avoid access to
+		// any members of the containing class
+		static class ViewHolder {
+			public ImageView artistImage;
+			public TextView artistText;
+		}
+
+	
 		KinoUI mContext=null;
 		List<ArtistProperties> artists=null;
 		
@@ -29,18 +37,31 @@ public class ArtistAdapter extends ArrayAdapter<ArtistProperties> {
 		 @Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			  
+			ViewHolder holder;
 			ArtistProperties artistObj = artists.get(position);
 			 
-	        View v=null;  
-	  		LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);              
-	        v = inflater.inflate(R.layout.item_artist, null);
+			
+			
+	        View v=convertView;        
+            //make sure to use the image cache
+	        if (v == null) { 
+	        	LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);              
+		        v = inflater.inflate(R.layout.item_artist, null);	        
 	        
+				holder = new ViewHolder();
+				holder.artistText = (TextView)  v.findViewById(R.id.artistItem_artistTitle);
+				holder.artistImage = (ImageView) v.findViewById(R.id.artistItem_aristImage);
+				v.setTag(holder);
 	        
-	        ImageView artistImage = (ImageView) v.findViewById(R.id.artistItem_aristImage);
-	        artistImage.setImageBitmap(artistObj.getArtistImage(mContext));
+	        }
+	        else
+	        {
+				holder = (ViewHolder) v.getTag();
+			}
 	        
-	        TextView artist = (TextView)  v.findViewById(R.id.artistItem_artistTitle);
-	        artist.setText(artistObj.getName());
+	        holder.artistText.setText(artistObj.getName());
+	        holder.artistImage.setImageBitmap(artistObj.getArtistImage(mContext));	       
+	
 	        
 			 
 			return v;

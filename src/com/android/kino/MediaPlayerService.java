@@ -4,7 +4,9 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
@@ -12,6 +14,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.android.kino.logic.KinoMediaPlayer;
+import com.android.kino.logic.interceptor.RemoteControlReceiver;
 import com.android.kino.ui.MenuMain;
 
 /**
@@ -30,6 +33,9 @@ public class MediaPlayerService extends Service{
     private TelephonyManager mTelephonyManager;
     private PhoneStateListener mPhoneCallListener;
     
+    private AudioManager mAudioManager;
+    private ComponentName mRemoteControlResponder;
+    
     /* (non-Javadoc)
      * @see android.app.Service#onCreate()
      */
@@ -40,6 +46,11 @@ public class MediaPlayerService extends Service{
         if (mMediaPlayer == null) {
             mMediaPlayer = new KinoMediaPlayer();
         }
+        
+        //deals with registering the service for media playback
+        mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
+        mRemoteControlResponder = new ComponentName(getPackageName(),
+                RemoteControlReceiver.class.getName());
         
         mTelephonyManager  = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         mPhoneCallListener = new PhoneStateListener() {

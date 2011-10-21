@@ -25,11 +25,11 @@ public class Kino extends Application implements ServiceUser {
 
     private static final String TAG = "Kino";
     private KinoServiceConnection mMediaPlayerConn = new KinoServiceConnection(this);
-    private KinoServiceConnection mInputTranslatorConn = new KinoServiceConnection(this);
+//    private KinoServiceConnection mInputTranslatorConn = new KinoServiceConnection(this);
     private KinoServiceConnection mLibraryConn = new KinoServiceConnection(this);
     private KinoServiceConnection mTaskMasterConn = new KinoServiceConnection(this);
     private KinoMediaPlayer mPlayer = null;
-    private InputEventTranslator mInputTranslator = null;
+//    private InputEventTranslator mInputTranslator = null;
     private Library mLibrary = null;
     private TaskMasterService mTaskMaster = null;
     
@@ -48,10 +48,10 @@ public class Kino extends Application implements ServiceUser {
     public KinoMediaPlayer getPlayer() {
         return mPlayer;
     }
-    
-    public InputEventTranslator getInputTranslator() {
-        return mInputTranslator;
-    }
+//    
+//    public InputEventTranslator getInputTranslator() {
+//        return mInputTranslator;
+//    }
     
     public Library getLibrary() {
     	if (mLibrary==null){
@@ -95,22 +95,23 @@ public class Kino extends Application implements ServiceUser {
             return;
         }
 
-        // Create input event translator service
-        result = startService(new Intent(this, InputEventTranslatorService.class));
-        if (result == null) {
-            Log.e(TAG, "Failed to start input event translator service");
-            return;
-        }
+//        // Create input event translator service
+//        result = startService(new Intent(this, InputEventTranslatorService.class));
+//        if (result == null) {
+//            Log.e(TAG, "Failed to start input event translator service");
+//            return;
+//        }
         
-        success = bindService(
-                new Intent(this, InputEventTranslatorService.class),
-                mInputTranslatorConn,
-                BIND_AUTO_CREATE);
-        if (!success) {
-            Log.e(TAG, "Failed to bind to input event translator service");
-            // TODO: Do something about this... failed to bind to input event translator
-            return;
-        }
+//        success = bindService(
+//                new Intent(this, InputEventTranslatorService.class),
+//                mInputTranslatorConn,
+//                BIND_AUTO_CREATE);
+//        if (!success) {
+//            Log.e(TAG, "Failed to bind to input event translator service");
+//            // TODO: Do something about this... failed to bind to input event translator
+//            return;
+//        }
+        
         Log.d(TAG, "Kino started OK");
         
         //bind the library service
@@ -137,9 +138,9 @@ public class Kino extends Application implements ServiceUser {
         if (binder instanceof MediaPlayerService.MPBinder) {
         	mPlayer = ((MediaPlayerService.MPBinder) binder).getPlayer();
         }
-        else if (binder instanceof InputEventTranslatorService.IETBinder) {
-            mInputTranslator = ((InputEventTranslatorService.IETBinder) binder).getInputTranslator();
-        }
+//        else if (binder instanceof InputEventTranslatorService.IETBinder) {
+//            mInputTranslator = ((InputEventTranslatorService.IETBinder) binder).getInputTranslator();
+//        }
         else if (binder instanceof Library.LibraryBinder){
         	mLibrary = ((Library.LibraryBinder) binder).getLibrary();
         }
@@ -147,7 +148,8 @@ public class Kino extends Application implements ServiceUser {
         	mTaskMaster = ((TaskMasterService.TaskMasterBinder) binder).getTaskMaster();
         	mTaskMaster.setKino(this);
         }
-        mIsInitialized = mPlayer != null && mInputTranslator != null && mLibrary != null && mTaskMaster != null;
+//        mIsInitialized = mPlayer != null && mInputTranslator != null && mLibrary != null && mTaskMaster != null;
+        mIsInitialized = mPlayer != null && mLibrary != null && mTaskMaster != null;
         if (mIsInitialized) {
             for (KinoUser user : mUsers) {
                 user.onKinoInit(this);
@@ -182,9 +184,9 @@ public class Kino extends Application implements ServiceUser {
         if (mPlayer != null && mPlayer.isPlaying()) {
             mPlayer.stop();
         }
-        if (mInputTranslator != null) {
-            mInputTranslator.disableDoubleTap();
-        }
+//        if (mInputTranslator != null) {
+//            mInputTranslator.disableDoubleTap();
+//        }
         ((MediaPlayerService.MPBinder)mMediaPlayerConn.getBinder()).clearNotification();
         if (!stopService(new Intent(this, InputEventTranslatorService.class))) {
             Log.e(TAG, "InputEventTranslatorService failed to be stopped");
@@ -209,10 +211,10 @@ public class Kino extends Application implements ServiceUser {
             unbindService(mMediaPlayerConn);
             mPlayer = null;
         }
-        if (isBoundToInputTranslator()) {
-            unbindService(mInputTranslatorConn);
-            mInputTranslatorConn = null;
-        }
+//        if (isBoundToInputTranslator()) {
+//            unbindService(mInputTranslatorConn);
+//            mInputTranslatorConn = null;
+//        }
         if (isBoundToLibrary()) {
             unbindService(mLibraryConn);
             mLibrary = null;
@@ -227,9 +229,9 @@ public class Kino extends Application implements ServiceUser {
         return mPlayer != null;
     }
     
-    private boolean isBoundToInputTranslator() {
-        return mInputTranslatorConn != null;
-    }
+//    private boolean isBoundToInputTranslator() {
+//        return mInputTranslatorConn != null;
+//    }
     
     private boolean isBoundToLibrary() {
         return mLibrary != null;

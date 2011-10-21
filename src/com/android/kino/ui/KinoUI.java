@@ -104,9 +104,9 @@ public class KinoUI extends Activity implements KinoUser {
         // application after exiting it, the interception doesn't restart, so
         // start it here
         SettingsContainer settings = SettingsLoader.loadCurrentSettings(this);
-        if (settings.getConfiguredBoolean(Setting.ENABLE_DOUBLE_TAP)) {
-            kino.getInputTranslator().enableDoubleTap();
-        }
+//        if (settings.getConfiguredBoolean(Setting.ENABLE_DOUBLE_TAP)) {
+//            kino.getInputTranslator().enableDoubleTap();
+//        }
         
         initSongDetails();                
         

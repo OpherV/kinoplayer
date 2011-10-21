@@ -28,7 +28,7 @@ public class InputEventTranslator implements InputEventListener {
         
         SettingsContainer settings = SettingsLoader.loadCurrentSettings(context);
         if (settings.getConfiguredBoolean(Setting.ENABLE_DOUBLE_TAP)) {
-            mInterceptors.add(new DoubleTapInterceptor());
+         //   mInterceptors.add(new DoubleTapInterceptor());
         }
     }
     

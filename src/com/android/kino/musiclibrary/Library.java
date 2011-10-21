@@ -274,6 +274,7 @@ public class Library extends Service{
 		AlbumList albums = db.fetchArtistAlbums(artistTitle);
 		return albums;
 	}
+		
 	
 	
 	public class LibraryBinder extends Binder{

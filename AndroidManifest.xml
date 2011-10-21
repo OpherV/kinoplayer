@@ -24,8 +24,7 @@
 
         <service
             android:name=".MediaPlayerService" />
-        <service
-            android:name=".InputEventTranslatorService" />
+      
         <service
             android:name=".musiclibrary.Library"></service>
 		<service
@@ -59,7 +58,7 @@
             android:name=".ui.MenuAlbumArtView"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
             
-            
+                        
 	  <activity android:exported="true" android:name=".filebrowser.BrowserFolder"
 	  			android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
 	  >
@@ -69,10 +68,23 @@
 	           <data android:scheme="folder"></data>
 	       </intent-filter>
 	   </activity>
+	   
+	 <activity android:name=".logic.action.VoiceSearch" android:label="@string/app_name">
+	        <intent-filter>
+	            <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
+	            <category android:name="android.intent.category.DEFAULT" />
+	        </intent-filter>
+	    </activity>
+	    
+	    <receiver android:name=".logic.interceptor.RemoteControlReceiver">
+		    <intent-filter>
+		        <action android:name="android.intent.action.MEDIA_BUTTON" />
+		    </intent-filter>
+		</receiver>
+	    
     </application>
 	
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 	<uses-permission android:name="android.permission.INTERNET" /> 
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 </manifest> 

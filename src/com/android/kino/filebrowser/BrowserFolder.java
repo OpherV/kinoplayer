@@ -110,9 +110,9 @@ public class BrowserFolder extends Activity{
             }
             break;
         case RELATIVE: // On relative Mode, we have to add the current-path to the beginning
-            int currentPathStringLenght = this.currentDirectory.getAbsolutePath().length();
+            int currentPathStringLength = this.currentDirectory.getAbsolutePath().length();
             for (File file : files){
-                this.directoryEntries.add(file.getAbsolutePath().substring(currentPathStringLenght));
+                this.directoryEntries.add(file.getAbsolutePath().substring(currentPathStringLength));
             }
             break;
         }

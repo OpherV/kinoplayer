@@ -88,17 +88,17 @@ public abstract class SettingsLoader {
         setSettingsAccordingToPreferences(context, settings);
         boolean allowDoubleTap = settings.getConfiguredBoolean(Setting.ENABLE_DOUBLE_TAP);
     
-        InputEventTranslator inputTranslator = Kino.getKino(context).getInputTranslator();
-        if (inputTranslator != null) {
-            if (allowDoubleTap) {
-                // Enable double tap
-                inputTranslator.enableDoubleTap();
-            }
-            else {
-                // Disable double tap
-                inputTranslator.disableDoubleTap();
-            }
-        }
+//        InputEventTranslator inputTranslator = Kino.getKino(context).getInputTranslator();
+//        if (inputTranslator != null) {
+//            if (allowDoubleTap) {
+//                // Enable double tap
+//                inputTranslator.enableDoubleTap();
+//            }
+//            else {
+//                // Disable double tap
+//                inputTranslator.disableDoubleTap();
+//            }
+//        }
     }
     
     private static void setSettingsAccordingToPreferences(Context context, SettingsContainer settings) {
